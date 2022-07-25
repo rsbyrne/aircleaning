@@ -2,6 +2,7 @@
 currentDir=$PWD
 cd "$(dirname "$0")"
 echo "imcycle start"
+bash ./pull.sh
 # sudo bash everestupdate.sh
 python3 update.py
 bash ./push.sh
