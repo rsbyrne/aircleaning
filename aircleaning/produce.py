@@ -28,6 +28,7 @@ def cost_analysis(data, volume, quality, path=productsdir, name='default'):
             (f' (x{n})' if n>1 else '' for n in data['nunits']),
             )
         ))
+    dollarlabels = tuple(data['nominal'].astype(int).apply('${:,}'.format))
 
     plt.rcdefaults()
     fig, (ax1, ax2) = plt.subplots(ncols=2)
@@ -42,7 +43,10 @@ def cost_analysis(data, volume, quality, path=productsdir, name='default'):
     ax1.invert_yaxis()  # labels read top-to-bottom
     ax1.set_xlabel('Dollars ($)')
     ax1.set_title('Cost')
-    ax1.bar_label(outerbars, label_type='edge', padding=8, fmt='$%d')
+    ax1.bar_label(
+        outerbars, dollarlabels,
+        label_type='edge', padding=8, fmt='$%d',
+        )
     ax1.spines['top'].set_visible(False)
     ax1.spines['right'].set_visible(False)
     ax1.spines['left'].set_visible(False)
@@ -57,7 +61,7 @@ def cost_analysis(data, volume, quality, path=productsdir, name='default'):
     ax2.invert_yaxis()  # labels read top-to-bottom
     ax2.set_xlabel('Decibels (dB)')
     ax2.set_title('Noise')
-    ax2.set_xlim(30)
+    ax2.set_xlim(40)
     ax2.bar_label(bars, label_type='edge', padding=8, fmt='%d dB')
     ax2.spines['top'].set_visible(False)
     ax2.spines['right'].set_visible(False)
