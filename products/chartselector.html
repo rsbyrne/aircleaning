@@ -1,0 +1,43 @@
+<script>
+function update (form){
+    for (vol = 0; vol < 3; vol++) {
+        if (form.volume[vol].checked)
+            break;
+        }
+    for (qual = 0; qual < 3; qual++) {
+        if (form.quality[qual].checked)
+            break;
+        }
+    image = document.getElementById('chosenimage')   
+    image.src = "https://rsbyrne.github.io/aircleaning/products/" + vol + '_' + qual + '.png'
+    image.alt = "Volume chosen: " + vol + " , quality chosen: " + qual
+    }
+</script>
+
+
+<form id='userinput' style="background-color:#bed4f7">
+  <fieldset id="volumeoptions">
+    <p>How big is the room you want to put your air purifier in?</p>
+    <input type="radio" id='smallop' value="small" name="volume" onClick="update(this.form)">
+    <label for="smallop">Small (37m3)</label>
+    <input type="radio" id='mediumop' value="medium" name="volume" checked onClick="update(this.form)">
+    <label for="mediumop">Medium (78m3)</label>
+    <input type="radio" id='largeop' value="large" name="volume" onClick="update(this.form)">
+    <label for="largeop">Large (155m3)</label>
+  </fieldset>
+  <fieldset id="qualityoptions">
+    <p>How high do you want the air quality to be in this room?</p>
+    <input type="radio" id='poorop' value="poor" name="quality" onClick="update(this.form)">
+    <label for="poorop">Poor (3 ACH)</label>
+    <input type="radio" id='goodop' value="good" name="quality" checked onClick="update(this.form)">
+    <label for="poorop">Good (6 ACH)</label>
+    <input type="radio" id='excellentop' value="excellent" name="quality" onClick="update(this.form)">
+    <label for="poorop">Excellent (9 ACH)</label>
+  </fieldset>
+</form>
+
+<img id = 'chosenimage' src='https://rsbyrne.github.io/aircleaning/products/placeholder.png' alt="Italian Trulli">
+
+<script>
+update(document.getElementById('userinput'))
+</script>
