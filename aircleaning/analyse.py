@@ -6,6 +6,7 @@
 import math
 
 import pandas as pd
+import numpy as np
 
 from . import load
 
@@ -27,10 +28,10 @@ def cost_analysis(data, /, volume='medium', quality='good'):
     data = data.drop('cadr', axis=1)
     performance = ach / quality
     nunits = (1 / performance).apply(math.ceil)
-    data['cost'] = data['cost'] * nunits
-    performance *= nunits
-    for col in ('power', 'noise', 'filterchanges'):
-        data[col] = data[col] / performance
+    data['cost'] *= nunits
+    for col in ('power', 'filterchanges'):
+        data[col] = data[col] * nunits / performance
+    data['noise'] = 10 * np.log10(10 ** (data['noise'] / 10) * nunits)
     filtercost = data['filtercost'] * data['filterchanges']
     data = data.drop(['filterchanges', 'filtercost'], axis=1)
     powercost = data['power'] / 1000 * 24 * 365 * load.NOMINALPOWERCOST

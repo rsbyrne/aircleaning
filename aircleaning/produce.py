@@ -21,6 +21,7 @@ def cost_analysis(data, volume, quality, path=productsdir, name='default'):
     data = analyse.cost_analysis(data, volume, quality)
     data = data.sort_values('nominal')
     data = data.loc[data['nunits'] < 6]
+    data = data.drop('Dyson', level='Manufacturer')
     data['fullname'] = tuple(map(
         ''.join, zip(
             map(' '.join, data.index),
@@ -56,14 +57,14 @@ def cost_analysis(data, volume, quality, path=productsdir, name='default'):
     ax2.invert_yaxis()  # labels read top-to-bottom
     ax2.set_xlabel('Decibels (dB)')
     ax2.set_title('Noise')
-    ax2.set_xlim(20)
+    ax2.set_xlim(40)
     ax2.bar_label(bars, label_type='edge', padding=8, fmt='%d dB')
     ax2.spines['top'].set_visible(False)
     ax2.spines['right'].set_visible(False)
     ax2.spines['left'].set_visible(False)
     ax2.tick_params(axis='y', which='both', left=False)
     ax2.legend(
-        [bars,], ['Sound rating in decibels'],
+        [bars,], ['Highest volume'],
         ncol=2,
         )
 
