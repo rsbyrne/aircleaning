@@ -20,7 +20,12 @@ def cost_analysis(data, volume, quality, path=productsdir, name='default'):
 
     data = analyse.cost_analysis(data, volume, quality)
     data = data.sort_values('nominal')
-    data['fullname'] = tuple(map(' '.join, data.index))
+    data['fullname'] = tuple(map(
+        ''.join, zip(
+            map(' '.join, data.index),
+            (f' (x{n})' if n>1 else '' for n in data['nunits']),
+            )
+        ))
 
     plt.rcdefaults()
     fig, (ax1, ax2) = plt.subplots(ncols=2)
