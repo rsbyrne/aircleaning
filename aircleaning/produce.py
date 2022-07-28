@@ -4,13 +4,16 @@
 
 
 import os
+import operator
 
 import matplotlib.pyplot as plt
+from matplotlib.colors import Normalize as norm
 import numpy as np
 
-import window
+# import window
 
 from . import load, analyse
+
 
 repodir = os.path.dirname(os.path.dirname(__file__))
 productsdir = os.path.join(repodir, 'products')
@@ -19,7 +22,7 @@ productsdir = os.path.join(repodir, 'products')
 def cost_analysis(volume, quality, path=productsdir, name='default'):
 
     data = analyse.cost_analysis(None, volume, quality)
-    data = data.sort_values('nominal')
+    data = data.sort_values('upfront')
     # data = data.loc[data['nunits'] < 6]
     data = data.drop('Dyson', level='manufacturer')
     data['fullname'] = tuple(map(
@@ -28,16 +31,6 @@ def cost_analysis(volume, quality, path=productsdir, name='default'):
             (f' (x{n})' if n>1 else '' for n in data['nunits']),
             )
         ))
-    # dollarlabels = tuple(map(' + '.join, zip(
-    #     data['upfront'].astype(int).apply('${:,}'.format),
-    #     data['running'].astype(int).apply('${:,} pa'.format),
-    #     )))
-    # dollarlabels = tuple(data['upfront'].astype(int).apply('${:,}'.format))
-    # import itertools
-    # dollarlabels = tuple(map(' + '.join, zip(
-    #     data['upfront'].astype(int).apply('${:,}'.format),
-    #     itertools.repeat(''),
-    #     )))
     dollarlabels = tuple(map(' + '.join, zip(
         data['upfront'].astype(int).apply('${:,}'.format),
         data['running'].astype(int).apply('{:,} pa'.format),
@@ -45,20 +38,22 @@ def cost_analysis(volume, quality, path=productsdir, name='default'):
 
     plt.rcdefaults()
     fig, (ax1, ax2) = plt.subplots(ncols=2, gridspec_kw={'width_ratios': [2, 1]})
+
     fig.set_size_inches(8, 0.3 * len(data))
     fig.set_tight_layout(True)
 
     y_pos = np.arange(len(data))
 
-    outerbars = ax1.barh(y_pos, data['nominal'])
+    gap = data['nominal'].max()
     innerbars = ax1.barh(y_pos, data['upfront'])
+    outerbars = ax1.barh(y_pos, data['running'], left=data['upfront']+gap/30)
     ax1.set_yticks(y_pos, labels=data['fullname'])
     ax1.invert_yaxis()  # labels read top-to-bottom
     ax1.set_xlabel('Dollars ($)')
     ax1.set_title('Cost')
     ax1.bar_label(
         outerbars, dollarlabels,
-        label_type='edge', padding=8, fmt='$%d',
+        label_type='edge', padding=8, fmt='$%d', color='grey'
         )
     ax1.spines['top'].set_visible(False)
     ax1.spines['right'].set_visible(False)
@@ -69,7 +64,8 @@ def cost_analysis(volume, quality, path=productsdir, name='default'):
         ncol=2,
         )
 
-    bars = ax2.barh(y_pos, data['noise'], color='green')
+    noisecolours = tuple(map(plt.get_cmap('coolwarm'), norm(20, 80)(data['noise'])))
+    bars = ax2.barh(y_pos, data['noise'], color=noisecolours)
     ax2.set_yticks(y_pos, labels=[])
     ax2.invert_yaxis()  # labels read top-to-bottom
     ax2.set_xlabel('Decibels (dB)')
@@ -80,10 +76,10 @@ def cost_analysis(volume, quality, path=productsdir, name='default'):
     ax2.spines['right'].set_visible(False)
     ax2.spines['left'].set_visible(False)
     ax2.tick_params(axis='y', which='both', left=False)
-    ax2.legend(
-        [bars,], ['Highest volume'],
-        ncol=2,
-        )
+    # ax2.legend(
+    #     [bars,], ['Highest volume'],
+    #     ncol=2,
+    #     )
 
     # title = f"Air cleaner choices: a {volume}-sized room with {quality} air quality"
     # fig.suptitle(title, fontproperties=dict(weight='heavy'))
