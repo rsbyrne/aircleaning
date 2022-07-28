@@ -28,7 +28,20 @@ def cost_analysis(volume, quality, path=productsdir, name='default'):
             (f' (x{n})' if n>1 else '' for n in data['nunits']),
             )
         ))
-    dollarlabels = tuple(data['nominal'].astype(int).apply('${:,}'.format))
+    # dollarlabels = tuple(map(' + '.join, zip(
+    #     data['upfront'].astype(int).apply('${:,}'.format),
+    #     data['running'].astype(int).apply('${:,} pa'.format),
+    #     )))
+    # dollarlabels = tuple(data['upfront'].astype(int).apply('${:,}'.format))
+    # import itertools
+    # dollarlabels = tuple(map(' + '.join, zip(
+    #     data['upfront'].astype(int).apply('${:,}'.format),
+    #     itertools.repeat(''),
+    #     )))
+    dollarlabels = tuple(map(' + '.join, zip(
+        data['upfront'].astype(int).apply('${:,}'.format),
+        data['running'].astype(int).apply('{:,} pa'.format),
+        )))
 
     plt.rcdefaults()
     fig, (ax1, ax2) = plt.subplots(ncols=2, gridspec_kw={'width_ratios': [2, 1]})
@@ -81,10 +94,14 @@ def cost_analysis(volume, quality, path=productsdir, name='default'):
 def make_cost_analysis_form_channel(overname, data, /):
     levels = data['levels'].astype(int)
     unit = data.attrs['units']['levels']
-    return '\n'.join('\n'.join((
-        f'''            <input type="radio" id='{name}op' value="{name}" name="{overname}" onClick="update(this.form)">''',
-        f'''            <label for="{name}op">{name.capitalize()} ({levels[name]}{unit})</label>''',
-        )) for name in data.index)
+    strn = ''
+    for i, name in enumerate(data.index):
+        checked = 'checked ' if i == 1 else ''
+        strn += '\n            ' + '\n            '.join((
+            f'''<input type="radio" id='{name}op' value="{name}" name="{overname}" {checked}onClick="update(this.form)">''',
+            f'''<label for="{name}op">{name.capitalize()} ({levels[name]}{unit})</label>''',
+            ))
+    return strn
 
 def cost_analysis_chart_selector(
         vols, quals,
