@@ -33,7 +33,7 @@ def cost_analysis(data=None, /, volume='medium', quality='good'):
     nunits = (1 / performance).apply(math.ceil)
     data['cost'] *= nunits
     for col in ('power', 'filterchanges'):
-        data[col] = data[col] * nunits / performance
+        data[col] = data[col] / performance
     data['noise'] = 10 * np.log10(10 ** (data['noise'] / 10) * nunits)
     filtercost = data['filtercost'] * data['filterchanges']
     data = data.drop(['filterchanges', 'filtercost'], axis=1)
