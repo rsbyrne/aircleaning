@@ -11,12 +11,15 @@ import numpy as np
 from . import load
 
 
-def cost_analysis(data, /, volume='medium', quality='good'):
+def cost_analysis(data=None, /, volume='medium', quality='good'):
+
+    if data is None:
+        data = load.get_main_data()
 
     if isinstance(volume, str):
-        volume = load.VOLUME[volume]
+        volume = load.get_volume_data()['levels'].loc[volume]
     if isinstance(quality, str):
-        quality = load.QUALITY[quality]
+        quality = load.get_quality_data()['levels'].loc[quality]
 
     data = data.loc[~data['ionising'] & ~data['uv']]
     data = data.drop(
@@ -41,6 +44,7 @@ def cost_analysis(data, /, volume='medium', quality='good'):
     data['running'] = filtercost + powercost
     data['nominal'] = data['upfront'] + data['running'] * load.NOMINALPERIOD
     data['nunits'] = nunits
+
     return data
 
 

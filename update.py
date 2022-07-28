@@ -16,9 +16,7 @@ repodir = os.path.dirname(__file__)
 productsdir = os.path.join(repodir, 'products')
 
 
-data = load.pull_data()
-
-produce.multi_cost_analysis(data)
+produce.multi_cost_analysis()
 
 
 ###############################################################################
