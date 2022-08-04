@@ -112,7 +112,7 @@ def dashboard(path=productsdir, name='dashboard'):
     vols, quals = load.get_volume_data(), load.get_quality_data()
     mediumvol = f"{round(vols.loc['medium', 'levels'])} m<sup>3</sup>"
     # goodqual = f"{round(quals.loc['good', 'levels'])} ACH"
-    nomperiod = round(load.get_parameters().loc['nominal period', 'value'])
+    nomperiod = round(float(load.get_parameters().loc['nominal period', 'value']))
 
     strn = ''
 
