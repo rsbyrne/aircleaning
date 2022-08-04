@@ -296,7 +296,7 @@ def synoptic(data=None, /, volume='medium', quality='good', path=productsdir):
     nomx = getnom(*ax.get_xlim())
     nomy = getnom(*ax.get_ylim())
     ax.axhline(quality)
-    ax.text(0.01 * nomx, quality + 0.01 * nomy, 'Good quality')
+    ax.text(0.02 * nomx, quality + 0.01 * nomy, 'Good quality')
 
     plt.savefig(os.path.join(path, 'synoptic') + '.png')
 
