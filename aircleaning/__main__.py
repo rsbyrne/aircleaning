@@ -3,16 +3,16 @@
 ###############################################################################
 
 
-if __name__ != '__main__':
-    raise RuntimeError("This script expects to be executed.")
-
+# if __name__ != '__main__':
+#     raise RuntimeError("This script expects to be executed.")
+# raise Exception
 
 print("Running application code...")
 
 
 import os
 
-from aircleaning import load, analyse, produce
+from . import load, analyse, produce
 
 
 repodir = os.path.dirname(__file__)
