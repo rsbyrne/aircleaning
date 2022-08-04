@@ -263,10 +263,6 @@ def synoptic(data=None, /, volume='medium', quality='good', path=productsdir):
     ax.set_xlabel("Cost efficiency\n(air changes per dollar)")
     ax.set_ylabel("Air quality\n(air changes per hour)")
     getnom = lambda x0, x1: x1 - x0
-    nomx = getnom(*ax.get_xlim())
-    nomy = getnom(*ax.get_ylim())
-    ax.axhline(quality)
-    ax.text(0.01 * nomx, quality + 0.01 * nomy, 'Good quality')
 
     plt.colorbar(
         mpl.cm.ScalarMappable(norm=norm, cmap=cmap),
@@ -296,6 +292,11 @@ def synoptic(data=None, /, volume='medium', quality='good', path=productsdir):
             ),
         ax=ax,
         )
+
+    nomx = getnom(*ax.get_xlim())
+    nomy = getnom(*ax.get_ylim())
+    ax.axhline(quality)
+    ax.text(0.01 * nomx, quality + 0.01 * nomy, 'Good quality')
 
     plt.savefig(os.path.join(path, 'synoptic') + '.png')
 
