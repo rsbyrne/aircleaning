@@ -2,8 +2,8 @@
 currentDir=$PWD
 cd "$(dirname "$0")"
 echo "imcycle start"
-# bash ./pull.sh
-# bash ./preconfig.sh
+bash ./pull.sh
+bash ./preconfig.sh
 abort()
 {
     echo >&2 '
@@ -26,6 +26,6 @@ echo >&2 '
 *** DONE *** 
 ************
 '
-# bash ./push.sh
+bash ./push.sh
 echo "imcycle done"
 cd $currentDir
