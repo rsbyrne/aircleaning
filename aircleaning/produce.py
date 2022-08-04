@@ -146,7 +146,7 @@ def dashboard(path=productsdir, name='dashboard'):
         '''<div>''',
         '''<h2>Decision Tool</h2>''',
         '''<p>''',
-        '''Every room is different. Answer these quick questions to sort the data by what's most economical for you. The running costs and noise levels are calculated using manufacturer data and the likely level of use we predict you would need to keep your room clean to the level you've specified. For those cases where a single device just won't do job, we've calculated how many of that device you would need, and how noisy and costly they would all be together.''',
+        '''Every room is different. Answer these quick questions to sort the data by what's most economical for you. The running costs and noise levels are calculated using manufacturer data and the likely level of use we predict you would need to keep your room clean to the level you've specified. For those cases where a single device just won't do the job, we've calculated how many of that device you would need, and how noisy and costly they would all be together.''',
         '''</p>''',
         '''<div>''',
         ))
