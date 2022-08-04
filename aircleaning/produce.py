@@ -76,7 +76,7 @@ def cost_analysis(volume, quality, path=productsdir, name='default'):
     ax2.set_xlabel('Decibels (dB)')
     ax2.set_title('Noise')
     ax2.set_xlim(20)
-    ax2.bar_label(bars, label_type='edge', padding=8, fmt='%d dB')
+    ax2.bar_label(bars, label_type='edge', padding=8, fmt='%d dB', color='grey')
     ax2.spines['top'].set_visible(False)
     ax2.spines['right'].set_visible(False)
     ax2.spines['left'].set_visible(False)
@@ -108,7 +108,44 @@ def dashboard(path=productsdir, name='dashboard'):
 
     vols, quals = load.get_volume_data(), load.get_quality_data()
 
-    strn = '\n' + '\n'.join((
+    strn = ''
+
+    strn += '\n' + '\n'.join((
+        '''<!DOCTYPE html>''',
+        '''<html>''',
+        '''<head>''',
+        '''<title>Air Cleaning Dashboard</title>''',
+        '''</head>''',
+        '''<body>''',
+        '''<h1>Air Cleaning Dashboard</h1>''',
+        '''<p>''',
+        '''With so many air cleaning devices on the market, how do we know which product is best for us? Flick through our data to see what's on offer and find the solution that's right for you.''',
+        '''</p>''',
+        '''<div>''',
+        ))
+
+    strn += '\n' + '\n'.join((
+        '''<div>''',
+        '''<h2>Overview Chart</h2>''',
+        '''<p>''',
+        '''This chart brings all of our data together in one graphic. Based on a typical medium-sized room and a safe standard of air quality, this chart asks: how many fresh air changes can this device buy me for the cost of a single dollar (left to right, where right is better), and how many typical medium-sized rooms can it keep clean (bottom to top, where top is better). The colour gives a sense of how noisy the device is (blue to red, where blue is better).''',
+        '''</p>''',
+        '''<div align="center">''',
+        '''<img id = 'synoptic' src='https://rsbyrne.github.io/aircleaning/products/synoptic.png' alt="Synoptic"> ''',
+        '''</div>''',
+        '''</div>''',
+        ))
+
+    strn += '\n' + '\n'.join((
+        '''<div>''',
+        '''<h2>Decision Tool</h2>''',
+        '''<p>''',
+        '''Every room is different. Answer these quick questions to sort the data by what's most economical for you. The running costs and noise levels are calculated using manufacturer data and the likely level of use we predict you would need to keep your room clean to the level you've specified. For those cases where a single device just won't do job, we've calculated how many of that device you would need, and how noisy and costly they would all be together.''',
+        '''</p>''',
+        '''<div>''',
+        ))
+
+    strn += '\n' + '\n'.join((
         '''<script>''',
         '''    function update (form){''',
         '''        for (vol = 0; vol < 3; vol++) {''',
@@ -151,18 +188,21 @@ def dashboard(path=productsdir, name='dashboard'):
         ))
 
     strn += '\n' + '\n'.join((
-        '''<div align="center">''',
-        '''    <img id = 'synoptic' src='https://rsbyrne.github.io/aircleaning/products/synoptic.png' alt="Synoptic"> ''',
-        '''</div>''',
-        ))
-
-    strn += '\n' + '\n'.join((
         '''<script>''',
         '''    update(document.getElementById('userinput'))''',
         '''</script>''',
         ))
 
-    strn += '\n'
+    strn += '\n' + '\n'.join((
+        '''</div>''',
+        '''</div>''',
+        ))
+
+    strn += '\n' + '\n'.join((
+        '''</div>''',
+        '''</body>''',
+        '''</html>''',
+        ))
 
     with open(os.path.join(productsdir, name) + '.html', mode='w') as file:
         file.write(strn)
@@ -189,28 +229,29 @@ def synoptic(path=productsdir):
 
     fig, ax = plt.subplots()
 
-    fig.set_size_inches(12, 12)
+    fig.set_size_inches(8, 8)
     fig.set_tight_layout(True)
 
     ax.scatter(
         data['efficiency'], data['maxsize'],
-        c=noisecolours, s=80, edgecolors='grey'
+        c=noisecolours, s=60, edgecolors='grey'
         )
     ax.set_xlabel('Clean air changes per dollar')
     ax.set_ylabel("Maximum safe room size (single device)")
 
     plt.colorbar(
         mpl.cm.ScalarMappable(norm=norm, cmap=cmap),
-        # cax=ax,
+        cax=ax.inset_axes((0.65, 0.08, 0.3, 0.03)),
         label='Noise (single device) (dB)',
-        shrink=0.33, location='top'
+        orientation='horizontal',
+        shrink=0.1
         )
 
     adjust_text(
         tuple(
             ax.text(
                 x, y, txt,
-                color="#4d4d4d", fontsize=8, fontname="DejaVu Sans",
+                color="#4d4d4d", fontsize=6, fontname="DejaVu Sans",
                 )
             for txt, x, y in zip(
                 map('\n'.join, data.index),

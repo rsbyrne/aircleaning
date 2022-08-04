@@ -1,4 +1,30 @@
 
+<!DOCTYPE html>
+<html>
+<head>
+<title>Air Cleaning Dashboard</title>
+</head>
+<body>
+<h1>Air Cleaning Dashboard</h1>
+<p>
+With so many air cleaning devices on the market, how do we know which product is best for us? Flick through our data to see what's on offer and find the solution that's right for you.
+</p>
+<div>
+<div>
+<h2>Overview Chart</h2>
+<p>
+This chart brings all of our data together in one graphic. Based on a typical medium-sized room and a safe standard of air quality, this chart asks: how many fresh air changes can this device buy me for the cost of a single dollar (left to right, where right is better), and how many typical medium-sized rooms can it keep clean (bottom to top, where top is better). The colour gives a sense of how noisy the device is (blue to red, where blue is better).
+</p>
+<div align="center">
+<img id = 'synoptic' src='https://rsbyrne.github.io/aircleaning/products/synoptic.png' alt="Synoptic"> 
+</div>
+</div>
+<div>
+<h2>Decision Tool</h2>
+<p>
+Every room is different. Answer these quick questions to sort the data by what's most economical for you. The running costs and noise levels are calculated using manufacturer data and the likely level of use we predict you would need to keep your room clean to the level you've specified. For those cases where a single device just won't do job, we've calculated how many of that device you would need, and how noisy and costly they would all be together.
+</p>
+<div>
 <script>
     function update (form){
         for (vol = 0; vol < 3; vol++) {
@@ -39,9 +65,11 @@
     </form>
     <img id = 'chosenimage' src='https://rsbyrne.github.io/aircleaning/products/placeholder.png' alt="Cost analysis">
 </div>
-<div align="center">
-    <img id = 'synoptic' src='https://rsbyrne.github.io/aircleaning/products/synoptic.png' alt="Synoptic"> 
-</div>
 <script>
     update(document.getElementById('userinput'))
 </script>
+</div>
+</div>
+</div>
+</body>
+</html>
