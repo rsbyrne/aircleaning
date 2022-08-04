@@ -7,6 +7,6 @@ title: AirCleaner (not for public consumption)
 <iframe id="dashboard"
     title="Chart Selector"
     width="864"
-    height="1350"
+    height="864"
     src="https://rsbyrne.github.io/aircleaning/products/dashboard.html">
 </iframe>

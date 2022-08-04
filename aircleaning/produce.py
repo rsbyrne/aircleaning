@@ -128,7 +128,7 @@ def dashboard(path=productsdir, name='dashboard'):
         '''<div>''',
         '''<h2>Overview Chart</h2>''',
         '''<p>''',
-        '''This chart brings all of our data together in one graphic. Based on a typical medium-sized room and a safe standard of air quality, this chart asks: how many fresh air changes can this device buy me for the cost of a single dollar (left to right, where right is better), and how many typical medium-sized rooms can it keep clean (bottom to top, where top is better). The colour gives a sense of how noisy the device is (blue to red, where blue is better). The cost includes the upfront cost (spread over six years) plus the expected ongoing costs of electricity and filter replacements.''',
+        '''This chart brings all of our data together in one graphic. Based on a typical medium-sized room and a safe standard of air quality, this chart asks: how many rooms full of clear air can this device buy me for the cost of a single dollar (left to right, where right is better), and how many typical medium-sized rooms can it keep clean (bottom to top, where top is better). The colour gives a sense of how noisy the device is (blue to red, where blue is better). The cost includes the upfront cost (spread over six years) plus the expected ongoing costs of electricity and filter replacements.''',
         '''</p>''',
         '''<div align="center">''',
         '''<img id = 'synoptic' src='https://rsbyrne.github.io/aircleaning/products/synoptic.png' alt="Synoptic"> ''',
@@ -236,13 +236,13 @@ def synoptic(path=productsdir):
         data['efficiency'], data['maxsize'],
         c=noisecolours, s=60, edgecolors='grey'
         )
-    ax.set_xlabel('Clean air changes per dollar')
-    ax.set_ylabel("Maximum safe room size (single device)")
+    ax.set_xlabel('Cost efficiency\n(clean air-changes per dollar)')
+    ax.set_ylabel("Cleaning power\n(maximum cleanable rooms)")
 
     plt.colorbar(
         mpl.cm.ScalarMappable(norm=norm, cmap=cmap),
         cax=ax.inset_axes((0.65, 0.08, 0.3, 0.03)),
-        label='Noise (single device) (dB)',
+        label='Noise (dB)',
         orientation='horizontal',
         shrink=0.1
         )
