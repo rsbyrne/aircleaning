@@ -47,27 +47,43 @@ def cost_analysis(data=None, /, volume='medium', quality='good'):
     return data
 
 
-def synoptic_analysis(data=None, /, volume='medium', quality='good'):
+def synoptic_analysis(data=None, /, volume='medium'):
 
     if data is None:
         data = load.get_main_data()
 
     if isinstance(volume, str):
         volume = load.get_volume_data()['levels'].loc[volume]
-    if isinstance(quality, str):
-        quality = load.get_quality_data()['levels'].loc[quality]
+
+    ach = data['cadr'] / volume
 
     cost = (
         + (data['filterchanges'] * data['filtercost'])
         + data['cost'] / load.NOMINALPERIOD
         ) / (24 * 365)
-    efficiency = data['cadr'] / volume / cost
-    maxsize = data['cadr'] / quality / volume
+    costeff = ach / cost
 
     return pd.concat(
-        dict(efficiency=efficiency, maxsize=maxsize, noise=data['noise']),
+        dict(ach=ach, costeff=costeff, noise=data['noise']),
         axis=1,
         )
+
+#     if isinstance(volume, str):
+#         volume = load.get_volume_data()['levels'].loc[volume]
+#     if isinstance(quality, str):
+#         quality = load.get_quality_data()['levels'].loc[quality]
+
+#     cost = (
+#         + (data['filterchanges'] * data['filtercost'])
+#         + data['cost'] / load.NOMINALPERIOD
+#         ) / (24 * 365)
+#     efficiency = data['cadr'] / volume / cost
+#     maxsize = data['cadr'] / quality / volume
+
+#     return pd.concat(
+#         dict(efficiency=efficiency, maxsize=maxsize, noise=data['noise']),
+#         axis=1,
+#         )
 
 
 ###############################################################################

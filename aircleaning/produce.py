@@ -21,9 +21,9 @@ repodir = os.path.dirname(os.path.dirname(__file__))
 productsdir = os.path.join(repodir, 'products')
 
 
-def cost_analysis(volume, quality, path=productsdir, name='default'):
+def cost_analysis(data=None, /, volume='medium', quality='good', path=productsdir, name='default'):
 
-    data = analyse.cost_analysis(None, volume, quality)
+    data = analyse.cost_analysis(data, volume, quality)
     data = data.sort_values('upfront')
     # data = data.loc[data['nunits'] < 6]
     data = data.drop('Dyson', level='manufacturer')
@@ -68,7 +68,7 @@ def cost_analysis(volume, quality, path=productsdir, name='default'):
         )
 
     noisecolours = tuple(
-        map(plt.get_cmap('coolwarm'), Normalize(20, 80)(data['noise']))
+        map(plt.get_cmap(load.NOISECMAP), Normalize(20, 80)(data['noise']))
         )
     bars = ax2.barh(y_pos, data['noise'], color=noisecolours)
     ax2.set_yticks(y_pos, labels=[])
@@ -95,6 +95,8 @@ def cost_analysis(volume, quality, path=productsdir, name='default'):
 def make_cost_analysis_form_channel(overname, data, /):
     levels = data['levels'].astype(int)
     unit = data.attrs['units']['levels']
+    if unit[-1].isnumeric():
+        unit = f"{unit[:-1]}<sup>{unit[-1]}</sup>"
     strn = ''
     for i, name in enumerate(data.index):
         checked = 'checked ' if i == 1 else ''
@@ -214,30 +216,52 @@ def multi_cost_analysis(path=productsdir):
 
     for voli, vol in enumerate(vols['levels']):
         for quali, qual in enumerate(quals['levels']):
-            cost_analysis(vol, qual, path=path, name=f"{voli}_{quali}")
+            cost_analysis(
+                volume=vol, quality=qual,
+                path=path, name=f"{voli}_{quali}",
+                )
 
 
-def synoptic(path=productsdir):
+def synoptic(data=None, /, volume='medium', quality='good', path=productsdir):
 
-    data = analyse.synoptic_analysis()
+    if isinstance(volume, str):
+        volstr = volume
+        volume = load.get_volume_data()['levels'].loc[volume]
+    else:
+        volstr = f"{volume} m^3"
+    if isinstance(quality, str):
+        qualstr = quality
+        quality = load.get_quality_data()['levels'].loc[quality]
+    else:
+        qualstr = f"{quality} ACH"
 
-    cmap = plt.get_cmap('coolwarm')
+    title = f"Air cleaners on the market:\nefficacy for a {volstr} sized room with {qualstr} air quality."
+
+    data = analyse.synoptic_analysis(data, volume=volume)
+
     norm = Normalize(20, 80)
+    cmap = plt.get_cmap(load.NOISECMAP)
     noisecolours = tuple(
         map(cmap, norm(data['noise']))
         )
 
     fig, ax = plt.subplots()
+    ax.set_title(title)
 
     fig.set_size_inches(8, 8)
     fig.set_tight_layout(True)
 
     ax.scatter(
-        data['efficiency'], data['maxsize'],
+        data['costeff'], data['ach'],
         c=noisecolours, s=60, edgecolors='grey'
         )
-    ax.set_xlabel('Cost efficiency\n(clean air-changes per dollar)')
-    ax.set_ylabel("Cleaning power\n(maximum cleanable rooms)")
+    ax.set_xlabel("Cost efficiency\n(air changes per dollar)")
+    ax.set_ylabel("Air quality\n(air changes per hour)")
+    getnom = lambda x0, x1: x1 - x0
+    nomx = getnom(*ax.get_xlim())
+    nomy = getnom(*ax.get_ylim())
+    ax.axhline(quality)
+    ax.text(0.01 * nomx, quality + 0.01 * nomy, 'Good quality')
 
     plt.colorbar(
         mpl.cm.ScalarMappable(norm=norm, cmap=cmap),
@@ -251,19 +275,19 @@ def synoptic(path=productsdir):
         tuple(
             ax.text(
                 x, y, txt,
-                color="#4d4d4d", fontsize=6, fontname="DejaVu Sans",
+                color="#4d4d4d", fontsize=8, fontname="DejaVu Sans",
                 )
             for txt, x, y in zip(
                 map('\n'.join, data.index),
-                data['efficiency'],
-                data['maxsize'],
+                data['costeff'],
+                data['ach'],
                 )
             ), 
         expand_points=(2, 2),
         arrowprops=dict(
             arrowstyle="->", 
             color="#7F7F7F", 
-            lw=0.5
+            lw=0.65
             ),
         ax=ax,
         )
