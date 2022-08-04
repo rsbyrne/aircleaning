@@ -7,7 +7,9 @@ import os
 import operator
 
 import matplotlib.pyplot as plt
-from matplotlib.colors import Normalize as norm
+import matplotlib as mpl
+from matplotlib.colors import Normalize
+from adjustText import adjust_text
 import numpy as np
 
 # import window
@@ -37,14 +39,15 @@ def cost_analysis(volume, quality, path=productsdir, name='default'):
         )))
 
     plt.rcdefaults()
-    fig, (ax1, ax2) = plt.subplots(ncols=2, gridspec_kw={'width_ratios': [2, 1]})
+    fig, (ax1, ax2) = \
+        plt.subplots(ncols=2, gridspec_kw={'width_ratios': [2, 1]})
 
     fig.set_size_inches(8, 0.3 * len(data))
     fig.set_tight_layout(True)
 
     y_pos = np.arange(len(data))
 
-    gap = data['nominal'].max()
+    gap = (data['upfront'] + data['running']).max()
     innerbars = ax1.barh(y_pos, data['upfront'])
     outerbars = ax1.barh(y_pos, data['running'], left=data['upfront']+gap/30)
     ax1.set_yticks(y_pos, labels=data['fullname'])
@@ -64,7 +67,9 @@ def cost_analysis(volume, quality, path=productsdir, name='default'):
         ncol=2,
         )
 
-    noisecolours = tuple(map(plt.get_cmap('coolwarm'), norm(20, 80)(data['noise'])))
+    noisecolours = tuple(
+        map(plt.get_cmap('coolwarm'), Normalize(20, 80)(data['noise']))
+        )
     bars = ax2.barh(y_pos, data['noise'], color=noisecolours)
     ax2.set_yticks(y_pos, labels=[])
     ax2.invert_yaxis()  # labels read top-to-bottom
@@ -99,10 +104,9 @@ def make_cost_analysis_form_channel(overname, data, /):
             ))
     return strn
 
-def cost_analysis_chart_selector(
-        vols, quals,
-        path=productsdir, name='costanalysis_chartselector',
-        ):
+def dashboard(path=productsdir, name='dashboard'):
+
+    vols, quals = load.get_volume_data(), load.get_quality_data()
 
     strn = '\n' + '\n'.join((
         '''<script>''',
@@ -144,6 +148,15 @@ def cost_analysis_chart_selector(
         '''    </form>''',
         '''    <img id = 'chosenimage' src='https://rsbyrne.github.io/aircleaning/products/placeholder.png' alt="Cost analysis">''',
         '''</div>''',
+        ))
+
+    strn += '\n' + '\n'.join((
+        '''<div align="center">''',
+        '''    <img id = 'synoptic' src='https://rsbyrne.github.io/aircleaning/products/synoptic.png' alt="Synoptic"> ''',
+        '''</div>''',
+        ))
+
+    strn += '\n' + '\n'.join((
         '''<script>''',
         '''    update(document.getElementById('userinput'))''',
         '''</script>''',
@@ -163,7 +176,58 @@ def multi_cost_analysis(path=productsdir):
         for quali, qual in enumerate(quals['levels']):
             cost_analysis(vol, qual, path=path, name=f"{voli}_{quali}")
 
-    cost_analysis_chart_selector(vols, quals, path)
+
+def synoptic(path=productsdir):
+
+    data = analyse.synoptic_analysis()
+
+    cmap = plt.get_cmap('coolwarm')
+    norm = Normalize(20, 80)
+    noisecolours = tuple(
+        map(cmap, norm(data['noise']))
+        )
+
+    fig, ax = plt.subplots()
+
+    fig.set_size_inches(12, 12)
+    fig.set_tight_layout(True)
+
+    ax.scatter(
+        data['efficiency'], data['maxsize'],
+        c=noisecolours, s=80, edgecolors='grey'
+        )
+    ax.set_xlabel('Clean air changes per dollar')
+    ax.set_ylabel("Maximum safe room size (single device)")
+
+    plt.colorbar(
+        mpl.cm.ScalarMappable(norm=norm, cmap=cmap),
+        # cax=ax,
+        label='Noise (single device) (dB)',
+        shrink=0.33, location='top'
+        )
+
+    adjust_text(
+        tuple(
+            ax.text(
+                x, y, txt,
+                color="#4d4d4d", fontsize=8, fontname="DejaVu Sans",
+                )
+            for txt, x, y in zip(
+                map('\n'.join, data.index),
+                data['efficiency'],
+                data['maxsize'],
+                )
+            ), 
+        expand_points=(2, 2),
+        arrowprops=dict(
+            arrowstyle="->", 
+            color="#7F7F7F", 
+            lw=0.5
+            ),
+        ax=ax,
+        )
+
+    plt.savefig(os.path.join(path, 'synoptic') + '.png')
 
 
 ###############################################################################

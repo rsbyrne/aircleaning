@@ -17,6 +17,8 @@ productsdir = os.path.join(repodir, 'products')
 
 
 produce.multi_cost_analysis()
+produce.synoptic()
+produce.dashboard()
 
 
 ###############################################################################

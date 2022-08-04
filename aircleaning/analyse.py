@@ -42,10 +42,32 @@ def cost_analysis(data=None, /, volume='medium', quality='good'):
     data['upfront'] = data['cost']
     data = data.drop('cost', axis=1)
     data['running'] = filtercost + powercost
-    data['nominal'] = data['upfront'] + data['running'] * load.NOMINALPERIOD
     data['nunits'] = nunits
 
     return data
+
+
+def synoptic_analysis(data=None, /, volume='medium', quality='good'):
+
+    if data is None:
+        data = load.get_main_data()
+
+    if isinstance(volume, str):
+        volume = load.get_volume_data()['levels'].loc[volume]
+    if isinstance(quality, str):
+        quality = load.get_quality_data()['levels'].loc[quality]
+
+    cost = (
+        + (data['filterchanges'] * data['filtercost'])
+        + data['cost'] / load.NOMINALPERIOD
+        ) / (24 * 365)
+    efficiency = data['cadr'] / volume / cost
+    maxsize = data['cadr'] / quality / volume
+
+    return pd.concat(
+        dict(efficiency=efficiency, maxsize=maxsize, noise=data['noise']),
+        axis=1,
+        )
 
 
 ###############################################################################
