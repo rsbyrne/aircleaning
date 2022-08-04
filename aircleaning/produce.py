@@ -134,7 +134,7 @@ def dashboard(path=productsdir, name='dashboard'):
         '''<div>''',
         '''<h2>Overview Chart</h2>''',
         '''<p>''',
-        f'''This chart brings all of our data together in one graphic. Based on a typical medium-sized room ({mediumvol}), this chart asks: <ul><li>How many rooms full of clean air can this device buy for the cost of a dollar (left to right, where right is better)</li><li>How many (bottom to top, where top is better)</li><li>How noisy the device is (yellow to black, where yellow is better)</li></ul> The cost includes the upfront cost (spread over {nomperiod} years) plus the expected ongoing costs of electricity and filter replacements.''',
+        f'''This chart brings all of our data together in one graphic. Based on a typical medium-sized room ({mediumvol}), this chart asks: <ul><li>How many rooms full of clean air can this device buy for the cost of a dollar (left to right, where right is better)</li><li>How many rooms full of clean air can this device provide per hour (bottom to top, where top is better)</li><li>How noisy is the device (yellow to black, where yellow is better)</li></ul> The cost includes the upfront cost (spread over {nomperiod} years) plus the expected ongoing costs of electricity and filter replacements.''',
         '''</p>''',
         '''<div align="center">''',
         '''<img id = 'synoptic' src='https://rsbyrne.github.io/aircleaning/products/synoptic.png' alt="Synoptic"> ''',
