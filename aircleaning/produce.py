@@ -276,7 +276,7 @@ def synoptic(data=None, /, volume='medium', quality='good', path=productsdir):
         tuple(
             ax.text(
                 x, y, txt,
-                color="#4d4d4d", fontsize=6, fontname="DejaVu Sans",
+                color="#4d4d4d", fontsize=8, fontname="DejaVu Sans",
                 )
             for txt, x, y in zip(
                 map('\n'.join, data.index),

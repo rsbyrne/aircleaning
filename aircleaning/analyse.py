@@ -52,6 +52,7 @@ def synoptic_analysis(data=None, /, volume='medium'):
 
     if data is None:
         data = load.get_main_data()
+    data = data.loc[~data['ionising'] & ~data['uv']]
 
     if isinstance(volume, str):
         volume = load.get_volume_data()['levels'].loc[volume]
