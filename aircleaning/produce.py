@@ -67,8 +67,9 @@ def cost_analysis(data=None, /, volume='medium', quality='good', path=productsdi
         ncol=2,
         )
 
+    noisecmap = load.get_parameters().loc['noise cmap', 'value']
     noisecolours = tuple(
-        map(plt.get_cmap(load.NOISECMAP), Normalize(20, 80)(data['noise']))
+        map(plt.get_cmap(noisecmap), Normalize(20, 80)(data['noise']))
         )
     bars = ax2.barh(y_pos, data['noise'], color=noisecolours)
     ax2.set_yticks(y_pos, labels=[])
@@ -111,6 +112,7 @@ def dashboard(path=productsdir, name='dashboard'):
     vols, quals = load.get_volume_data(), load.get_quality_data()
     mediumvol = f"{round(vols.loc['medium', 'levels'])} m<sup>3</sup>"
     # goodqual = f"{round(quals.loc['good', 'levels'])} ACH"
+    nomperiod = round(load.get_parameters().loc['nominal period', 'value'])
 
     strn = ''
 
@@ -132,7 +134,7 @@ def dashboard(path=productsdir, name='dashboard'):
         '''<div>''',
         '''<h2>Overview Chart</h2>''',
         '''<p>''',
-        f'''This chart brings all of our data together in one graphic. Based on a typical medium-sized room ({mediumvol}), this chart asks: <ul><li>How many rooms full of clean air can this device buy for the cost of a dollar (left to right, where right is better)</li><li>How many (bottom to top, where top is better)</li><li>How noisy the device is (yellow to black, where yellow is better)</li></ul> The cost includes the upfront cost (spread over {load.NOMINALPERIOD} years) plus the expected ongoing costs of electricity and filter replacements.''',
+        f'''This chart brings all of our data together in one graphic. Based on a typical medium-sized room ({mediumvol}), this chart asks: <ul><li>How many rooms full of clean air can this device buy for the cost of a dollar (left to right, where right is better)</li><li>How many (bottom to top, where top is better)</li><li>How noisy the device is (yellow to black, where yellow is better)</li></ul> The cost includes the upfront cost (spread over {nomperiod} years) plus the expected ongoing costs of electricity and filter replacements.''',
         '''</p>''',
         '''<div align="center">''',
         '''<img id = 'synoptic' src='https://rsbyrne.github.io/aircleaning/products/synoptic.png' alt="Synoptic"> ''',
@@ -242,7 +244,8 @@ def synoptic(data=None, /, volume='medium', quality='good', path=productsdir):
     data = analyse.synoptic_analysis(data, volume=volume)
 
     norm = Normalize(20, 80)
-    cmap = plt.get_cmap(load.NOISECMAP)
+    noisecmap = load.get_parameters().loc['noise cmap', 'value']
+    cmap = plt.get_cmap(noisecmap)
     noisecolours = tuple(
         map(cmap, norm(data['noise']))
         )

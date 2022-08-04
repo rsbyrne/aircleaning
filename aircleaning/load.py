@@ -87,10 +87,16 @@ def get_quality_data():
     return pull_quality_data().copy()
 
 
-NOMINALPERIOD = 1
-NOMINALPOWERCOST = 0.2  # $/kWh
+@cache
+def pull_parameters():
+    return (
+        pull_data('parameters')
+        .set_index('name')
+        )
 
-NOISECMAP = 'magma_r'
+
+def get_parameters():
+    return pull_parameters().copy()
 
 
 ###############################################################################
