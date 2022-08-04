@@ -109,6 +109,8 @@ def make_cost_analysis_form_channel(overname, data, /):
 def dashboard(path=productsdir, name='dashboard'):
 
     vols, quals = load.get_volume_data(), load.get_quality_data()
+    mediumvol = f"{round(vols.loc['medium', 'levels'])} m<sup>3</sup>"
+    # goodqual = f"{round(quals.loc['good', 'levels'])} ACH"
 
     strn = ''
 
@@ -130,7 +132,7 @@ def dashboard(path=productsdir, name='dashboard'):
         '''<div>''',
         '''<h2>Overview Chart</h2>''',
         '''<p>''',
-        '''This chart brings all of our data together in one graphic. Based on a typical medium-sized room and a safe standard of air quality, this chart asks: how many rooms full of clear air can this device buy me for the cost of a single dollar (left to right, where right is better), and how many typical medium-sized rooms can it keep clean (bottom to top, where top is better). The colour gives a sense of how noisy the device is (blue to red, where blue is better). The cost includes the upfront cost (spread over six years) plus the expected ongoing costs of electricity and filter replacements.''',
+        f'''This chart brings all of our data together in one graphic. Based on a typical medium-sized room ({mediumvol}), this chart asks: <ul><li>How many rooms full of clean air can this device buy for the cost of a dollar (left to right, where right is better)</li><li>How many (bottom to top, where top is better)</li><li>How noisy the device is (yellow to black, where yellow is better)</li></ul> The cost includes the upfront cost (spread over {load.NOMINALPERIOD} years) plus the expected ongoing costs of electricity and filter replacements.''',
         '''</p>''',
         '''<div align="center">''',
         '''<img id = 'synoptic' src='https://rsbyrne.github.io/aircleaning/products/synoptic.png' alt="Synoptic"> ''',
@@ -275,7 +277,7 @@ def synoptic(data=None, /, volume='medium', quality='good', path=productsdir):
         tuple(
             ax.text(
                 x, y, txt,
-                color="#4d4d4d", fontsize=8, fontname="DejaVu Sans",
+                color="#4d4d4d", fontsize=6, fontname="DejaVu Sans",
                 )
             for txt, x, y in zip(
                 map('\n'.join, data.index),
@@ -287,7 +289,7 @@ def synoptic(data=None, /, volume='medium', quality='good', path=productsdir):
         arrowprops=dict(
             arrowstyle="->", 
             color="#7F7F7F", 
-            lw=0.65
+            lw=0.5
             ),
         ax=ax,
         )
