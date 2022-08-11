@@ -5,6 +5,7 @@
 
 import os
 import operator
+from datetime import date
 
 import matplotlib.pyplot as plt
 import matplotlib as mpl
@@ -71,7 +72,7 @@ def cost_analysis(data=None, /, volume='medium', quality='good', path=productsdi
         ncol=2,
         )
 
-    noisecmap = load.get_parameters().loc['noise cmap', 'value']
+    noisecmap = load.get_parameters_data().loc['noise cmap', 'value']
     noisecolours = tuple(
         map(plt.get_cmap(noisecmap), Normalize(20, 80)(data['noise']))
         )
@@ -116,7 +117,7 @@ def overview(path=productsdir, name='overview'):
     vols, quals = load.get_volume_data(), load.get_quality_data()
     mediumvol = f"{round(vols.loc['medium', 'levels'])} m<sup>3</sup>"
     # goodqual = f"{round(quals.loc['good', 'levels'])} ACH"
-    nomperiod = round(float(load.get_parameters().loc['nominal period', 'value']))
+    nomperiod = round(float(load.get_parameters_data().loc['nominal period', 'value']))
 
     strn = ''
 
@@ -133,6 +134,7 @@ def overview(path=productsdir, name='overview'):
         '''</p>''',
         '''</div>''',
         '''<div align="center">''',
+        f'''<em>Last updated {str(date.today())}</em>''',
         '''<figure class="figure figure--min">''',
         '''<img id = 'synoptic' src='https://rsbyrne.github.io/aircleaning/products/synoptic.png' alt="Synoptic"> ''',
         '''</figure>''',
@@ -207,6 +209,7 @@ def decision_tool(path=productsdir, name='decision_tool'):
 
     strn += '\n' + '\n'.join((
         '''</form>''',
+        f'''<em>Last updated {str(date.today())}</em>''',
         '''<figure class="figure figure--min">'''
         '''<img id = 'chosenimage' src='https://rsbyrne.github.io/aircleaning/products/placeholder.png' alt="Cost analysis">''',
         '''</figure>''',
@@ -253,7 +256,7 @@ def synoptic(data=None, /, volume='medium', quality='good', path=productsdir):
     data = analyse.synoptic_analysis(data, volume=volume)
 
     norm = Normalize(20, 80)
-    noisecmap = load.get_parameters().loc['noise cmap', 'value']
+    noisecmap = load.get_parameters_data().loc['noise cmap', 'value']
     cmap = plt.get_cmap(noisecmap)
     noisecolours = tuple(
         map(cmap, norm(data['noise']))

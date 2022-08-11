@@ -37,7 +37,7 @@ def cost_analysis(data=None, /, volume='medium', quality='good'):
     data['noise'] = 10 * np.log10(10 ** (data['noise'] / 10) / performance)
     filtercost = data['filtercost'] * data['filterchanges']
     data = data.drop(['filterchanges', 'filtercost'], axis=1)
-    nomcost = float(load.get_parameters().loc['nominal power cost', 'value'])
+    nomcost = float(load.get_parameters_data().loc['nominal power cost', 'value'])
     powercost = data['power'] / 1000 * 24 * 365 * nomcost
     data = data.drop('power', axis=1)
     data['upfront'] = data['cost']
@@ -58,7 +58,7 @@ def synoptic_analysis(data=None, /, volume='medium'):
         volume = load.get_volume_data()['levels'].loc[volume]
 
     ach = data['cadr'] / volume
-    nomperiod = float(load.get_parameters().loc['nominal period', 'value'])
+    nomperiod = float(load.get_parameters_data().loc['nominal period', 'value'])
 
     cost = (
         + (data['filterchanges'] * data['filtercost'])

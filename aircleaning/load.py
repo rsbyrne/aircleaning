@@ -5,6 +5,7 @@
 
 from functools import cache
 
+import numpy as np
 import pandas as pd
 
 
@@ -38,17 +39,26 @@ def pull_data(sheetname, sheetid='1-txu_2XXChdZ8USBgDq7sndrsi_UjNdlkGmLzk7jxi4')
 
 
 @cache
+def pull_update_data():
+    ...
+
+
+@cache
 def pull_main_data():
 
     data = pull_data('main')
 
     data = data.set_index(['manufacturer', 'model'])
 
-    data['cost'] = data['cost'].replace("[$,]", "", regex=True).astype(float)
+    data['cost'] = data['cost'].replace("[$,]", "", regex=True).astype(float).round(2)
     data['filtercost'] = data['filtercost'].replace("[$,]", "", regex=True).astype(float)
 
     for key in ('hepafilter', 'prefilter', 'charcoalfilter', 'ionising', 'uv'):
         data[key] = data[key].astype(bool)
+
+    for col in data:
+        if data[col].dtype == np.dtype('float64'):
+            data[col] = data[col].round(4)
 
     return data
 
@@ -65,6 +75,10 @@ def pull_volume_data():
     data['levels'] = data['levels'].astype(float)
     data = data.set_index('names')
 
+    for col in data:
+        if data[col].dtype == np.dtype('float64'):
+            data[col] = data[col].round(4)
+
     return data
 
 
@@ -80,6 +94,10 @@ def pull_quality_data():
     data['levels'] = data['levels'].astype(float)
     data = data.set_index('names')
 
+    for col in data:
+        if data[col].dtype == np.dtype('float64'):
+            data[col] = data[col].round(4)
+
     return data
 
 
@@ -88,15 +106,19 @@ def get_quality_data():
 
 
 @cache
-def pull_parameters():
-    return (
+def pull_parameters_data():
+    data = (
         pull_data('parameters')
         .set_index('name')
         )
+    for col in data:
+        if data[col].dtype == np.dtype('float64'):
+            data[col] = data[col].round(4)
+    return data
 
 
-def get_parameters():
-    return pull_parameters().copy()
+def get_parameters_data():
+    return pull_parameters_data().copy()
 
 
 ###############################################################################
