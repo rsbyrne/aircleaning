@@ -119,9 +119,11 @@ def overview(path=productsdir, name='overview'):
     strn += '\n' + '\n'.join((
         '''<link rel="stylesheet" href="//dds-gen3.web.unimelb.edu.au/v12.1.3/uom.css">''',
         '''<div class="uomcontent">''',
+        '''<div>''',
         '''<p>''',
         f'''This chart brings all of our data together in one graphic. Based on a typical medium-sized room ({mediumvol}), this chart asks: <ul><li>How many rooms full of clean air can this device buy for the cost of a dollar (left to right, where right is better)</li><li>How many rooms full of clean air can this device provide per hour (bottom to top, where top is better)</li><li>How noisy is the device (yellow to black, where yellow is better)</li></ul> The cost includes the upfront cost (spread over {nomperiod} years) plus the expected ongoing costs of electricity and filter replacements.''',
         '''</p>''',
+        '''</div>''',
         '''<div align="center">''',
         '''<figure class="figure figure--min">''',
         '''<img id = 'synoptic' src='https://rsbyrne.github.io/aircleaning/products/synoptic.png' alt="Synoptic"> ''',
@@ -164,11 +166,11 @@ def decision_tool(path=productsdir, name='decision_tool'):
     strn += '\n' + '\n'.join((
         '''<div class="uomcontent">''',
         # '''<h1>Decision Tool</h2>''',
-        # '''<div>''',
-        # '''<p>''',
-        # '''Every room is different. Answer these quick questions to sort the data by what's most economical for you. The running costs and noise levels are calculated using manufacturer data and the likely level of use we predict you would need to keep your room clean to the level you've specified. For those cases where a single device just won't do the job, we've calculated how many of that device you would need, and how noisy and costly they would all be together.''',
-        # '''</p>''',
-        # '''<div>''',
+        '''<div>''',
+        '''<p>''',
+        '''Every room is different. Answer these quick questions to sort the data by what's most economical for you. The running costs and noise levels are calculated using manufacturer data and the likely level of use we predict you would need to keep your room clean to the level you've specified. For those cases where a single device just won't do the job, we've calculated how many of that device you would need, and how noisy and costly they would all be together.''',
+        '''</p>''',
+        '''<div>''',
         '''<form id="userinput" >''',
         ))
 
