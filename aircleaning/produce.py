@@ -48,8 +48,12 @@ def cost_analysis(data=None, /, volume='medium', quality='good', path=productsdi
     y_pos = np.arange(len(data))
 
     gap = (data['upfront'] + data['running']).max()
-    innerbars = ax1.barh(y_pos, data['upfront'])
-    outerbars = ax1.barh(y_pos, data['running'], left=data['upfront']+gap/30)
+    innerbars = ax1.barh(
+        y_pos, data['upfront'], color='#4074B2'
+        )
+    outerbars = ax1.barh(
+        y_pos, data['running'], left=data['upfront']+gap/30, color='#E77052'
+        )
     ax1.set_yticks(y_pos, labels=data['fullname'])
     ax1.invert_yaxis()  # labels read top-to-bottom
     ax1.set_xlabel('Dollars ($)')
