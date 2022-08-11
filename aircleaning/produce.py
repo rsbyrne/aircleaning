@@ -101,13 +101,13 @@ def make_cost_analysis_form_channel(overname, data, /):
     strn = ''
     for i, name in enumerate(data.index):
         checked = 'checked ' if i == 1 else ''
-        strn += '\n            ' + '\n            '.join((
+        strn += '\n' + '\n'.join((
             f'''<input type="radio" id='{name}op' value="{name}" name="{overname}" {checked}onClick="update(this.form)">''',
             f'''<label for="{name}op">{name.capitalize()} ({levels[name]}{unit})</label>''',
             ))
     return strn
 
-def dashboard(path=productsdir, name='dashboard'):
+def overview(path=productsdir, name='overview'):
 
     vols, quals = load.get_volume_data(), load.get_quality_data()
     mediumvol = f"{round(vols.loc['medium', 'levels'])} m<sup>3</sup>"
@@ -117,39 +117,30 @@ def dashboard(path=productsdir, name='dashboard'):
     strn = ''
 
     strn += '\n' + '\n'.join((
-        '''<!DOCTYPE html>''',
-        '''<html>''',
-        '''<head>''',
-        '''<title>Air Cleaning Dashboard</title>''',
-        '''</head>''',
-        '''<body>''',
         '''<link rel="stylesheet" href="//dds-gen3.web.unimelb.edu.au/v12.1.3/uom.css">''',
-        '''<h1>Air Cleaning Dashboard</h1>''',
-        '''<p>''',
-        '''With so many air cleaning devices on the market, how do we know which product is best for us? Flick through our data to see what's on offer and find the solution that's right for you.''',
-        '''</p>''',
-        '''<div>''',
-        ))
-
-    strn += '\n' + '\n'.join((
-        '''<div>''',
-        '''<h2>Overview Chart</h2>''',
+        '''<div class="uomcontent">''',
         '''<p>''',
         f'''This chart brings all of our data together in one graphic. Based on a typical medium-sized room ({mediumvol}), this chart asks: <ul><li>How many rooms full of clean air can this device buy for the cost of a dollar (left to right, where right is better)</li><li>How many rooms full of clean air can this device provide per hour (bottom to top, where top is better)</li><li>How noisy is the device (yellow to black, where yellow is better)</li></ul> The cost includes the upfront cost (spread over {nomperiod} years) plus the expected ongoing costs of electricity and filter replacements.''',
         '''</p>''',
         '''<div align="center">''',
+        '''<figure class="figure figure--min">''',
         '''<img id = 'synoptic' src='https://rsbyrne.github.io/aircleaning/products/synoptic.png' alt="Synoptic"> ''',
+        '''</figure>''',
         '''</div>''',
         '''</div>''',
         ))
 
+    with open(os.path.join(productsdir, name) + '.html', mode='w') as file:
+        file.write(strn)
+
+def decision_tool(path=productsdir, name='decision_tool'):
+
+    vols, quals = load.get_volume_data(), load.get_quality_data()
+
+    strn = ''
+
     strn += '\n' + '\n'.join((
-        '''<div>''',
-        '''<h2>Decision Tool</h2>''',
-        '''<p>''',
-        '''Every room is different. Answer these quick questions to sort the data by what's most economical for you. The running costs and noise levels are calculated using manufacturer data and the likely level of use we predict you would need to keep your room clean to the level you've specified. For those cases where a single device just won't do the job, we've calculated how many of that device you would need, and how noisy and costly they would all be together.''',
-        '''</p>''',
-        '''<div>''',
+        '''<link rel="stylesheet" href="//dds-gen3.web.unimelb.edu.au/v12.1.3/uom.css">''',
         ))
 
     strn += '\n' + '\n'.join((
@@ -168,47 +159,53 @@ def dashboard(path=productsdir, name='dashboard'):
         '''        image.alt = "Volume chosen: " + vol + " , quality chosen: " + qual''',
         '''        }''',
         '''</script>''',
-        '''<div align="center">''',
-        '''    <form id='userinput' style="background-color:#deeffc">''',
         ))
 
     strn += '\n' + '\n'.join((
-        '''        <fieldset id="volumeoptions">''',
-        '''            <p>How big is the room you want to put your air purifier in?</p>''',
+        '''<div class="uomcontent">''',
+        # '''<h1>Decision Tool</h2>''',
+        # '''<div>''',
+        # '''<p>''',
+        # '''Every room is different. Answer these quick questions to sort the data by what's most economical for you. The running costs and noise levels are calculated using manufacturer data and the likely level of use we predict you would need to keep your room clean to the level you've specified. For those cases where a single device just won't do the job, we've calculated how many of that device you would need, and how noisy and costly they would all be together.''',
+        # '''</p>''',
+        # '''<div>''',
+        '''<form id="userinput" >''',
+        ))
+
+    strn += '\n' + '\n'.join((
+        '''<div class="sq-form-question sq-form-question-tickbox-list ">''',
+        '''<fieldset id="volumeoptions" class="sq-form-section">''',
+        '''<legend class="sq-form-section-title">How big is the room you want to put your air purifier in?</legend>''',
         ))
     strn += '\n' + make_cost_analysis_form_channel('volume', vols)
-    strn += '\n' + \
-        '''        </fieldset>'''
+    strn += '\n' + '\n'.join((
+        '''</fieldset>''',
+        '''</div>'''
+        ))
 
     strn += '\n' + '\n'.join((
-        '''        <fieldset id="qualityoptions">''',
-        '''            <p>How high do you want the air quality to be in this room?</p>''',
+        '''<div class="sq-form-question sq-form-question-tickbox-list ">''',
+        '''<fieldset id="qualityoptions" class="sq-form-section">''',
+        '''<legend class="sq-form-section-title">How high do you want the air quality to be in this room?</legend>''',
         ))
     strn += '\n' + make_cost_analysis_form_channel('quality', quals)
-    strn += '\n' + \
-        '''        </fieldset>'''
+    strn += '\n' + '\n'.join((
+        '''</fieldset>''',
+        '''</div>'''
+        ))
 
     strn += '\n' + '\n'.join((
-        '''    </form>''',
-        '''    <img id = 'chosenimage' src='https://rsbyrne.github.io/aircleaning/products/placeholder.png' alt="Cost analysis">''',
+        '''</form>''',
+        '''<figure class="figure figure--min">'''
+        '''<img id = 'chosenimage' src='https://rsbyrne.github.io/aircleaning/products/placeholder.png' alt="Cost analysis">''',
+        '''</figure>''',
         '''</div>''',
         ))
 
     strn += '\n' + '\n'.join((
         '''<script>''',
-        '''    update(document.getElementById('userinput'))''',
+        '''update(document.getElementById('userinput'))''',
         '''</script>''',
-        ))
-
-    strn += '\n' + '\n'.join((
-        '''</div>''',
-        '''</div>''',
-        ))
-
-    strn += '\n' + '\n'.join((
-        '''</div>''',
-        '''</body>''',
-        '''</html>''',
         ))
 
     with open(os.path.join(productsdir, name) + '.html', mode='w') as file:

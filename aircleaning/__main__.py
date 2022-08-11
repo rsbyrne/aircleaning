@@ -21,7 +21,8 @@ productsdir = os.path.join(repodir, 'products')
 
 produce.multi_cost_analysis()
 produce.synoptic()
-produce.dashboard()
+produce.decision_tool()
+produce.overview()
 
 
 print("Application code ran successfully.")

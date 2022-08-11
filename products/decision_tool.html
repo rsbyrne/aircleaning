@@ -1,0 +1,50 @@
+
+<link rel="stylesheet" href="//dds-gen3.web.unimelb.edu.au/v12.1.3/uom.css">
+<script>
+    function update (form){
+        for (vol = 0; vol < 3; vol++) {
+            if (form.volume[vol].checked)
+                break;
+            }
+        for (qual = 0; qual < 3; qual++) {
+            if (form.quality[qual].checked)
+                break;
+            }
+        image = document.getElementById('chosenimage')   
+        image.src = "https://rsbyrne.github.io/aircleaning/products/" + vol + "_" + qual + ".png"
+        image.alt = "Volume chosen: " + vol + " , quality chosen: " + qual
+        }
+</script>
+<div class="uomcontent">
+<form id="userinput" >
+<div class="sq-form-question sq-form-question-tickbox-list ">
+<fieldset id="volumeoptions" class="sq-form-section">
+<legend class="sq-form-section-title">How big is the room you want to put your air purifier in?</legend>
+
+<input type="radio" id='smallop' value="small" name="volume" onClick="update(this.form)">
+<label for="smallop">Small (37m<sup>3</sup>)</label>
+<input type="radio" id='mediumop' value="medium" name="volume" checked onClick="update(this.form)">
+<label for="mediumop">Medium (78m<sup>3</sup>)</label>
+<input type="radio" id='largeop' value="large" name="volume" onClick="update(this.form)">
+<label for="largeop">Large (155m<sup>3</sup>)</label>
+</fieldset>
+</div>
+<div class="sq-form-question sq-form-question-tickbox-list ">
+<fieldset id="qualityoptions" class="sq-form-section">
+<legend class="sq-form-section-title">How high do you want the air quality to be in this room?</legend>
+
+<input type="radio" id='poorop' value="poor" name="quality" onClick="update(this.form)">
+<label for="poorop">Poor (4ACH)</label>
+<input type="radio" id='goodop' value="good" name="quality" checked onClick="update(this.form)">
+<label for="goodop">Good (6ACH)</label>
+<input type="radio" id='excellentop' value="excellent" name="quality" onClick="update(this.form)">
+<label for="excellentop">Excellent (9ACH)</label>
+</fieldset>
+</div>
+</form>
+<figure class="figure figure--min"><img id = 'chosenimage' src='https://rsbyrne.github.io/aircleaning/products/placeholder.png' alt="Cost analysis">
+</figure>
+</div>
+<script>
+update(document.getElementById('userinput'))
+</script>
