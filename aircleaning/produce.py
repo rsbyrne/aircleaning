@@ -122,6 +122,10 @@ def overview(path=productsdir, name='overview'):
 
     strn += '\n' + '\n'.join((
         '''<link rel="stylesheet" href="//dds-gen3.web.unimelb.edu.au/v12.1.3/uom.css">''',
+        '''<link rel="stylesheet" href="https://cms.unimelb.edu.au/__data/assets/css_file_folder/0008/3224951/uom-mce-gen3.css?v=0.0.202">''',
+        ))
+
+    strn += '\n' + '\n'.join((
         '''<div class="uomcontent">''',
         '''<div>''',
         '''<p>''',
@@ -147,6 +151,7 @@ def decision_tool(path=productsdir, name='decision_tool'):
 
     strn += '\n' + '\n'.join((
         '''<link rel="stylesheet" href="//dds-gen3.web.unimelb.edu.au/v12.1.3/uom.css">''',
+        '''<link rel="stylesheet" href="https://cms.unimelb.edu.au/__data/assets/css_file_folder/0008/3224951/uom-mce-gen3.css?v=0.0.202">''',
         ))
 
     strn += '\n' + '\n'.join((
