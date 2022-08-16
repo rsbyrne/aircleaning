@@ -16,12 +16,11 @@
         image.alt = "Volume chosen: " + vol + " , quality chosen: " + qual
         }
 </script>
-<div class="uomcontent">
-<div>
-<p>
-Every room is different. Answer these quick questions to sort the data by what's most economical for you. The running costs and noise levels are calculated using manufacturer data and the likely level of use we predict you would need to keep your room clean to the level you've specified. For those cases where a single device just won't do the job, we've calculated how many of that device you would need, and how noisy and costly they would all be together.
+<div class="uomcontent" role="document" id="top">
+<div class="main" id="" role="main">
+<p class="notice notice--info" style="padding-top: 1.5rem;">
+Running costs and noise levels (on the highest fan settings) are calculated from manufacturer data. Select the approximate volume and the additional air cleaning to ventilation that you require. Natural ventilation provides 1-2 ACH; mechanical ventilation is higher. You will see that multiple devices sometimes provides the best effective air cleaning for the best value and noise requirements of your space.
 </p>
-<div align="center">
 <form id="userinput" >
 <div class="sq-form-question sq-form-question-tickbox-list ">
 <fieldset id="volumeoptions" class="sq-form-section">
@@ -36,8 +35,9 @@ Every room is different. Answer these quick questions to sort the data by what's
 </fieldset>
 </div>
 <div class="sq-form-question sq-form-question-tickbox-list ">
+<br/>
 <fieldset id="qualityoptions" class="sq-form-section">
-<legend class="sq-form-section-title">How high do you want the air quality to be in this room?</legend>
+<legend class="sq-form-section-title">How much additional air cleaning do you require?</legend>
 
 <input type="radio" id='poorop' value="poor" name="quality" onClick="update(this.form)">
 <label for="poorop">Poor (4ACH)</label>
@@ -48,10 +48,9 @@ Every room is different. Answer these quick questions to sort the data by what's
 </fieldset>
 </div>
 </form>
-<em>Last updated 2022-08-11</em>
+<p><em>Last updated 2022-08-16</em><p>
 <figure class="figure figure--min"><img id = 'chosenimage' src='https://rsbyrne.github.io/aircleaning/products/placeholder.png' alt="Cost analysis">
 </figure>
-</div>
 <script>
 update(document.getElementById('userinput'))
 </script>

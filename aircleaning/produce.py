@@ -98,6 +98,56 @@ def cost_analysis(data=None, /, volume='medium', quality='good', path=productsdi
     plt.savefig(os.path.join(path, name) + '.png')
 
 
+def overview(path=productsdir, name='overview'):
+
+    vols, quals = load.get_volume_data(), load.get_quality_data()
+    mediumvol = f"{round(vols.loc['medium', 'levels'])} m<sup>3</sup>"
+    # goodqual = f"{round(quals.loc['good', 'levels'])} ACH"
+    nomperiod = round(float(load.get_parameters_data().loc['nominal period', 'value']))
+    nompower = float(load.get_parameters_data().loc['nominal power cost', 'value'])
+
+    strn = ''
+
+    strn += '\n' + '\n'.join((
+        '''<link rel="stylesheet" href="//dds-gen3.web.unimelb.edu.au/v12.1.3/uom.css">''',
+        '''<link rel="stylesheet" href="https://cms.unimelb.edu.au/__data/assets/css_file_folder/0008/3224951/uom-mce-gen3.css?v=0.0.202">''',
+        ))
+
+    # strn += '\n' + '\n'.join((
+    #     '''<div class="uomcontent" role="document" id="top">''',
+    #     '''<div class="main" id="" role="main">''',
+    #     '''<p style="padding-top: 0;">''',
+    #     f'''This chart brings all of our data together in one graphic. Based on a typical medium-sized room ({mediumvol}), this chart asks:</p><ul><li>How many rooms full of clean air can this device buy for the cost of a dollar (left to right, where right is better)</li><li>How many rooms full of clean air can this device provide per hour (bottom to top, where top is better)</li><li>How noisy is the device (yellow to black, where yellow is better)</li></ul><p>The cost includes the upfront cost (spread over {nomperiod} years) plus the expected ongoing costs of electricity and filter replacements.</p>''',
+    #     '''<div align="center">''',
+    #     f'''<em>Last updated {str(date.today())}</em>''',
+    #     '''<figure class="figure figure--min">''',
+    #     '''<img id = 'synoptic' src='https://rsbyrne.github.io/aircleaning/products/synoptic.png' alt="Synoptic"> ''',
+    #     '''</figure>''',
+    #     '''</div>''',
+    #     '''</div>''',
+    #     '''</div>''',
+    #     ))
+
+    strn += '\n' + '\n'.join((
+        '''<div class="uomcontent" role="document" id="top">''',
+        '''<div class="main" id="" role="main">''',
+        '''<p style="padding-top: 0;">''',
+        f'''This chart provides a means of evaluating ‘clean air’ value for money for various devices where:</p><ul><li>Augmented air cleaning air changes per hour (ventilation + air cleaning aiming for ACH of 6 or more)</li><li>Noise (yellow = quiet; black = noisy)
+</li><li>Cost per hour (upfront purchase plus {nomperiod} years of running costs including filter replacements and electricity @${nompower} kWh)</li></ul><''',
+        '''<div align="center">''',
+        f'''<em>Last updated {str(date.today())}</em>''',
+        '''<figure class="figure figure--min">''',
+        '''<img id = 'synoptic' src='https://rsbyrne.github.io/aircleaning/products/synoptic.png' alt="Synoptic"> ''',
+        '''</figure>''',
+        '''</div>''',
+        '''</div>''',
+        '''</div>''',
+        ))
+
+    with open(os.path.join(productsdir, name) + '.html', mode='w') as file:
+        file.write(strn)
+
+
 def make_cost_analysis_form_channel(overname, data, /):
     levels = data['levels'].astype(int)
     unit = data.attrs['units']['levels']
@@ -112,38 +162,6 @@ def make_cost_analysis_form_channel(overname, data, /):
             ))
     return strn
 
-def overview(path=productsdir, name='overview'):
-
-    vols, quals = load.get_volume_data(), load.get_quality_data()
-    mediumvol = f"{round(vols.loc['medium', 'levels'])} m<sup>3</sup>"
-    # goodqual = f"{round(quals.loc['good', 'levels'])} ACH"
-    nomperiod = round(float(load.get_parameters_data().loc['nominal period', 'value']))
-
-    strn = ''
-
-    strn += '\n' + '\n'.join((
-        '''<link rel="stylesheet" href="//dds-gen3.web.unimelb.edu.au/v12.1.3/uom.css">''',
-        '''<link rel="stylesheet" href="https://cms.unimelb.edu.au/__data/assets/css_file_folder/0008/3224951/uom-mce-gen3.css?v=0.0.202">''',
-        ))
-
-    strn += '\n' + '\n'.join((
-        '''<div class="uomcontent">''',
-        '''<div>''',
-        '''<p>''',
-        f'''This chart brings all of our data together in one graphic. Based on a typical medium-sized room ({mediumvol}), this chart asks: <ul><li>How many rooms full of clean air can this device buy for the cost of a dollar (left to right, where right is better)</li><li>How many rooms full of clean air can this device provide per hour (bottom to top, where top is better)</li><li>How noisy is the device (yellow to black, where yellow is better)</li></ul> The cost includes the upfront cost (spread over {nomperiod} years) plus the expected ongoing costs of electricity and filter replacements.''',
-        '''</p>''',
-        '''</div>''',
-        '''<div align="center">''',
-        f'''<em>Last updated {str(date.today())}</em>''',
-        '''<figure class="figure figure--min">''',
-        '''<img id = 'synoptic' src='https://rsbyrne.github.io/aircleaning/products/synoptic.png' alt="Synoptic"> ''',
-        '''</figure>''',
-        '''</div>''',
-        '''</div>''',
-        ))
-
-    with open(os.path.join(productsdir, name) + '.html', mode='w') as file:
-        file.write(strn)
 
 def decision_tool(path=productsdir, name='decision_tool'):
 
@@ -175,13 +193,12 @@ def decision_tool(path=productsdir, name='decision_tool'):
         ))
 
     strn += '\n' + '\n'.join((
-        '''<div class="uomcontent">''',
+        '''<div class="uomcontent" role="document" id="top">''',
         # '''<h1>Decision Tool</h2>''',
-        '''<div>''',
-        '''<p>''',
-        '''Every room is different. Answer these quick questions to sort the data by what's most economical for you. The running costs and noise levels are calculated using manufacturer data and the likely level of use we predict you would need to keep your room clean to the level you've specified. For those cases where a single device just won't do the job, we've calculated how many of that device you would need, and how noisy and costly they would all be together.''',
+        '''<div class="main" id="" role="main">''',
+        '''<p class="notice notice--info" style="padding-top: 1.5rem;">''',
+        '''Running costs and noise levels (on the highest fan settings) are calculated from manufacturer data. Select the approximate volume and the additional air cleaning to ventilation that you require. Natural ventilation provides 1-2 ACH; mechanical ventilation is higher. You will see that multiple devices sometimes provides the best effective air cleaning for the best value and noise requirements of your space.''',
         '''</p>''',
-        '''<div align="center">''',
         '''<form id="userinput" >''',
         ))
 
@@ -198,8 +215,9 @@ def decision_tool(path=productsdir, name='decision_tool'):
 
     strn += '\n' + '\n'.join((
         '''<div class="sq-form-question sq-form-question-tickbox-list ">''',
+        '''<br/>''',
         '''<fieldset id="qualityoptions" class="sq-form-section">''',
-        '''<legend class="sq-form-section-title">How high do you want the air quality to be in this room?</legend>''',
+        '''<legend class="sq-form-section-title">How much additional air cleaning do you require?</legend>''',
         ))
     strn += '\n' + make_cost_analysis_form_channel('quality', quals)
     strn += '\n' + '\n'.join((
@@ -209,11 +227,10 @@ def decision_tool(path=productsdir, name='decision_tool'):
 
     strn += '\n' + '\n'.join((
         '''</form>''',
-        f'''<em>Last updated {str(date.today())}</em>''',
+        f'''<p><em>Last updated {str(date.today())}</em><p>''',
         '''<figure class="figure figure--min">'''
         '''<img id = 'chosenimage' src='https://rsbyrne.github.io/aircleaning/products/placeholder.png' alt="Cost analysis">''',
         '''</figure>''',
-        '''</div>''',
         ))
 
     strn += '\n' + '\n'.join((
@@ -251,7 +268,8 @@ def synoptic(data=None, /, volume='medium', quality='good', path=productsdir):
     else:
         qualstr = f"{quality} ACH"
 
-    title = f"Air cleaners on the market:\nefficacy for a {volstr} sized room with {qualstr} air quality."
+    # title = f"Air cleaners on the market:\nefficacy for a {volstr} sized room with {qualstr} air quality."
+    title = f"Air cleaning and cost efficiencies for a medium sized room ($78m^3$)"
 
     data = analyse.synoptic_analysis(data, volume=volume)
 
@@ -272,8 +290,9 @@ def synoptic(data=None, /, volume='medium', quality='good', path=productsdir):
         data['costeff'], data['ach'],
         c=noisecolours, s=60, edgecolors='grey'
         )
-    ax.set_xlabel("Cost efficiency\n(air changes per dollar)")
-    ax.set_ylabel("Air quality\n(air changes per hour)")
+    # ax.set_xlabel("Cost efficiency\n(air changes per dollar)")
+    ax.set_xlabel("Clean Air Delivery\n(Air Changes per Hour)")
+    ax.set_ylabel("Cost Efficiency\n(ACH/$ per hour)")
     getnom = lambda x0, x1: x1 - x0
 
     plt.colorbar(
