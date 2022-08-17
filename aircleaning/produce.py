@@ -291,8 +291,8 @@ def synoptic(data=None, /, volume='medium', quality='good', path=productsdir):
         c=noisecolours, s=60, edgecolors='grey'
         )
     # ax.set_xlabel("Cost efficiency\n(air changes per dollar)")
-    ax.set_xlabel("Clean Air Delivery\n(Air Changes per Hour)")
-    ax.set_ylabel("Cost Efficiency\n(ACH/$ per hour)")
+    ax.set_xlabel("Cost Efficiency\n(ACH/$ per hour)")
+    ax.set_ylabel("Clean Air Delivery\n(Air Changes per Hour)")
     getnom = lambda x0, x1: x1 - x0
 
     plt.colorbar(
