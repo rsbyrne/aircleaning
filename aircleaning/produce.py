@@ -132,8 +132,8 @@ def overview(path=productsdir, name='overview'):
         '''<div class="uomcontent" role="document" id="top">''',
         '''<div class="main" id="" role="main">''',
         '''<p style="padding-top: 0;">''',
-        f'''This chart provides a means of evaluating ‘clean air’ value for money for various devices where:</p><ul><li>Augmented air cleaning air changes per hour (ventilation + air cleaning aiming for ACH of 6 or more)</li><li>Noise (yellow = quiet; black = noisy)
-</li><li>Cost per hour (upfront purchase plus {nomperiod} years of running costs including filter replacements and electricity @${nompower} kWh)</li></ul><''',
+        f'''This chart provides clean air value for money for various devices where:</p><ul><li>Augmented air cleaning (Air Changes per Hour - ACH)</li><li>Noise (yellow = quiet; black = noisy)
+</li><li>Cost per hour (upfront purchase plus 5 years of running costs including filter replacements and electricity @{round(nompower*100)}c/kWh)</li></ul>''',
         '''<div align="center">''',
         f'''<em>Last updated {str(date.today())}</em>''',
         '''<figure class="figure figure--min">''',
