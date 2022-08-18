@@ -290,8 +290,8 @@ def synoptic(data=None, /, volume='medium', quality='good', path=productsdir):
         data['costeff'], data['ach'],
         c=noisecolours, s=60, edgecolors='grey'
         )
-    # ax.set_xlabel("Cost efficiency\n(air changes per dollar)")
-    ax.set_xlabel("Cost Efficiency\n(ACH/$ per hour)")
+    ax.set_xlabel("Cost efficiency\n(Air Changes per Dollar)")
+    # ax.set_xlabel("Cost Efficiency\n(ACH/$ per hour)")
     ax.set_ylabel("Clean Air Delivery\n(Air Changes per Hour)")
     getnom = lambda x0, x1: x1 - x0
 
