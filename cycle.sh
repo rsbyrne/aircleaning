@@ -9,6 +9,6 @@ echo "start main cycle"
 
 echo "end main cycle"
 
-./publicrelease.sh
+#./publicrelease.sh
 
 cd $currentDir
