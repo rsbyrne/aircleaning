@@ -74,7 +74,7 @@ def cost_analysis(data=None, /, volume='medium', quality='some', path=productsdi
     ax1.tick_params(axis='y', which='both', left=False)
     ax1.legend(
         [innerbars, powerbars, filterbars],
-        ['Upfront cost', 'Yearly filter cost', 'Yearly power cost'],
+        ['Upfront', 'Yearly filter', 'Yearly power'],
         ncol=2,
         )
 
