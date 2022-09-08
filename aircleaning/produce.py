@@ -22,7 +22,7 @@ repodir = os.path.dirname(os.path.dirname(__file__))
 productsdir = os.path.join(repodir, 'products')
 
 
-def cost_analysis(data=None, /, volume='medium', quality='good', path=productsdir, name='default'):
+def cost_analysis(data=None, /, volume='medium', quality='some', path=productsdir, name='default'):
 
     data = analyse.cost_analysis(data, volume, quality)
     data = data.sort_values('upfront')
@@ -36,7 +36,8 @@ def cost_analysis(data=None, /, volume='medium', quality='good', path=productsdi
         ))
     dollarlabels = tuple(map(' + '.join, zip(
         data['upfront'].astype(int).apply('${:,}'.format),
-        data['running'].astype(int).apply('{:,} pa'.format),
+        data['power'].astype(int).apply('{:,} pa'.format),
+        data['filter'].astype(int).apply('{:,} pa'.format),
         )))
 
     plt.rcdefaults()
@@ -48,19 +49,23 @@ def cost_analysis(data=None, /, volume='medium', quality='good', path=productsdi
 
     y_pos = np.arange(len(data))
 
-    gap = (data['upfront'] + data['running']).max()
     innerbars = ax1.barh(
         y_pos, data['upfront'], color='#4074B2'
         )
-    outerbars = ax1.barh(
-        y_pos, data['running'], left=data['upfront']+gap/30, color='#E77052'
+
+    gap = (data['upfront'] + data['filter'] + data['power']).max() / 30
+    powerbars = ax1.barh(
+        y_pos, data['power'], left=data['upfront']+gap, color='#E77052'
+        )
+    filterbars = ax1.barh(
+        y_pos, data['filter'], left=data['upfront']+data['power']+gap*2, color='#59B17F'
         )
     ax1.set_yticks(y_pos, labels=data['fullname'])
     ax1.invert_yaxis()  # labels read top-to-bottom
     ax1.set_xlabel('Dollars ($)')
     ax1.set_title('Cost')
     ax1.bar_label(
-        outerbars, dollarlabels,
+        filterbars, dollarlabels,
         label_type='edge', padding=8, fmt='$%d', color='grey'
         )
     ax1.spines['top'].set_visible(False)
@@ -68,7 +73,8 @@ def cost_analysis(data=None, /, volume='medium', quality='good', path=productsdi
     ax1.spines['left'].set_visible(False)
     ax1.tick_params(axis='y', which='both', left=False)
     ax1.legend(
-        [innerbars, outerbars], ['Upfront cost', 'Yearly cost'],
+        [innerbars, powerbars, filterbars],
+        ['Upfront cost', 'Yearly filter cost', 'Yearly power cost'],
         ncol=2,
         )
 
@@ -87,13 +93,6 @@ def cost_analysis(data=None, /, volume='medium', quality='good', path=productsdi
     ax2.spines['right'].set_visible(False)
     ax2.spines['left'].set_visible(False)
     ax2.tick_params(axis='y', which='both', left=False)
-    # ax2.legend(
-    #     [bars,], ['Highest volume'],
-    #     ncol=2,
-    #     )
-
-    # title = f"Air cleaner choices: a {volume}-sized room with {quality} air quality"
-    # fig.suptitle(title, fontproperties=dict(weight='heavy'))
 
     plt.savefig(os.path.join(path, name) + '.png')
 
@@ -255,7 +254,7 @@ def multi_cost_analysis(path=productsdir):
                 )
 
 
-def synoptic(data=None, /, volume='medium', quality='good', path=productsdir):
+def synoptic(data=None, /, volume='medium', quality='some', path=productsdir):
 
     if isinstance(volume, str):
         volstr = volume
@@ -324,13 +323,89 @@ def synoptic(data=None, /, volume='medium', quality='good', path=productsdir):
         ax=ax,
         )
 
-    nomx = getnom(*ax.get_xlim())
-    nomy = getnom(*ax.get_ylim())
-    ax.axhline(quality)
-    ax.text(0.02 * nomx, quality + 0.01 * nomy, 'Good quality')
+    # nomx = getnom(*ax.get_xlim())
+    # nomy = getnom(*ax.get_ylim())
+    # ax.axhline(quality)
+    # ax.text(0.02 * nomx, quality + 0.01 * nomy, 'Good quality')
 
     plt.savefig(os.path.join(path, 'synoptic') + '.png')
 
 
 ###############################################################################
 ###############################################################################
+
+
+# def cost_analysis(data=None, /, volume='medium', quality='some', path=productsdir, name='default'):
+
+#     data = analyse.cost_analysis(data, volume, quality)
+#     data = data.sort_values('upfront')
+#     # data = data.loc[data['nunits'] < 6]
+#     data = data.drop('Dyson', level='manufacturer')
+#     data['fullname'] = tuple(map(
+#         ''.join, zip(
+#             map(' '.join, data.index),
+#             (f' (x{n})' if n>1 else '' for n in data['nunits']),
+#             )
+#         ))
+#     dollarlabels = tuple(map(' + '.join, zip(
+#         data['upfront'].astype(int).apply('${:,}'.format),
+#         data['running'].astype(int).apply('{:,} pa'.format),
+#         )))
+
+#     plt.rcdefaults()
+#     fig, (ax1, ax2) = \
+#         plt.subplots(ncols=2, gridspec_kw={'width_ratios': [2, 1]})
+
+#     fig.set_size_inches(8, 0.3 * len(data))
+#     fig.set_tight_layout(True)
+
+#     y_pos = np.arange(len(data))
+
+#     gap = (data['upfront'] + data['running']).max()
+#     innerbars = ax1.barh(
+#         y_pos, data['upfront'], color='#4074B2'
+#         )
+#     outerbars = ax1.barh(
+#         y_pos, data['running'], left=data['upfront']+gap/30, color='#E77052'
+#         )
+#     ax1.set_yticks(y_pos, labels=data['fullname'])
+#     ax1.invert_yaxis()  # labels read top-to-bottom
+#     ax1.set_xlabel('Dollars ($)')
+#     ax1.set_title('Cost')
+#     ax1.bar_label(
+#         outerbars, dollarlabels,
+#         label_type='edge', padding=8, fmt='$%d', color='grey'
+#         )
+#     ax1.spines['top'].set_visible(False)
+#     ax1.spines['right'].set_visible(False)
+#     ax1.spines['left'].set_visible(False)
+#     ax1.tick_params(axis='y', which='both', left=False)
+#     ax1.legend(
+#         [innerbars, outerbars], ['Upfront cost', 'Yearly cost'],
+#         ncol=2,
+#         )
+
+#     noisecmap = load.get_parameters_data().loc['noise cmap', 'value']
+#     noisecolours = tuple(
+#         map(plt.get_cmap(noisecmap), Normalize(20, 80)(data['noise']))
+#         )
+#     bars = ax2.barh(y_pos, data['noise'], color=noisecolours)
+#     ax2.set_yticks(y_pos, labels=[])
+#     ax2.invert_yaxis()  # labels read top-to-bottom
+#     ax2.set_xlabel('Decibels (dB)')
+#     ax2.set_title('Noise')
+#     ax2.set_xlim(20)
+#     ax2.bar_label(bars, label_type='edge', padding=8, fmt='%d dB', color='grey')
+#     ax2.spines['top'].set_visible(False)
+#     ax2.spines['right'].set_visible(False)
+#     ax2.spines['left'].set_visible(False)
+#     ax2.tick_params(axis='y', which='both', left=False)
+#     # ax2.legend(
+#     #     [bars,], ['Highest volume'],
+#     #     ncol=2,
+#     #     )
+
+#     # title = f"Air cleaner choices: a {volume}-sized room with {quality} air quality"
+#     # fig.suptitle(title, fontproperties=dict(weight='heavy'))
+
+#     plt.savefig(os.path.join(path, name) + '.png')

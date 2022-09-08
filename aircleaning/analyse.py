@@ -43,6 +43,8 @@ def cost_analysis(data=None, /, volume='medium', quality='good'):
     data['upfront'] = data['cost']
     data = data.drop('cost', axis=1)
     data['running'] = filtercost + powercost
+    data['power'] = powercost
+    data['filter'] = filtercost
     data['nunits'] = nunits
 
     return data
