@@ -9,6 +9,8 @@ from collections import UserList
 import numpy as np
 from scipy.spatial.transform import Rotation
 
+from .html import Normal as _Normal
+
 
 class Transform:
 
@@ -129,22 +131,29 @@ class View:
         return self.projection(self.transform(entity))
 
 
-class Canvas:
+class SVG(_Normal):
 
-    __slots__ = ('elements', '_view',)
+    element_type_name = 'svg'
+
+    __slots__ = ()
+
+
+class Canvas(SVG):
+
+    __slots__ = ('graphics', '_view',)
 
     def __init__(self, view = None):
         super().__init__()
         if view is None:
             view = View(Projection(), Transform())
         self._view = view
-        self.elements = []
+        self.graphics = []
 
     def add(self, obj, /, *objs):
         if isinstance(obj, Compound):
-            self.elements.extend(obj.elements)
+            self.graphics.extend(obj.graphics)
         else:
-            self.elements.append(obj)
+            self.graphics.append(obj)
         if objs:
             for obj in objs:
                 self.add(obj)
@@ -161,32 +170,39 @@ class Canvas:
     def transform(self, /):
         return self.view.transform
 
-    def draw_svg(self, /):
+    @property
+    def open_tag(self, /):
         return (
             f'''<svg '''
             f'''width="{self.projection.width}" height="{self.projection.height}" '''
             f'''style="background-color:white"'''
             f'''>'''
-            f'''{' '.join(element.draw(self.view) for element in self.elements)}'''
-            '''</svg>'''
             )
 
+    def _yield_lines_(self, indent, /):
+        for graphic in self.graphics:
+            yield from graphic.yield_lines(indent)
+            # yield '  ' + graphic.draw(self.view)
+
     def _repr_svg_(self):
-        return self.draw_svg()
+        return self._repr_html_()
 
 
-class Element:
+class Graphic(_Void):
 
     @abc.abstractmethod
     def __array__(self, /):
         raise NotImplementedError
+
+    def _yield_lines_(self, indent, /):
+        yield from ()
 
     @abc.abstractmethod
     def draw(self, view, /):
         raise NotImplementedError
 
 
-class Flat(Element):
+class Flat(Graphic):
 
     _omap = {
         'xy': (0, 1, 2),
@@ -329,7 +345,7 @@ class Flat(Element):
 class Compound:
 
     @abc.abstractmethod
-    def elements(self, /) -> tuple:
+    def graphics(self, /) -> tuple:
         raise NotImplementedError
 
 
@@ -456,7 +472,7 @@ class Box(Compound):
         return self._top
 
     @property
-    def elements(self, /):
+    def graphics(self, /):
         return (self.left, self.right, self.near, self.far, self.bottom, self.top)
 
 
@@ -475,7 +491,7 @@ class Hollow(Box):
         return self.right
 
     @property
-    def elements(self, /):
+    def graphics(self, /):
         return (self.floor, self.back, self.side)
 
 
@@ -494,7 +510,7 @@ class Solid(Box):
         return self.top
 
     @property
-    def elements(self, /):
+    def graphics(self, /):
         return (self.front, self.side, self.roof)
 
 
