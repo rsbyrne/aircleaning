@@ -9,7 +9,7 @@ from collections import UserList
 import numpy as np
 from scipy.spatial.transform import Rotation
 
-from .html import Normal as _Normal
+from .html import Normal as _Normal, Void as _Void
 
 
 class Transform:
@@ -170,32 +170,25 @@ class Canvas(SVG):
     def transform(self, /):
         return self.view.transform
 
-    @property
-    def open_tag(self, /):
-        return (
-            f'''<svg '''
-            f'''width="{self.projection.width}" height="{self.projection.height}" '''
-            f'''style="background-color:white"'''
-            f'''>'''
-            )
+    def yield_attributes(self, /):
+        yield 'width', f'"{self.projection.width}"'
+        yield 'height', f'"{self.projection.height}"'
+        yield 'style', f'"background-color:white"'
 
-    def _yield_lines_(self, indent, /):
+    def _yield_lines_(self, /):
         for graphic in self.graphics:
-            yield from graphic.yield_lines(indent)
-            # yield '  ' + graphic.draw(self.view)
+            typ, dct = graphic.draw(self.view)
+            yield 0, f"<{typ} {' '.join(map('='.join, dct.items()))} />"
 
     def _repr_svg_(self):
         return self._repr_html_()
 
 
-class Graphic(_Void):
+class Graphic:
 
     @abc.abstractmethod
     def __array__(self, /):
-        raise NotImplementedError
-
-    def _yield_lines_(self, indent, /):
-        yield from ()
+        raise NotImplementedError        
 
     @abc.abstractmethod
     def draw(self, view, /):
@@ -203,6 +196,8 @@ class Graphic(_Void):
 
 
 class Flat(Graphic):
+
+    element_type_name = 'polygon'
 
     _omap = {
         'xy': (0, 1, 2),
@@ -339,7 +334,10 @@ class Flat(Graphic):
     def draw(self, view, /):
         arr = view(self)
         pointstr = ' '.join(f"{x},{y}" for x, y in arr)
-        return f'''<polygon fill="{self.fill}" points="{pointstr}"/>'''
+        return (
+            'polygon',
+            dict(fill=f'"{self.fill}"', points=f'"{pointstr}"'),
+            )
 
 
 class Compound:
