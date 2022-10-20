@@ -195,6 +195,16 @@ class Graphic:
         raise NotImplementedError
 
 
+class GraphicView(_Void):
+
+    __slots__ = ('graphic', 'view')
+
+    def __init__(self, /, graphic: Graphic, view: View):
+        self.graphic, self.view = graphic, view
+
+    def
+
+
 class Flat(Graphic):
 
     element_type_name = 'polygon'
