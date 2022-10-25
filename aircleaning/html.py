@@ -76,7 +76,7 @@ class Element(HTML):
             ):
         super().__init__()
         if identity is None:
-            identity = str(id(self))
+            identity = f"id_{id(self)}"
         if name is None:
             name = identity
         for param in ('title', 'identity', 'name', 'href'):
@@ -86,10 +86,11 @@ class Element(HTML):
         self.attributes = kwargs
 
     def yield_attributes(self, /):
-        for param in ('title', 'identity', 'name', 'href'):
+        for param in ('title', 'name', 'href'):
             val = getattr(self, param)
             if val is not None:
                 yield param, f'"{val}"'
+        yield 'id', self.identity
         classes = self.classes
         if classes:
             yield 'class', ' '.join(f'"{kls}"' for kls in self.classes)
@@ -351,7 +352,7 @@ class TabPanes(Div):
         pane_selector = Div(*(
             Button(
                 pane.identity, classes=(button_class,),
-                onclick=f"openPanel(event, {pane_class}, {pane.identity})"
+                onclick=f'''openPane(event, '{pane_class}', '{pane.identity}')''',
                 )
             for pane in panes.contents
             ), classes=(self.PANE_SELECTOR_CLASS,))
@@ -359,7 +360,7 @@ class TabPanes(Div):
 
     def yield_scripts(self, /):
         yield from super().yield_scripts()
-        yield '\n'.join((
+        yield '\n' + '\n'.join((
             '''function openPane(evt, paneClass, paneName) {''',
             '''  // Declare all variables''',
             '''  var i, tabcontent, tablinks;''',
@@ -368,9 +369,9 @@ class TabPanes(Div):
             '''  for (i = 0; i < tabcontent.length; i++) {''',
             '''    tabcontent[i].style.display = "none";''',
             '''  }''',
-            '''  // Get all elements with class="tablinks"''',
+            '''  // Get all elements with class="<paneClass>_button"''',
             '''  // and remove the class "active"''',
-            '''  tablinks = document.getElementsByClassName("tablinks");''',
+            '''  tablinks = document.getElementsByClassName(paneClass+"_button");''',
             '''  for (i = 0; i < tablinks.length; i++) {''',
             '''    tablinks[i].className = tablinks[i].className.replace(" active", "");''',
             '''  }''',
@@ -383,17 +384,17 @@ class TabPanes(Div):
 
     def yield_styles(self, /):
         yield from super().yield_styles()
-        yield '\n'.join((
+        yield '\n' + '\n'.join((
             "/* Style the tab */",
-            f".{self.PANE_SELECTOR_CLASS}" + '}',
+            f".{self.PANE_SELECTOR_CLASS} {{",
             "  overflow: hidden;",
             "  border: 1px solid #ccc;",
             "  background-color: #f1f1f1;",
             "}",
             ))
-        yield '\n'.join((
+        yield '\n' + '\n'.join((
             "/* Style the buttons that are used to open the tab content */",
-            f".{self.PANE_SELECTOR_CLASS}" + " button {",
+            f".{self.PANE_SELECTOR_CLASS} button {{",
             "  background-color: inherit;",
             "  float: left;",
             "  border: none;",
@@ -403,27 +404,35 @@ class TabPanes(Div):
             "  transition: 0.3s;",
             "}"
             ))
-        yield '\n'.join((
+        yield '\n' + '\n'.join((
             "/* Change background color of buttons on hover */",
-            f".{self.PANE_SELECTOR_CLASS}" + " button:hover {",
+            f".{self.PANE_SELECTOR_CLASS} button:hover {{",
             "  background-color: #ddd;",
             "}",
             ))
-        yield '\n'.join((
+        yield '\n' + '\n'.join((
             "/* Create an active/current tablink class */",
-            f".{self.PANE_SELECTOR_CLASS}" + " button:active {",
+            f".{self.PANE_SELECTOR_CLASS} button.active {{",
             "  background-color: #ccc;",
             "}",
             ))
-        yield '\n'.join((
+        yield '\n' + '\n'.join((
             "/* Style the tab content */",
-            f".{self.pane_class}"+"{",
+            f".{self.pane_class} {{",
             "  display: none;",
             "  padding: 6px 12px;",
             "  border: 1px solid #ccc;",
             "  border-top: none;",
+            "  animation: fadeEffect 1s;",
             "}"
             ))
+        yield '\n' + '\n'.join((
+            '''@keyframes fadeEffect {''',
+            '''  from {opacity: 0;}''',
+            '''  to {opacity: 1;}''',
+            '''}''',
+            ))
+
 
 
 ###############################################################################

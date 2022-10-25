@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<script>function openPane(evt, paneClass, paneName) {
+<script>
+function openPane(evt, paneClass, paneName) {
   // Declare all variables
   var i, tabcontent, tablinks;
   // Get all elements with class=<paneClass> and hide them
@@ -7,9 +8,9 @@
   for (i = 0; i < tabcontent.length; i++) {
     tabcontent[i].style.display = "none";
   }
-  // Get all elements with class="tablinks"
+  // Get all elements with class="<paneClass>_button"
   // and remove the class "active"
-  tablinks = document.getElementsByClassName("tablinks");
+  tablinks = document.getElementsByClassName(paneClass+"_button");
   for (i = 0; i < tablinks.length; i++) {
     tablinks[i].className = tablinks[i].className.replace(" active", "");
   }
@@ -19,12 +20,14 @@
   evt.currentTarget.className += " active";
   }
 </script>
-<style>/* Style the tab */
-.pane_selector}
+<style>
+/* Style the tab */
+.pane_selector {
   overflow: hidden;
   border: 1px solid #ccc;
   background-color: #f1f1f1;
 }
+
 /* Style the buttons that are used to open the tab content */
 .pane_selector button {
   background-color: inherit;
@@ -35,73 +38,82 @@
   padding: 14p 16px;
   transition: 0.3s;
 }
+
 /* Change background color of buttons on hover */
 .pane_selector button:hover {
   background-color: #ddd;
 }
+
 /* Create an active/current tablink class */
-.pane_selector button:active {
+.pane_selector button.active {
   background-color: #ccc;
 }
+
 /* Style the tab content */
-.139826102233456_pane{
+.id_140435061365552_pane {
   display: none;
   padding: 6px 12px;
   border: 1px solid #ccc;
   border-top: none;
+  animation: fadeEffect 1s;
+}
+
+@keyframes fadeEffect {
+  from {opacity: 0;}
+  to {opacity: 1;}
 }
 </style>
 <div
-  identity="139826102233456"
-  name="139826102233456"
+  name="id_140435061365552"
+  id=id_140435061365552
 >
     <div
-      identity="139826102181696"
-      name="139826102181696"
+      name="id_140435061317792"
+      id=id_140435061317792
       class="pane_selector"
     >
       <button
-        identity="139826102181504"
-        name="139826102181504"
-        class="139826102233456_pane_button"
-        onclick="openPanel(event, 139826102233456_pane, 139826102180256)"
+        name="id_140435062970496"
+        id=id_140435062970496
+        class="id_140435061365552_pane_button"
+        onclick="openPane(event, 'id_140435061365552_pane', 'id_140436659550912')"
       >
-        139826102180256
+        id_140436659550912
       </button>
       <button
-        identity="139826102181600"
-        name="139826102181600"
-        class="139826102233456_pane_button"
-        onclick="openPanel(event, 139826102233456_pane, 139826102181312)"
+        name="id_140435062971648"
+        id=id_140435062971648
+        class="id_140435061365552_pane_button"
+        onclick="openPane(event, 'id_140435061365552_pane', 'id_140436659551392')"
       >
-        139826102181312
+        id_140436659551392
       </button>
     </div>
     <div
-      identity="139826102181408"
-      name="139826102181408"
+      name="id_140435062971552"
+      id=id_140435062971552
       class="pane_space"
     >
       <div
-        identity="139826102180256"
-        name="139826102180256"
-        class="139826102233456_pane"
+        name="id_140436659550912"
+        id=id_140436659550912
+        class="id_140435061365552_pane"
       >
         <p
-          identity="el1"
           name="el1"
+          id=el1
         >
           foo
         </p>
       </div>
       <div
-        identity="139826102181312"
-        name="139826102181312"
-        class="139826102233456_pane"
+        name="id_140436659551392"
+        id=id_140436659551392
+        class="id_140435061365552_pane"
       >
         <p
-          identity="el2"
           name="el2"
+          id=el2
         >
           bah
         </p>
