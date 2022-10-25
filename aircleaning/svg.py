@@ -142,8 +142,8 @@ class Canvas(SVG):
 
     __slots__ = ('_graphics', '_view',)
 
-    def __init__(self, view = None):
-        super().__init__()
+    def __init__(self, view = None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         if view is None:
             view = View(Projection(), Transform())
         self._view = view
@@ -175,6 +175,7 @@ class Canvas(SVG):
         return self.view.transform
 
     def yield_attributes(self, /):
+        yield from super().yield_attributes()
         yield 'width', f'"{self.projection.width}"'
         yield 'height', f'"{self.projection.height}"'
         yield 'style', f'"background-color:white"'

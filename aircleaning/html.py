@@ -6,15 +6,46 @@
 import abc as _abc
 
 
-class Element:
+class HTML:
 
     __slots__ = ()
+
+    @_abc.abstractmethod
+    def yield_lines(self, indent, /):
+        raise NotImplementedError
+
+    @_abc.abstractmethod
+    def _repr_html_(self, /):
+        raise NotImplementedError
+
+
+class Element:
+
+    __slots__ = ('title', 'identity', 'name', 'href', 'classes')
 
     element_type_name = ''
     standard_indent = '  '
 
+    def __init__(self, /, *,
+            title: str = None,
+            identity: str = None,
+            name: str = None,
+            href: str = None,
+            classes: tuple = ()
+            ):
+        if identity is None:
+            identity = str(id(self))
+        for param in ('title', 'identity', 'name', 'href'):
+            val = eval(param)
+            setattr(self, param, (None if val is None else str(val)))
+        self.classes = tuple(map(str, classes))
+
     def yield_attributes(self, /):
-        yield from ()
+        for param in ('title', 'identity', 'name', 'href'):
+            val = getattr(self, param)
+            if val is not None:
+                yield param, f'"{val}"'
+        yield 'class', ' '.join(f'"{kls}"' for kls in self.classes)
 
     @_abc.abstractmethod
     def yield_lines(self, indent, /):
@@ -40,10 +71,18 @@ class Void(Element):
 
 class Normal(Element):
 
-    __slots__ = ()
+    __slots__ = ('contents',)
+
+    def __init__(self, /, *args, contents=(), **kwargs):
+        super().__init__(*args, **kwargs)
+        self.contents = tuple(contents)
 
     def _yield_lines_(self, /):
-        yield from ()
+        for content in self.contents:
+            if isinstance(content, Element):
+                yield from content.yield_lines(1)
+            else:
+                yield 1, content
 
     def yield_lines(self, indent=0, /):
         yield from super().yield_lines(indent)
@@ -58,11 +97,8 @@ class Page(Normal):
 
     __slots__ = ('title', 'contents')
 
-    def __init__(self, /, title, contents=()):
-        self.title = title
-        self.contents = tuple(contents)
-
     def yield_attributes(self, /):
+        yield from super().yield_attributes()
         yield 'lang', '"en"'
 
     def yield_lines(self, indent=0, /):
@@ -75,12 +111,46 @@ class Page(Normal):
 
     def _yield_lines_(self, /):
         yield 0, f'''<body>'''
-        for content in self.contents:
-            yield from content.yield_lines(1)
+        yield from super()._yield_lines_()
         yield 0, f'''</body>'''
 
 
-class 
+class Form(Normal):
+
+    element_type_name = 'form'
+
+
+class Input(Void):
+
+    __slots__ = ('input_type',)
+
+    def __init__(self, /,
+            input_type: str,
+            *args,
+            **kwargs
+            ):
+        self.input_type = str(input_type)
+        super().__init__(*args, **kwargs)
+
+    def yield_attributes(self, /):
+        yield from super().yield_attributes()
+        yield 'type', f'"{self.input_type}"'
+
+    # def yield_lines(self, indent=0, /):
+    #     yield from super().yield_lines()
+
+
+class Label(Normal):
+
+    element_type_name = 'label'
+
+    def __init__(self, /, isfor: str, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.isfor = str(isfor)
+
+    def yield_attributes(self, /):
+        yield from super().yield_attributes()
+        yield 'for', f'"{self.isfor}"'
 
 
 ###############################################################################
