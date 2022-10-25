@@ -232,6 +232,8 @@ def decision_tool(path=productsdir, name='decision_tool'):
         '''</figure>''',
         ))
 
+    strn += '\n</div></div>'
+
     strn += '\n' + '\n'.join((
         '''<script>''',
         '''update(document.getElementById('userinput'))''',

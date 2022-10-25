@@ -67,8 +67,12 @@ class Element(HTML):
             if isinstance(val, bool):
                 if val:
                     yield key, NotImplemented
-            else:
+            elif isinstance(val, str):
                 yield key, f'"{val}"'
+            elif isinstance(val, _collabc.Iterable):
+                yield key, ' '.join(f'"{subval}"' for subval in val)
+            else:
+                yield key, str(val)
 
     def yield_lines(self, indent=0, /):
         yield indent, f'<{self.element_type_name}'
@@ -83,6 +87,28 @@ class Element(HTML):
 class Void(Element):
 
     __slots__ = ()
+
+
+class HLine(Void):
+
+    element_type_name = 'hr'
+
+    __slots__ = ()
+
+
+class Link(Void):
+
+    element_type_name = 'link'
+
+    __slots__ = ('rel', 'href')
+
+    def __init__(self, /, rel: str, href: str, **kwargs):
+        self.rel, self.href = str(rel), str(href)
+
+    def yield_attributes(self, /):
+        super().yield_attributes()
+        yield 'rel', f'"{self.rel}"'
+        yield 'href', f'"{self.rel}"'
 
 
 class Normal(Element):
@@ -117,13 +143,6 @@ class Normal(Element):
         yield indent, f"</{self.element_type_name}>"
 
 
-class Div(Normal):
-
-    element_type_name = 'div'
-
-    __slots__ = ()
-
-
 class Page(Normal):
 
     element_type_name = 'html'
@@ -146,6 +165,34 @@ class Page(Normal):
         yield 0, f'''<body>'''
         yield from super()._yield_lines_()
         yield 0, f'''</body>'''
+
+
+class Div(Normal):
+
+    element_type_name = 'div'
+
+    __slots__ = ()
+
+
+class Paragraph(Normal):
+
+    element_type_name = 'p'
+
+    __slots__ = ()
+
+
+class Script(Normal):
+
+    element_type_name = 'script'
+
+    __slots__ = ()
+
+
+class Style(Normal):
+
+    element_type_name = 'style'
+
+    __slots__ = ()
 
 
 class Form(Normal):
