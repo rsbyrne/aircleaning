@@ -1,142 +1,110 @@
 <!DOCTYPE html>
-<head>
-  <meta charset="UTF-8">
-  <title>None</title>
-</head>
-<html
-  identity="140382272383344"
-  name="140382272383344"
-  lang="en"
+<script>function openPane(evt, paneClass, paneName) {
+  // Declare all variables
+  var i, tabcontent, tablinks;
+  // Get all elements with class=<paneClass> and hide them
+  tabcontent = document.getElementsByClassName(paneClass);
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+  // Get all elements with class="tablinks"
+  // and remove the class "active"
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+  // Show the current tab
+  // and add an "active" class to the button that opened the tab
+  document.getElementById(paneName).style.display = "block";
+  evt.currentTarget.className += " active";
+  }
+</script>
+<style>/* Style the tab */
+.pane_selector}
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+}
+/* Style the buttons that are used to open the tab content */
+.pane_selector button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14p 16px;
+  transition: 0.3s;
+}
+/* Change background color of buttons on hover */
+.pane_selector button:hover {
+  background-color: #ddd;
+}
+/* Create an active/current tablink class */
+.pane_selector button:active {
+  background-color: #ccc;
+}
+/* Style the tab content */
+.139826102233456_pane{
+  display: none;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-top: none;
+}
+</style>
+<div
+  identity="139826102233456"
+  name="139826102233456"
 >
-  <body>
-    This is some text.
-    <link
-      rel="stylesheet"
-      href="stylesheet"
-    >
-    <link
-      rel="stylesheet"
-      href="stylesheet"
-    >
     <div
-      identity="top"
-      name="top"
-      class="uomcontent"
-      role="document"
+      identity="139826102181696"
+      name="139826102181696"
+      class="pane_selector"
+    >
+      <button
+        identity="139826102181504"
+        name="139826102181504"
+        class="139826102233456_pane_button"
+        onclick="openPanel(event, 139826102233456_pane, 139826102180256)"
+      >
+        139826102180256
+      </button>
+      <button
+        identity="139826102181600"
+        name="139826102181600"
+        class="139826102233456_pane_button"
+        onclick="openPanel(event, 139826102233456_pane, 139826102181312)"
+      >
+        139826102181312
+      </button>
+    </div>
+    <div
+      identity="139826102181408"
+      name="139826102181408"
+      class="pane_space"
     >
       <div
-        identity="140382272451872"
-        name="140382272451872"
-        class="main"
-        role="main"
+        identity="139826102180256"
+        name="139826102180256"
+        class="139826102233456_pane"
       >
-        <div
-          identity="140382272451200"
-          name="140382272451200"
-          class="sq-form-question sq-form-question-tickbox-list"
+        <p
+          identity="el1"
+          name="el1"
         >
-          <form
-            identity="140382272451296"
-            name="140382272451296"
-          >
-            <fieldset
-              identity="140382272382112"
-              name="140382272382112"
-              class="sq-form-section"
-            >
-              <legend
-                identity="140382272402432"
-                name="140382272402432"
-              >
-                Some options
-              </legend>
-              <input
-                identity="140382272403104"
-                name="140382272382112"
-                value="Foo"
-                required
-                type="radio"
-              >
-              <label
-                identity="140382272403104_label"
-                name="140382272403104_label"
-                for="140382272403104"
-              >
-                Foo
-              </label>
-              <input
-                identity="140382272403392"
-                name="140382272382112"
-                value="Bah"
-                required
-                checked
-                type="radio"
-              >
-              <label
-                identity="140382272403392_label"
-                name="140382272403392_label"
-                for="140382272403392"
-              >
-                Bah
-              </label>
-              <input
-                identity="140382272451680"
-                name="140382272382112"
-                value="Qin"
-                required
-                type="radio"
-              >
-              <label
-                identity="140382272451680_label"
-                name="140382272451680_label"
-                for="140382272451680"
-              >
-                Qin
-              </label>
-            </fieldset>
-            <fieldset
-              identity="140382272381664"
-              name="140382272381664"
-              class="sq-form-section"
-            >
-              <legend
-                identity="140382272451488"
-                name="140382272451488"
-              >
-                More options
-              </legend>
-              <input
-                identity="140382272451392"
-                name="140382272381664"
-                value="One"
-                required
-                type="radio"
-              >
-              <label
-                identity="140382272451392_label"
-                name="140382272451392_label"
-                for="140382272451392"
-              >
-                One
-              </label>
-              <input
-                identity="140382272451104"
-                name="140382272381664"
-                value="Two"
-                required
-                type="radio"
-              >
-              <label
-                identity="140382272451104_label"
-                name="140382272451104_label"
-                for="140382272451104"
-              >
-                Two
-              </label>
-            </fieldset>
-          </form>
-        </div>
+          foo
+        </p>
+      </div>
+      <div
+        identity="139826102181312"
+        name="139826102181312"
+        class="139826102233456_pane"
+      >
+        <p
+          identity="el2"
+          name="el2"
+        >
+          bah
+        </p>
       </div>
     </div>
-  </body>
-</html>
+</div>

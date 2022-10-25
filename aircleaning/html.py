@@ -4,6 +4,7 @@
 
 
 import abc as _abc
+import itertools as _itertools
 
 
 class HTML:
@@ -30,11 +31,26 @@ class HTML:
     def yield_styles(self, /):
         yield from ()
 
+    def yield_boilerplate(self, /):
+        yield 0, f'''<!DOCTYPE html>'''
+        yield 0, "<script>"+'\n'.join(self.scripts)+"\n"+"</script>"
+        yield 0, "<style>"+'\n'.join(self.styles)+"\n"+"</style>"
+
+    @property
+    def styles(self, /):
+        out = []
+        for style in self.yield_styles():
+            if style not in out:
+                out.append(style)
+        return tuple(out)
+
     def _repr_html_(self, /):
         standard = self.standard_indent
         out = []
-        for script in 
-        for indent, text in self.yield_lines():
+        for indent, text in _itertools.chain(
+                self.yield_boilerplate(),
+                self.yield_lines(),
+                ):
             out.append(indent*standard)
             out.append(text)
             out.append('\n')
@@ -163,14 +179,13 @@ class Page(Normal):
 
     element_type_name = 'html'
 
-    __slots__ = ('title', 'contents')
+    __slots__ = ('contents',)
 
     def yield_attributes(self, /):
         yield from super().yield_attributes()
         yield 'lang', '"en"'
 
     def yield_lines(self, indent=0, /):
-        yield indent, f'''<!DOCTYPE html>'''
         yield indent, f"<head>"
         yield indent+1, f'''<meta charset="UTF-8">'''
         yield indent+1, f'''<title>{self.title}</title>'''
@@ -321,16 +336,17 @@ class Button(Normal):
 
 class TabPanes(Div):
 
-    PANE_SPACE_CLASS = ('pane_space',)
+    PANE_SELECTOR_CLASS = 'pane_selector'
+    PANE_SPACE_CLASS = 'pane_space'
 
-    __slots__ = ('panes', 'pane_class')
+    __slots__ = ('panes', 'pane_class', 'button_class')
 
     def __init__(self, /, *args, **kwargs):
         super().__init__(**kwargs)
-        pane_class = f"{self.identity}_pane
-        button_class = f"{pane_class}_button"
+        pane_class = self.pane_class = f"{self.identity}_pane"
+        button_class = self.button_class = f"{pane_class}_button"
         panes = Div(*(
-            Div(content, classes=(pane_class,)) for content in self.contents
+            Div(content, classes=(pane_class,)) for content in args
             ), classes=(self.PANE_SPACE_CLASS,))
         pane_selector = Div(*(
             Button(
@@ -338,8 +354,76 @@ class TabPanes(Div):
                 onclick=f"openPanel(event, {pane_class}, {pane.identity})"
                 )
             for pane in panes.contents
-            ))
+            ), classes=(self.PANE_SELECTOR_CLASS,))
         self.add_content((pane_selector, panes))
+
+    def yield_scripts(self, /):
+        yield from super().yield_scripts()
+        yield '\n'.join((
+            '''function openPane(evt, paneClass, paneName) {''',
+            '''  // Declare all variables''',
+            '''  var i, tabcontent, tablinks;''',
+            '''  // Get all elements with class=<paneClass> and hide them''',
+            '''  tabcontent = document.getElementsByClassName(paneClass);''',
+            '''  for (i = 0; i < tabcontent.length; i++) {''',
+            '''    tabcontent[i].style.display = "none";''',
+            '''  }''',
+            '''  // Get all elements with class="tablinks"''',
+            '''  // and remove the class "active"''',
+            '''  tablinks = document.getElementsByClassName("tablinks");''',
+            '''  for (i = 0; i < tablinks.length; i++) {''',
+            '''    tablinks[i].className = tablinks[i].className.replace(" active", "");''',
+            '''  }''',
+            '''  // Show the current tab''',
+            '''  // and add an "active" class to the button that opened the tab''',
+            '''  document.getElementById(paneName).style.display = "block";''',
+            '''  evt.currentTarget.className += " active";''',
+            '''  }''',
+            ))
+
+    def yield_styles(self, /):
+        yield from super().yield_styles()
+        yield '\n'.join((
+            "/* Style the tab */",
+            f".{self.PANE_SELECTOR_CLASS}" + '}',
+            "  overflow: hidden;",
+            "  border: 1px solid #ccc;",
+            "  background-color: #f1f1f1;",
+            "}",
+            ))
+        yield '\n'.join((
+            "/* Style the buttons that are used to open the tab content */",
+            f".{self.PANE_SELECTOR_CLASS}" + " button {",
+            "  background-color: inherit;",
+            "  float: left;",
+            "  border: none;",
+            "  outline: none;",
+            "  cursor: pointer;",
+            "  padding: 14p 16px;",
+            "  transition: 0.3s;",
+            "}"
+            ))
+        yield '\n'.join((
+            "/* Change background color of buttons on hover */",
+            f".{self.PANE_SELECTOR_CLASS}" + " button:hover {",
+            "  background-color: #ddd;",
+            "}",
+            ))
+        yield '\n'.join((
+            "/* Create an active/current tablink class */",
+            f".{self.PANE_SELECTOR_CLASS}" + " button:active {",
+            "  background-color: #ccc;",
+            "}",
+            ))
+        yield '\n'.join((
+            "/* Style the tab content */",
+            f".{self.pane_class}"+"{",
+            "  display: none;",
+            "  padding: 6px 12px;",
+            "  border: 1px solid #ccc;",
+            "  border-top: none;",
+            "}"
+            ))
 
 
 ###############################################################################
