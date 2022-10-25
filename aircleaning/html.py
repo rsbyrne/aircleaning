@@ -16,9 +16,24 @@ class HTML:
     def yield_lines(self, indent, /):
         raise NotImplementedError
 
+    def yield_scripts(self, /):
+        yield from ()
+
+    @property
+    def scripts(self, /):
+        out = []
+        for script in self.yield_scripts():
+            if script not in out:
+                out.append(script)
+        return tuple(out)
+
+    def yield_styles(self, /):
+        yield from ()
+
     def _repr_html_(self, /):
         standard = self.standard_indent
         out = []
+        for script in 
         for indent, text in self.yield_lines():
             out.append(indent*standard)
             out.append(text)
@@ -43,6 +58,7 @@ class Element(HTML):
             classes: tuple = (),
             **kwargs,
             ):
+        super().__init__()
         if identity is None:
             identity = str(id(self))
         if name is None:
@@ -294,6 +310,36 @@ class RadioSet(Fieldset):
                 )
             for value in values
             ))
+
+
+class Button(Normal):
+
+    element_type_name = 'button'
+
+    __slots__ = ()
+
+
+class TabPanes(Div):
+
+    PANE_SPACE_CLASS = ('pane_space',)
+
+    __slots__ = ('panes', 'pane_class')
+
+    def __init__(self, /, *args, **kwargs):
+        super().__init__(**kwargs)
+        pane_class = f"{self.identity}_pane
+        button_class = f"{pane_class}_button"
+        panes = Div(*(
+            Div(content, classes=(pane_class,)) for content in self.contents
+            ), classes=(self.PANE_SPACE_CLASS,))
+        pane_selector = Div(*(
+            Button(
+                pane.identity, classes=(button_class,),
+                onclick=f"openPanel(event, {pane_class}, {pane.identity})"
+                )
+            for pane in panes.contents
+            ))
+        self.add_content((pane_selector, panes))
 
 
 ###############################################################################
