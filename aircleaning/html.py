@@ -6,6 +6,7 @@
 import abc as _abc
 import os as _os
 import itertools as _itertools
+from collections import abc as _collabc
 
 
 class HTML:
@@ -280,18 +281,24 @@ class Input(Void):
 
     element_type_name = 'input'
 
-    __slots__ = ('input_type',)
+    __slots__ = ('input_type', 'value', 'oninput')
 
     def __init__(self, /,
             input_type: str,
+            value,
+            oninput="form_update(this.form)",
             **kwargs
             ):
         self.input_type = str(input_type)
+        self.value = str(value)
+        self.oninput = str(oninput)
         super().__init__(**kwargs)
 
     def yield_attributes(self, /):
         yield from super().yield_attributes()
         yield 'type', f'"{self.input_type}"'
+        yield 'value', f'"{self.value}"'
+        yield 'oninput', f'"{self.oninput}"'
 
     # def yield_lines(self, indent=0, /):
     #     yield from super().yield_lines()
@@ -320,10 +327,13 @@ class LabelledInput(HTML):
             self, /,
             label_content: (str, tuple),
             input_type: str,
-            *args, **kwargs
+            **kwargs
             ):
         super().__init__()
-        inpel = self.input_element = Input(input_type, *args, **kwargs)
+        if isinstance(input_type, str):
+            inpel = self.input_element = Input(input_type, **kwargs)
+        else:
+            inpel = input_type(*args, **kwargs)
         self.label_element = Label(
             inpel.identity,
             label_content,
@@ -333,6 +343,44 @@ class LabelledInput(HTML):
     def yield_lines(self, indent=0, /):
         yield from self.input_element.yield_lines(indent)
         yield from self.label_element.yield_lines(indent)
+
+
+class Output(Normal):
+
+    element_type_name = 'output'
+
+    __slots__ = ('idsfor',)
+
+    def __init__(self, /, idsfor: tuple, value, **kwargs):
+        super().__init__(value, **kwargs)
+        if isinstance(idsfor, str):
+            self.idsfor = (idsfor,)
+        else:
+            self.idsfor = tuple(map(str, idsfor))
+
+    def yield_attributes(self, /):
+        yield from super().yield_attributes()
+        idsfor = ' '.join(self.idsfor)
+        yield 'for', f'"{idsfor}"'
+
+
+class CapturedInput(Div):
+
+    __slots__ = ()
+
+    def __init__(
+            self, /, input_type, *args,
+            oninput=("this.nextElementSibling.value=this.value;"
+                     "form_update(this.form)"),
+            input_kwargs=None, output_kwargs=None, **kwargs
+            ):
+        input_kwargs = {} if input_kwargs is None else input_kwargs
+        if isinstance(input_type, str):
+            inpel = Input(input_type, *args, oninput=oninput, **input_kwargs)
+        else:
+            inpel = input_type(*args, oninput=oninput, **input_kwargs)
+        output = Output((inpel.identity,), '-')
+        super().__init__(inpel, output, **kwargs)
 
 
 class RadioSet(Fieldset):
@@ -351,7 +399,13 @@ class RadioSet(Fieldset):
             ))
 
 
-cl
+class ValueSlider(Div):
+
+    __slots__ = ()
+
+    def __init__(self, /, **kwargs):
+        inpel = Input('range', **kwargs)
+        super().__init__(inpel)
 
 
 class Button(Normal):
