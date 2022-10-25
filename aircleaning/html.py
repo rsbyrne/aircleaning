@@ -28,7 +28,10 @@ class HTML:
 
 class Element(HTML):
 
-    __slots__ = ('title', 'identity', 'name', 'href', 'classes')
+    __slots__ = (
+        'title', 'identity', 'name', 'href', 'classes',
+        'attributes',
+        )
 
     element_type_name = ''
 
@@ -37,14 +40,18 @@ class Element(HTML):
             identity: str = None,
             name: str = None,
             href: str = None,
-            classes: tuple = ()
+            classes: tuple = (),
+            **kwargs,
             ):
         if identity is None:
             identity = str(id(self))
+        if name is None:
+            name = identity
         for param in ('title', 'identity', 'name', 'href'):
             val = eval(param)
             setattr(self, param, (None if val is None else str(val)))
         self.classes = tuple(map(str, classes))
+        self.attributes = kwargs
 
     def yield_attributes(self, /):
         for param in ('title', 'identity', 'name', 'href'):
@@ -54,11 +61,22 @@ class Element(HTML):
         classes = self.classes
         if classes:
             yield 'class', ' '.join(f'"{kls}"' for kls in self.classes)
+        for key, val in self.attributes.items():
+            if val is None:
+                continue
+            if isinstance(val, bool):
+                if val:
+                    yield key, NotImplemented
+            else:
+                yield key, f'"{val}"'
 
     def yield_lines(self, indent=0, /):
         yield indent, f'<{self.element_type_name}'
         for attrname, attr in self.yield_attributes():
-            yield indent+1, f'''{attrname}={attr}'''
+            if attr is NotImplemented:
+                yield indent+1, attrname
+            else:
+                yield indent+1, f'{attrname}={attr}'
         yield indent, f'>'
 
 
@@ -71,14 +89,19 @@ class Normal(Element):
 
     __slots__ = ('contents',)
 
-    def __init__(self, /, content=None, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, /, *contents, **kwargs):
+        super().__init__(**kwargs)
+        self.contents = ()
+        self.add_content(contents)
+
+    def add_content(self, content, /):
         if content is None:
-            self.contents = ()
-        elif isinstance(content, (str, HTML)):
-            self.contents = (content,)
+            return
+        if isinstance(content, (str, HTML)):
+            contents = (content,)
         else:
-            self.contents = tuple(content)
+            contents = tuple(content)
+        self.contents = (*self.contents, *content)
 
     def _yield_lines_(self, /):
         for content in self.contents:
@@ -139,12 +162,9 @@ class Fieldset(Normal):
     __slots__ = ('legend', 'formfields')
 
     def __init__(self, /, legend, *args, **kwargs):
-        super().__init__(*args, **kwargs)
         if not isinstance(legend, Legend):
             legend = Legend(legend)
-        self.legend = legend
-        fields = self.formfields = self.contents
-        self.contents = (legend, *fields)
+        super().__init__(legend, *args, **kwargs)
 
 
 class Legend(Normal):
@@ -162,11 +182,10 @@ class Input(Void):
 
     def __init__(self, /,
             input_type: str,
-            *args,
             **kwargs
             ):
         self.input_type = str(input_type)
-        super().__init__(*args, **kwargs)
+        super().__init__(**kwargs)
 
     def yield_attributes(self, /):
         yield from super().yield_attributes()
@@ -212,6 +231,22 @@ class LabelledInput(HTML):
     def yield_lines(self, indent=0, /):
         yield from self.input_element.yield_lines(indent)
         yield from self.label_element.yield_lines(indent)
+
+
+class RadioSet(Fieldset):
+
+    __slots__ = ()
+
+    def __init__(self, /, legend, values, default=None, **kwargs):
+        super().__init__(legend, **kwargs)
+        values = tuple(map(str, values))
+        self.add_content(tuple(
+            LabelledInput(
+                value, 'radio', name=self.name, value=value, required=True,
+                checked=(value == default),
+                )
+            for value in values
+            ))
 
 
 ###############################################################################
