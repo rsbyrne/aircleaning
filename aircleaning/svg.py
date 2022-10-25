@@ -140,20 +140,24 @@ class SVG(_Normal):
 
 class Canvas(SVG):
 
-    __slots__ = ('graphics', '_view',)
+    __slots__ = ('_graphics', '_view',)
 
     def __init__(self, view = None):
         super().__init__()
         if view is None:
             view = View(Projection(), Transform())
         self._view = view
-        self.graphics = []
+        self._graphics = []
+
+    @property
+    def graphics(self, /):
+        return tuple(self._graphics)
 
     def add(self, obj, /, *objs):
         if isinstance(obj, Compound):
-            self.graphics.extend(obj.graphics)
+            self._graphics.extend(obj.graphics)
         else:
-            self.graphics.append(obj)
+            self._graphics.append(obj)
         if objs:
             for obj in objs:
                 self.add(obj)
@@ -186,6 +190,8 @@ class Canvas(SVG):
 
 class Graphic:
 
+    __slots__ = ()
+
     @abc.abstractmethod
     def __array__(self, /):
         raise NotImplementedError        
@@ -193,16 +199,6 @@ class Graphic:
     @abc.abstractmethod
     def draw(self, view, /):
         raise NotImplementedError
-
-
-class GraphicView(_Void):
-
-    __slots__ = ('graphic', 'view')
-
-    def __init__(self, /, graphic: Graphic, view: View):
-        self.graphic, self.view = graphic, view
-
-    def
 
 
 class Flat(Graphic):
@@ -352,6 +348,8 @@ class Flat(Graphic):
 
 class Compound:
 
+    __slots__ = ()
+
     @abc.abstractmethod
     def graphics(self, /) -> tuple:
         raise NotImplementedError
@@ -486,6 +484,8 @@ class Box(Compound):
 
 class Hollow(Box):
 
+    __slots__ = ()
+
     @property
     def floor(self, /):
         return self.bottom
@@ -504,6 +504,8 @@ class Hollow(Box):
 
 
 class Solid(Box):
+
+    __slots__ = ()
 
     @property
     def front(self, /):

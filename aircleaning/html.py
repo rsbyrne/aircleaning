@@ -8,6 +8,8 @@ import abc as _abc
 
 class Element:
 
+    __slots__ = ()
+
     element_type_name = ''
     standard_indent = '  '
 
@@ -33,10 +35,12 @@ class Element:
 
 class Void(Element):
 
-    ...
+    __slots__ = ()
 
 
 class Normal(Element):
+
+    __slots__ = ()
 
     def _yield_lines_(self, /):
         yield from ()
@@ -74,6 +78,9 @@ class Page(Normal):
         for content in self.contents:
             yield from content.yield_lines(1)
         yield 0, f'''</body>'''
+
+
+class 
 
 
 ###############################################################################
