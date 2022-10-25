@@ -5,6 +5,8 @@
 
 import abc
 from collections import UserList
+import itertools as _itertools
+import os as _os
 
 import numpy as np
 from scipy.spatial.transform import Rotation
@@ -137,6 +139,28 @@ class SVG(_Normal):
 
     __slots__ = ()
 
+    def yield_svg_boilerplate(self, /):
+        yield 0, '''<?xml version="1.0" encoding="UTF-8"?>'''
+
+    def yield_attributes(self, /):
+        yield 'xmlns', '''"http://www.w3.org/2000/svg"'''
+
+    def _repr_svg_(self, /):
+        standard = self.standard_indent
+        out = []
+        for indent, text in _itertools.chain(
+                self.yield_svg_boilerplate(),
+                self.yield_lines(),
+                ):
+            out.append(indent*standard)
+            out.append(text)
+            out.append('\n')
+        return ''.join(out)
+
+    def save_svg(self, /, name, path='.'):
+        with open(_os.path.join(path, name) + '.svg', mode='w') as file:
+            file.write(self._repr_svg_())
+
 
 class Canvas(SVG):
 
@@ -184,9 +208,6 @@ class Canvas(SVG):
         for graphic in self.graphics:
             typ, dct = graphic.draw(self.view)
             yield 0, f"<{typ} {' '.join(map('='.join, dct.items()))} />"
-
-    def _repr_svg_(self):
-        return self._repr_html_()
 
 
 class Graphic:
@@ -556,8 +577,9 @@ class Room(Hollow):
 def draw_scene(
         length=6, width=4, height=2.7, windows=2,
         size=1,
+        **kwargs,
         ):
-    canvas = Canvas()
+    canvas = Canvas(**kwargs)
     canvas.projection.width *= size
     canvas.projection.height *= size
     canvas.projection.scale(size)

@@ -4,6 +4,7 @@
 
 
 import abc as _abc
+import os as _os
 import itertools as _itertools
 
 
@@ -55,6 +56,10 @@ class HTML:
             out.append(text)
             out.append('\n')
         return ''.join(out)
+
+    def save_html(self, /, name, path='.'):
+        with open(_os.path.join(path, name) + '.html', mode='w') as file:
+            file.write(self._repr_html_())
 
 
 class Element(HTML):
@@ -153,6 +158,16 @@ class Normal(Element):
         self.contents = ()
         self.add_content(contents)
 
+    def yield_scripts(self, /):
+        for content in self.contents:
+            if isinstance(content, HTML):
+                yield from content.yield_scripts()
+
+    def yield_styles(self, /):
+        for content in self.contents:
+            if isinstance(content, HTML):
+                yield from content.yield_styles()  
+
     def add_content(self, content, /):
         if content is None:
             return
@@ -213,14 +228,22 @@ class Paragraph(Normal):
     __slots__ = ()
 
 
-class Script(Normal):
+class Textual(Normal):
+
+    __slots__ = ()
+
+    def __init__(self, content, /, **kwargs):
+        super().__init__(str(content))
+
+
+class Script(Textual):
 
     element_type_name = 'script'
 
     __slots__ = ()
 
 
-class Style(Normal):
+class Style(Textual):
 
     element_type_name = 'style'
 
@@ -335,7 +358,16 @@ class Button(Normal):
     __slots__ = ()
 
 
-class TabPanes(Div):
+class Pane(Div):
+
+    __slots__ = ('tab',)
+
+    def __init__(self, tab, pane_class, /, *args, classes=(), **kwargs):
+        super().__init__(*args, classes=(*classes, pane_class,), **kwargs)
+        self.tab = tab
+
+
+class TabbedPanes(Div):
 
     PANE_SELECTOR_CLASS = 'pane_selector'
     PANE_SPACE_CLASS = 'pane_space'
@@ -347,11 +379,11 @@ class TabPanes(Div):
         pane_class = self.pane_class = f"{self.identity}_pane"
         button_class = self.button_class = f"{pane_class}_button"
         panes = Div(*(
-            Div(content, classes=(pane_class,)) for content in args
+            Pane(content.identity, pane_class, content) for content in args
             ), classes=(self.PANE_SPACE_CLASS,))
         pane_selector = Div(*(
             Button(
-                pane.identity, classes=(button_class,),
+                pane.tab, classes=(button_class,),
                 onclick=f'''openPane(event, '{pane_class}', '{pane.identity}')''',
                 )
             for pane in panes.contents
