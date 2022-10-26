@@ -501,7 +501,7 @@ class TabbedPanes(Div):
             "  overflow: hidden;",
             "  border: 1px solid #ccc;",
             "  background-color: #f1f1f1;",
-            "  float:center",
+            # "  float:center",
             "}",
             ))
         yield '\n' + '\n'.join((
