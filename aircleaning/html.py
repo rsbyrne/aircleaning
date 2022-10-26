@@ -249,8 +249,8 @@ class Textual(Normal):
 
     __slots__ = ()
 
-    def __init__(self, content, /, **kwargs):
-        super().__init__(str(content))
+    def __init__(self, *args, **kwargs):
+        super().__init__(*map(str, args), **kwargs)
 
 
 class Script(Textual):
@@ -280,7 +280,7 @@ class Fieldset(Normal):
 
     __slots__ = ('legend',)
 
-    def __init__(self, /, legend, fields, **kwargs):
+    def __init__(self, /, legend, fields, *args, **kwargs):
         if not isinstance(legend, Legend):
             legend = Legend(legend)
         if isinstance(fields, dict):
@@ -288,7 +288,9 @@ class Fieldset(Normal):
                 LabelledInput(key, val)
                 for key, val in fields.items()
                 )
-        super().__init__(legend, *fields, **kwargs)
+        elif isinstance(fields, HTML):
+            fields = (fields,)
+        super().__init__(legend, *fields, *args, **kwargs)
 
 
 class Legend(Normal):
