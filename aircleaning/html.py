@@ -141,12 +141,13 @@ class Image(Void):
 
     __slots__ = ('src', 'alt')
 
-    def __init__(self, /, src, alt=''):
-        super().__init__()
+    def __init__(self, /, src, alt='', **kwargs):
+        super().__init__(**kwargs)
         self.src = str(src)
         self.alt = str(alt)
 
     def yield_attributes(self, /):
+        yield from super().yield_attributes()
         yield 'src', f'"{self.src}"'
         yield 'alt', f'"{self.alt}"'
 
@@ -354,10 +355,10 @@ class LabelledInput(Div):
             **kwargs
             ):
         if not isinstance(input_element, HTML):
-            if isinstance(input_type, str):
-                input_element = Input(input_type, *args)
+            if isinstance(input_element, str):
+                input_element = Input(input_element, *args)
             else:
-                input_element = input_type(*args)
+                input_element = input_element(*args)
         self.input_element = input_element
         label_element = self.label_element = Label(
             input_element.identity,
@@ -409,16 +410,15 @@ class RadioSet(Fieldset):
 
     __slots__ = ()
 
-    def __init__(self, /, legend, values, default=None, **kwargs):
-        super().__init__(legend, **kwargs)
-        values = tuple(map(str, values))
-        self.add_content(tuple(
-            LabelledInput(
-                value, 'radio', name=self.name, value=value, required=True,
-                checked=(value == default),
+    def __init__(self, /, setname, legend, values, default=None, **kwargs):
+        fields = {
+            value: Input(
+                'radio', name=setname, value=value,
+                required=True, checked=(value == default)
                 )
             for value in values
-            ))
+            }
+        super().__init__(legend, fields, **kwargs)
 
 
 class ValueSlider(Div):
@@ -458,7 +458,7 @@ class TabbedPanes(Div):
         pane_class = self.pane_class = f"{self.identity}_pane"
         button_class = self.button_class = f"{pane_class}_button"
         panes = Div(*(
-            Pane(content.identity, pane_class, content) for content in args
+            Pane(content.title, pane_class, content) for content in args
             ), classes=(self.PANE_SPACE_CLASS,))
         pane_selector = Div(*(
             Button(
