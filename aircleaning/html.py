@@ -135,6 +135,22 @@ class HLine(Void):
     __slots__ = ()
 
 
+class Image(Void):
+
+    element_type_name = 'img'
+
+    __slots__ = ('src', 'alt')
+
+    def __init__(self, /, src, alt=''):
+        super().__init__()
+        self.src = str(src)
+        self.alt = str(alt)
+
+    def yield_attributes(self, /):
+        yield 'src', f'"{self.src}"'
+        yield 'alt', f'"{self.alt}"'
+
+
 class Link(Void):
 
     element_type_name = 'link'
@@ -262,12 +278,17 @@ class Fieldset(Normal):
 
     element_type_name = 'fieldset'
 
-    __slots__ = ('legend', 'formfields')
+    __slots__ = ('legend',)
 
-    def __init__(self, /, legend, *args, **kwargs):
+    def __init__(self, /, legend, fields, **kwargs):
         if not isinstance(legend, Legend):
             legend = Legend(legend)
-        super().__init__(legend, *args, **kwargs)
+        if isinstance(fields, dict):
+            fields = tuple(
+                LabelledInput(key, val)
+                for key, val in fields.items()
+                )
+        super().__init__(legend, *fields, **kwargs)
 
 
 class Legend(Normal):
@@ -319,30 +340,29 @@ class Label(Normal):
         yield 'for', f'"{self.isfor}"'
 
 
-class LabelledInput(HTML):
+class LabelledInput(Div):
 
     __slots__ = ('input_element', 'label_element')
 
     def __init__(
             self, /,
             label_content: (str, tuple),
-            input_type: str,
+            input_element: str,
+            *args,
             **kwargs
             ):
-        super().__init__()
-        if isinstance(input_type, str):
-            inpel = self.input_element = Input(input_type, **kwargs)
-        else:
-            inpel = input_type(*args, **kwargs)
-        self.label_element = Label(
-            inpel.identity,
+        if not isinstance(input_element, HTML):
+            if isinstance(input_type, str):
+                input_element = Input(input_type, *args)
+            else:
+                input_element = input_type(*args)
+        self.input_element = input_element
+        label_element = self.label_element = Label(
+            input_element.identity,
             label_content,
-            identity=f"{inpel.identity}_label",
+            identity=f"{input_element.identity}_label",
             )
-
-    def yield_lines(self, indent=0, /):
-        yield from self.input_element.yield_lines(indent)
-        yield from self.label_element.yield_lines(indent)
+        super().__init__(label_element, input_element, **kwargs)
 
 
 class Output(Normal):
@@ -379,7 +399,7 @@ class CapturedInput(Div):
             inpel = Input(input_type, *args, oninput=oninput, **input_kwargs)
         else:
             inpel = input_type(*args, oninput=oninput, **input_kwargs)
-        output = Output((inpel.identity,), '-')
+        output = Output((inpel.identity,), inpel.value)
         super().__init__(inpel, output, **kwargs)
 
 
