@@ -305,24 +305,31 @@ class Input(Void):
 
     element_type_name = 'input'
 
-    __slots__ = ('input_type', 'value', 'oninput')
+    __slots__ = ('input_type', 'value', 'trigger')
 
     def __init__(self, /,
             input_type: str,
             value,
-            oninput="form_update(this.form)",
-            **kwargs
+            **kwargs,
             ):
         self.input_type = str(input_type)
         self.value = str(value)
-        self.oninput = str(oninput)
+        if self.input_type == 'checkbox':
+            self.trigger = (
+                'onclick',
+                ("if (this.value==0){this.value=1}else{this.value=0};"
+                 "form_update(this.form)"),
+                )
+        else:
+            self.trigger = ('oninput', "form_update(this.form)")
         super().__init__(**kwargs)
 
     def yield_attributes(self, /):
         yield from super().yield_attributes()
         yield 'type', f'"{self.input_type}"'
         yield 'value', f'"{self.value}"'
-        yield 'oninput', f'"{self.oninput}"'
+        attrname, attr = self.trigger
+        yield attrname, f'"{attr}"'
 
     # def yield_lines(self, indent=0, /):
     #     yield from super().yield_lines()
