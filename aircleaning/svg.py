@@ -577,7 +577,7 @@ class Room(Hollow):
 
 def draw_scene(
         length=6, width=4, height=2.7, windows=2, persons=1,
-        size=1,
+        size=1, scale=1,
         **kwargs,
         ):
     canvas = Canvas(**kwargs)
@@ -597,10 +597,17 @@ def draw_scene(
             room.bv+0.8, room.bv+1.6, room.fv, fill='white',
             )
         canvas.add(window)
+    rng = np.random.default_rng(0)
+    for _ in range(persons):
+        ucoord = floor.u0 + 0.5 + rng.random() * (floor.ul -0.5)
+        vcoord = floor.v0 + 0.5 + rng.random() * (floor.vl - 0.5)
+        person = Person(ucoord, vcoord)
+        canvas.add(person)
     canvas.transform.focus = room.centre
     canvas.transform.pan(-30)
     canvas.transform.tilt(60)
     canvas.projection.scale(50)
+    canvas.projection.scale(scale)
     return canvas
 
 
