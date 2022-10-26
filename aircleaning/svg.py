@@ -65,8 +65,9 @@ class Transform:
         try:
             return self._transform
         except AttributeError:
-            transform = self._transform = \
-                Rotation.from_euler('zx', (-self.panval, -self.tiltval), degrees=True)
+            transform = self._transform = Rotation.from_euler(
+                'zx', (-self.panval, -self.tiltval), degrees=True
+                )
             return transform
 
     def __call__(self, arr, /):
@@ -575,7 +576,7 @@ class Room(Hollow):
 
 
 def draw_scene(
-        length=6, width=4, height=2.7, windows=2,
+        length=6, width=4, height=2.7, windows=2, persons=1,
         size=1,
         **kwargs,
         ):
