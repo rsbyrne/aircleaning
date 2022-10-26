@@ -97,6 +97,90 @@ def cost_analysis(data=None, /, volume='medium', quality='some', path=productsdi
     plt.savefig(os.path.join(path, name) + '.png')
 
 
+def cost_analysis_by_cadr(
+        cadr, data=None, /,
+        path=productsdir, name='default',
+        ):
+
+    data = analyse.cost_analysis_by_cadr(cadr, data)
+    data = data.sort_values('upfront')
+    # data = data.loc[data['nunits'] < 6]
+    data = data.drop('Dyson', level='manufacturer')
+    data['fullname'] = tuple(map(
+        ''.join, zip(
+            map(' '.join, data.index),
+            (f' (x{n})' if n>1 else '' for n in data['nunits']),
+            )
+        ))
+    dollarlabels = tuple(map(' + '.join, zip(
+        data['upfront'].astype(int).apply('${:,}'.format),
+        data['power'].astype(int).apply('{:,} pa'.format),
+        data['filter'].astype(int).apply('{:,} pa'.format),
+        )))
+
+    plt.rcdefaults()
+    fig, (ax1, ax2) = \
+        plt.subplots(ncols=2, gridspec_kw={'width_ratios': [2, 1]})
+
+    fig.set_size_inches(8, 0.3 * len(data))
+    fig.set_tight_layout(True)
+
+    # fig.suptitle(
+    #     f'Air purifier options to achieve CADR={cadr}',
+    #     fontsize=16,
+    #     )
+
+    y_pos = np.arange(len(data))
+
+    innerbars = ax1.barh(
+        y_pos, data['upfront'], color='#4074B2'
+        )
+
+    gap = (data['upfront'] + data['filter'] + data['power']).max() / 30
+    powerbars = ax1.barh(
+        y_pos, data['power'], left=data['upfront']+gap, color='#E77052'
+        )
+    filterbars = ax1.barh(
+        y_pos, data['filter'], left=data['upfront']+data['power']+gap*2, color='#59B17F'
+        )
+    ax1.set_yticks(y_pos, labels=data['fullname'])
+    ax1.invert_yaxis()  # labels read top-to-bottom
+    ax1.set_xlabel('Dollars ($)')
+    ax1.set_title('Cost')
+    ax1.bar_label(
+        filterbars, dollarlabels,
+        label_type='edge', padding=8, fmt='$%d', color='grey'
+        )
+    ax1.spines['top'].set_visible(False)
+    ax1.spines['right'].set_visible(False)
+    ax1.spines['left'].set_visible(False)
+    ax1.tick_params(axis='y', which='both', left=False)
+    ax1.legend(
+        [innerbars, powerbars, filterbars],
+        ['Upfront', 'Yearly filter', 'Yearly power'],
+        ncol=2,
+        )
+
+    noisecmap = load.get_parameters_data().loc['noise cmap', 'value']
+    noisecolours = tuple(
+        map(plt.get_cmap(noisecmap), Normalize(20, 80)(data['noise']))
+        )
+    bars = ax2.barh(y_pos, data['noise'], color=noisecolours)
+    ax2.set_yticks(y_pos, labels=[])
+    ax2.invert_yaxis()  # labels read top-to-bottom
+    ax2.set_xlabel('Decibels (dB)')
+    ax2.set_title('Noise')
+    ax2.set_xlim(20)
+    ax2.bar_label(bars, label_type='edge', padding=8, fmt='%d dB', color='grey')
+    ax2.spines['top'].set_visible(False)
+    ax2.spines['right'].set_visible(False)
+    ax2.spines['left'].set_visible(False)
+    ax2.tick_params(axis='y', which='both', left=False)
+
+    plt.savefig(os.path.join(path, name) + '.png')
+    plt.close(fig)
+
+
 def overview(path=productsdir, name='overview'):
 
     vols, quals = load.get_volume_data(), load.get_quality_data()
@@ -209,7 +293,7 @@ def decision_tool(path=productsdir, name='decision_tool'):
     strn += '\n' + make_cost_analysis_form_channel('volume', vols)
     strn += '\n' + '\n'.join((
         '''</fieldset>''',
-        '''</div>'''
+        '''</div>''',
         ))
 
     strn += '\n' + '\n'.join((
@@ -221,7 +305,7 @@ def decision_tool(path=productsdir, name='decision_tool'):
     strn += '\n' + make_cost_analysis_form_channel('quality', quals)
     strn += '\n' + '\n'.join((
         '''</fieldset>''',
-        '''</div>'''
+        '''</div>''',
         ))
 
     strn += '\n' + '\n'.join((
