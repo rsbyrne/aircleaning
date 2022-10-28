@@ -399,13 +399,13 @@ def decision_tool(soft=False):
                     ),
                 ),
             'Width (m):': html.CapturedInput(
-                'range', 5, input_kwargs=dict(
+                'range', 4, input_kwargs=dict(
                     min=width_range.start, max=width_range.stop-1, step=width_range.step,
                     style="width: 90%;", name='room_width',
                     )
                 ),
             'Height (m):': html.CapturedInput(
-                'range', 3, input_kwargs=dict(
+                'range', 2, input_kwargs=dict(
                     min=height_range.start, max=height_range.stop-1, step=height_range.step,
                     style="width: 90%;", name='room_height',
                     ),
