@@ -471,14 +471,15 @@ class TabbedPanes(Div):
         panes = Div(*(
             Pane(content.title, pane_class, content) for content in args
             ), classes=(self.PANE_SPACE_CLASS,))
-        pane_selector = Div(*(
-            Button(
-                pane.tab, classes=(button_class,),
-                onclick=f'''openPane(event, '{pane_class}', '{pane.identity}')''',
-                identity=f"{self.identity}_button_{i}"
-                )
-            for i, pane in enumerate(panes.contents)
-            ), classes=(self.PANE_SELECTOR_CLASS,))
+        pane_selector = Div(
+            *(
+                Button(
+                    pane.tab, classes=(button_class,),
+                    onclick=f'''openPane(event, '{pane_class}', '{pane.identity}')''',
+                    identity=f"{self.identity}_button_{i}"
+                    )
+                for i, pane in enumerate(panes.contents)
+                ), classes=(self.PANE_SELECTOR_CLASS,))
         self.add_content((pane_selector, panes))
 
     def yield_scripts(self, /):
@@ -511,15 +512,16 @@ class TabbedPanes(Div):
             "/* Style the tab */",
             f".{self.PANE_SELECTOR_CLASS} {{",
             "  overflow: hidden;",
-            "  border: 1px solid #ccc;",
-            "  background-color: #f1f1f1;",
+            # "  border: 1px solid #ccc;",
+            # "  background-color: #f1f1f1;",
             # "  float:center",
+            "  justify-items:center;"
             "}",
             ))
         yield '\n' + '\n'.join((
             "/* Style the buttons that are used to open the tab content */",
             f".{self.PANE_SELECTOR_CLASS} button {{",
-            "  background-color: inherit;",
+            "  background-color: #f1f1f1;",
             "  float: left;",
             "  border: none;",
             "  outline: none;",
@@ -545,8 +547,8 @@ class TabbedPanes(Div):
             f".{self.pane_class} {{",
             "  display: none;",
             "  padding: 6px 12px;",
-            "  border: 1px solid #ccc;",
-            "  border-top: none;",
+            # "  border: 1px solid #ccc;",
+            # "  border-top: none;",
             "  animation: fadeEffect 1s;",
             "}"
             ))
