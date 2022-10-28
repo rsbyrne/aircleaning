@@ -443,6 +443,10 @@ class Button(Normal):
 
     __slots__ = ()
 
+    def yield_attributes(self, /):
+        yield from super().yield_attributes()
+        yield "type", "button"
+
 
 class Pane(Div):
 
@@ -471,8 +475,9 @@ class TabbedPanes(Div):
             Button(
                 pane.tab, classes=(button_class,),
                 onclick=f'''openPane(event, '{pane_class}', '{pane.identity}')''',
+                identity=f"{self.identity}_button_{i}"
                 )
-            for pane in panes.contents
+            for i, pane in enumerate(panes.contents)
             ), classes=(self.PANE_SELECTOR_CLASS,))
         self.add_content((pane_selector, panes))
 
