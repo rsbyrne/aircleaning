@@ -456,14 +456,20 @@ def decision_tool(soft=False):
     cleaning_fields = html.Fieldset(
         "How much cleaning is already available?",
         {
-            'Mechanical ventilation:': html.LabelledInput(
-                'Yes', html.Input('checkbox', 0, name='mech_vent'),
-                ),
             'Number of open windows:': html.CapturedInput(
                 'range', 0, input_kwargs=dict(
                     min=window_range.start, max=window_range.stop-1, step=window_range.step,
                     style="width: 90%;", name='number_windows',
                     ),
+                ),
+            'Number of open doors:': html.CapturedInput(
+                'range', 0, input_kwargs=dict(
+                    min=door_range.start, max=door_range.stop-1, step=door_range.step,
+                    style="width: 90%;", name='number_doors',
+                    ),
+                ),
+            'Mechanical ventilation:': html.LabelledInput(
+                'Yes', html.Input('checkbox', 0, name='mech_vent'),
                 ),
             },
         html.Div(
@@ -598,38 +604,68 @@ def decision_tool(soft=False):
         # classes=('container',)
         )
 
+    science_code = html.Script(
+        '''function calculate_natural_vent_rate(windows, doors){''',
+        '''  const wind_speed = 3;''',
+        '''  const window_area = 0.5 * 0.8 * windows;''',
+        '''  const door_area = 0.6 * 2 * doors;''',
+        '''  if (windows>0 && doors>0) {''',
+        '''    var coeff = 0.1;''',
+        '''    var aperture = Math.min(window_area, door_area);'''
+        '''  } else {''',
+        '''    var coeff = 0.01;''',
+        '''    var aperture = Math.max(window_area, door_area);'''
+        '''  };''',
+        '''  return coeff * wind_speed * aperture * 3600;''',
+        '''};''',
+        '''function calculate_mech_vent_rate(mech, volume){''',
+        '''  return mech * 6 * volume;''',
+        '''};''',
+        '''function calculate_vent_rate(windows, doors, mech, volume){''',
+        '''  const natural = calculate_natural_vent_rate(windows, doors);''',
+        '''  const mechanical = calculate_mech_vent_rate(mech, volume);''',
+        '''  const baseline = 3 * volume;'''
+        '''  return natural + mechanical + baseline'''
+        '''};''',
+        '''function calculate_fouling_rate(persons, activity, volume){''',
+        '''  const multiplier = [1, 3, 10][activity];'''
+        '''  const policy_1 = 0.35 * multiplier * volume * persons;'''
+        '''  const l_s_pp = 10;'''
+        '''  const m3_h_pp = l_s_pp * 3600 / 1000;'''
+        '''  const policy_2 = multiplier * m3_h_pp * persons;''',
+        '''  return Math.max(policy_1, policy_2)'''
+        '''};''',
+        )
+
     form_update = html.Script(
         '''function form_update(form){''',
-        '''    var length, width, height, windows,''',
-        '''        productsdir, '''
-        '''        persons, room, volume, window_cleaning, mech_vent,''',
-        '''        provided_cleaning, required_cleaning, activity_level,''',
-        '''        extra_cleaning, extra_cleaning_cadr, acchart;''',
-        '''    productsdir = "https://rsbyrne.github.io/aircleaning/products";'''
-        '''    length = form.room_length.value;''',
-        '''    width = form.room_width.value;''',
-        '''    height = form.room_height.value;''',
-        '''    windows = form.number_windows.value;''',
-        '''    persons = form.number_people.value;''',
-        '''    room = document.getElementById('room_viz');''',
-        '''    activity_level = parseInt(form.activity_level.value);''',
+        '''    const productsdir = "https://rsbyrne.github.io/aircleaning/products";'''
+        '''    const length = form.room_length.value;''',
+        '''    const width = form.room_width.value;''',
+        '''    const height = form.room_height.value;''',
+        '''    const windows = form.number_windows.value;''',
+        '''    const doors = form.number_doors.value;''',
+        '''    const persons = form.number_people.value;''',
+        '''    const room = document.getElementById('room_viz');''',
+        '''    const mech = form.mech_vent.value;'''
+        '''    const activity = parseInt(form.activity_level.value);''',
         '''    room.src =''',
         '''        productsdir + "/rooms/" +''',
-        '''        [length, width, height, windows, persons, activity_level].join("_")''',
+        '''        [length, width, height, persons, activity, windows, doors, mech].join("_")''',
         '''        + ".svg";''',
-        '''    volume = form.room_length.value * form.room_width.value * form.room_height.value;''',
+        '''    const volume = form.room_length.value * form.room_width.value * form.room_height.value;''',
         '''    document.getElementById("total_volume").innerHTML = volume;''',
-        '''    window_cleaning = form.number_windows.value * 200;''',
-        '''    mech_vent = form.mech_vent.value * 6 * volume;''',
-        '''    provided_cleaning = Math.round((window_cleaning + mech_vent) / volume);''',
+        '''    const vent_rate = calculate_vent_rate(windows, doors, mech, volume);'''
+        '''    const provided_cleaning = Math.round(vent_rate / volume);''',
         '''    document.getElementById("provided_cleaning").innerHTML = provided_cleaning;''',
-        '''    required_cleaning = (activity_level + 1) * persons;'''
+        '''    const fouling_rate = calculate_fouling_rate(persons, activity, volume);'''
+        '''    const required_cleaning = Math.max(4, Math.round(fouling_rate / volume));'''
         '''    document.getElementById("required_cleaning").innerHTML = required_cleaning;'''
-        '''    extra_cleaning = Math.max(0, required_cleaning - provided_cleaning);'''
+        '''    const extra_cleaning = Math.max(0, required_cleaning - provided_cleaning);'''
         '''    document.getElementById("extra_cleaning").innerHTML = extra_cleaning;''',
-        '''    extra_cleaning_cadr = Math.ceil(extra_cleaning * volume / 100) * 100;'''
+        '''    const extra_cleaning_cadr = Math.ceil(extra_cleaning * volume / 100) * 100;'''
         '''    document.getElementById("extra_cleaning_cadr").innerHTML = extra_cleaning_cadr;''',
-        '''    acchart = document.getElementById("air_cleaner_recommendations");''',
+        '''    const acchart = document.getElementById("air_cleaner_recommendations");''',
         '''    acchart.src =''',
         '''        productsdir + "/costs/" +''',
         '''        Math.max(100, extra_cleaning_cadr)''',
@@ -644,6 +680,7 @@ def decision_tool(soft=False):
         )
 
     page = html.Page(
+        science_code,
         form_update,
         all_style,
         html.Div(
