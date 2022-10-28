@@ -344,13 +344,17 @@ def multi_cost_analysis(path=productsdir):
 
 def decision_tool(soft=False):
 
-    dim_range = range(3, 7, 1)
+    width_range = range(4, 8)
+    length_range = range(4, 8)
+    height_range = range(2, 5)
     window_range = range(6)
     door_range = range(3)
     mech_range = range(2)
     person_range = range(1, 6, 1)
     activity_range = range(3)
-    allvols = tuple(sorted(set(map(np.product, itertools.combinations_with_replacement(dim_range, 3)))))
+    allvols = tuple(sorted(set(map(np.product, itertools.product(
+        width_range, length_range, height_range,
+        )))))
     ach_range = range(0, 16)
     cadrs = tuple(sorted(set(
         math.ceil(val / 100) * 100
@@ -360,7 +364,7 @@ def decision_tool(soft=False):
     if not soft:
         outpath = os.path.join(productsdir, 'rooms')
         room_combos = tuple(itertools.product(
-            dim_range, dim_range, dim_range,
+            width_range, length_range, height_range,
             person_range, activity_range,
             window_range, door_range, mech_range,
             ))
@@ -390,19 +394,19 @@ def decision_tool(soft=False):
         {
             'Length (m):': html.CapturedInput(
                 'range', 5, input_kwargs=dict(
-                    min=dim_range.start, max=dim_range.stop-1, step=dim_range.step,
+                    min=length_range.start, max=length_range.stop-1, step=length_range.step,
                     style="width: 90%;", name='room_length',
                     ),
                 ),
             'Width (m):': html.CapturedInput(
                 'range', 5, input_kwargs=dict(
-                    min=dim_range.start, max=dim_range.stop-1, step=dim_range.step,
+                    min=width_range.start, max=width_range.stop-1, step=width_range.step,
                     style="width: 90%;", name='room_width',
                     )
                 ),
             'Height (m):': html.CapturedInput(
                 'range', 3, input_kwargs=dict(
-                    min=dim_range.start, max=dim_range.stop-1, step=dim_range.step,
+                    min=height_range.start, max=height_range.stop-1, step=height_range.step,
                     style="width: 90%;", name='room_height',
                     ),
                 ),
@@ -663,7 +667,7 @@ def decision_tool(soft=False):
         '''    document.getElementById("required_cleaning").innerHTML = required_cleaning;'''
         '''    const extra_cleaning = Math.max(0, required_cleaning - provided_cleaning);'''
         '''    document.getElementById("extra_cleaning").innerHTML = extra_cleaning;''',
-        '''    const extra_cleaning_cadr = Math.ceil(extra_cleaning * volume / 100) * 100;'''
+        '''    const extra_cleaning_cadr = Math.ceil(Math.min(15, extra_cleaning) * volume / 100) * 100;'''
         '''    document.getElementById("extra_cleaning_cadr").innerHTML = extra_cleaning_cadr;''',
         '''    const acchart = document.getElementById("air_cleaner_recommendations");''',
         '''    acchart.src =''',
