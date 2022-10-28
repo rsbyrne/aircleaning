@@ -71,19 +71,19 @@ function openPane(evt, paneClass, paneName) {
   <title>None</title>
 </head>
 <html
-  name="id_139931969230688"
-  id=id_139931969230688
+  name="id_140555701186816"
+  id=id_140555701186816
   lang="en"
 >
   <body>
     <script
-      name="id_139931969230016"
-      id=id_139931969230016
+      name="id_140555701189408"
+      id=id_140555701189408
     >
       function calculate_natural_vent_rate(windows, doors){
         const wind_speed = 3;
         const window_area = 0.5 * 0.8 * windows;
-        const door_area = 0.6 * 2 * doors;
+        const door_area = 0.6 * 1.9 * doors;
         if (windows>0 && doors>0) {
           var coeff = 0.1;
           var aperture = Math.min(window_area, door_area);  } else {
@@ -103,8 +103,8 @@ function openPane(evt, paneClass, paneName) {
         return Math.max(policy_1, policy_2)};
     </script>
     <script
-      name="id_139931969231744"
-      id=id_139931969231744
+      name="id_140555701188064"
+      id=id_140555701188064
     >
       function form_update(form){
           const productsdir = "https://rsbyrne.github.io/aircleaning/products";    const length = form.room_length.value;
@@ -124,7 +124,7 @@ function openPane(evt, paneClass, paneName) {
           const vent_rate = calculate_vent_rate(windows, doors, mech, volume);    const provided_cleaning = Math.round(vent_rate / volume);
           document.getElementById("provided_cleaning").innerHTML = provided_cleaning;
           const fouling_rate = calculate_fouling_rate(persons, activity, volume);    const required_cleaning = Math.max(4, Math.round(fouling_rate / volume));    document.getElementById("required_cleaning").innerHTML = required_cleaning;    const extra_cleaning = Math.max(0, required_cleaning - provided_cleaning);    document.getElementById("extra_cleaning").innerHTML = extra_cleaning;
-          const extra_cleaning_cadr = Math.ceil(extra_cleaning * volume / 100) * 100;    document.getElementById("extra_cleaning_cadr").innerHTML = extra_cleaning_cadr;
+          const extra_cleaning_cadr = Math.ceil(Math.min(15, extra_cleaning) * volume / 100) * 100;    document.getElementById("extra_cleaning_cadr").innerHTML = extra_cleaning_cadr;
           const acchart = document.getElementById("air_cleaner_recommendations");
           acchart.src =
               productsdir + "/costs/" +
@@ -133,23 +133,23 @@ function openPane(evt, paneClass, paneName) {
       }
     </script>
     <style
-      name="id_139931970560832"
-      id=id_139931970560832
+      name="id_140555702420576"
+      id=id_140555702420576
     >
     </style>
     <div
-      name="id_139931969230112"
-      id=id_139931969230112
+      name="id_140555701190560"
+      id=id_140555701190560
       style="display: flex;justify-items: center;flex-wrap: wrap;align-items: center;justify-content: center;"
     >
       <div
-        name="id_139931969229344"
-        id=id_139931969229344
+        name="id_140555701187104"
+        id=id_140555701187104
         style="display: grid;grid-template-rows: 25% 7% 68%;max-height: 11.7in;max-width: 8.3in;"
       >
         <div
-          name="id_139931969229824"
-          id=id_139931969229824
+          name="id_140555701188160"
+          id=id_140555701188160
           style="display: grid; grid-template-columns: 60% 40%; overflow:auto"
         >
           <form
@@ -161,8 +161,8 @@ function openPane(evt, paneClass, paneName) {
               id=input_selector
             >
               <div
-                name="id_139931969232704"
-                id=id_139931969232704
+                name="id_140555701190368"
+                id=id_140555701190368
                 class="pane_selector"
                 style="width: 100%;"
               >
@@ -170,7 +170,7 @@ function openPane(evt, paneClass, paneName) {
                   name="input_selector_button_0"
                   id=input_selector_button_0
                   class="input_selector_pane_button"
-                  onclick="openPane(event, 'input_selector_pane', 'id_139931969293760')"
+                  onclick="openPane(event, 'input_selector_pane', 'id_140555701093760')"
                   type=button
                 >
                   Dimensions
@@ -179,7 +179,7 @@ function openPane(evt, paneClass, paneName) {
                   name="input_selector_button_1"
                   id=input_selector_button_1
                   class="input_selector_pane_button"
-                  onclick="openPane(event, 'input_selector_pane', 'id_139931969293472')"
+                  onclick="openPane(event, 'input_selector_pane', 'id_140555701094912')"
                   type=button
                 >
                   Usage
@@ -188,51 +188,51 @@ function openPane(evt, paneClass, paneName) {
                   name="input_selector_button_2"
                   id=input_selector_button_2
                   class="input_selector_pane_button"
-                  onclick="openPane(event, 'input_selector_pane', 'id_139931969291648')"
+                  onclick="openPane(event, 'input_selector_pane', 'id_140555701094144')"
                   type=button
                 >
                   Circulation
                 </button>
               </div>
               <div
-                name="id_139931969291840"
-                id=id_139931969291840
+                name="id_140555701094720"
+                id=id_140555701094720
                 class="pane_space"
               >
                 <div
-                  name="id_139931969293760"
-                  id=id_139931969293760
+                  name="id_140555701093760"
+                  id=id_140555701093760
                   class="input_selector_pane"
                 >
                   <fieldset
                     title="Dimensions"
                     name="room_size"
-                    id=id_139931975450144
+                    id=id_140555714647808
                   >
                     <legend
-                      name="id_139931976088064"
-                      id=id_139931976088064
+                      name="id_140555706195776"
+                      id=id_140555706195776
                     >
                       How big is your room?
                     </legend>
                     <div
-                      name="id_139931972518400"
-                      id=id_139931972518400
+                      name="id_140555703853568"
+                      id=id_140555703853568
                     >
                       <label
-                        name="id_139931986527328_label"
-                        id=id_139931986527328_label
-                        for="id_139931986527328"
+                        name="id_140555711203552_label"
+                        id=id_140555711203552_label
+                        for="id_140555711203552"
                       >
                         Length (m):
                       </label>
                       <div
-                        name="id_139931986527328"
-                        id=id_139931986527328
+                        name="id_140555711203552"
+                        id=id_140555711203552
                       >
                         <input
                           name="room_length"
-                          id=id_139932000393584
+                          id=id_140555732334960
                           oninput="this.nextElementSibling.value=this.value;form_update(this.form)"
                           min=4
                           max=7
@@ -243,32 +243,32 @@ function openPane(evt, paneClass, paneName) {
                           oninput="form_update(this.form)"
                         >
                         <output
-                          name="id_139931985888256"
-                          id=id_139931985888256
-                          for="id_139932000393584"
+                          name="id_140555722120928"
+                          id=id_140555722120928
+                          for="id_140555732334960"
                         >
                           5
                         </output>
                       </div>
                     </div>
                     <div
-                      name="id_139931972518064"
-                      id=id_139931972518064
+                      name="id_140555703853232"
+                      id=id_140555703853232
                     >
                       <label
-                        name="id_139931972728960_label"
-                        id=id_139931972728960_label
-                        for="id_139931972728960"
+                        name="id_140555714601600_label"
+                        id=id_140555714601600_label
+                        for="id_140555714601600"
                       >
                         Width (m):
                       </label>
                       <div
-                        name="id_139931972728960"
-                        id=id_139931972728960
+                        name="id_140555714601600"
+                        id=id_140555714601600
                       >
                         <input
                           name="room_width"
-                          id=id_139932029288960
+                          id=id_140555761144320
                           oninput="this.nextElementSibling.value=this.value;form_update(this.form)"
                           min=4
                           max=7
@@ -279,32 +279,32 @@ function openPane(evt, paneClass, paneName) {
                           oninput="form_update(this.form)"
                         >
                         <output
-                          name="id_139931990268800"
-                          id=id_139931990268800
-                          for="id_139932029288960"
+                          name="id_140555712499872"
+                          id=id_140555712499872
+                          for="id_140555761144320"
                         >
                           5
                         </output>
                       </div>
                     </div>
                     <div
-                      name="id_139931972518624"
-                      id=id_139931972518624
+                      name="id_140555703853792"
+                      id=id_140555703853792
                     >
                       <label
-                        name="id_139931990265920_label"
-                        id=id_139931990265920_label
-                        for="id_139931990265920"
+                        name="id_140555725260448_label"
+                        id=id_140555725260448_label
+                        for="id_140555725260448"
                       >
                         Height (m):
                       </label>
                       <div
-                        name="id_139931990265920"
-                        id=id_139931990265920
+                        name="id_140555725260448"
+                        id=id_140555725260448
                       >
                         <input
                           name="room_height"
-                          id=id_139932029291424
+                          id=id_140555761146784
                           oninput="this.nextElementSibling.value=this.value;form_update(this.form)"
                           min=2
                           max=4
@@ -315,22 +315,22 @@ function openPane(evt, paneClass, paneName) {
                           oninput="form_update(this.form)"
                         >
                         <output
-                          name="id_139931993485024"
-                          id=id_139931993485024
-                          for="id_139932029291424"
+                          name="id_140555704148416"
+                          id=id_140555704148416
+                          for="id_140555761146784"
                         >
                           3
                         </output>
                       </div>
                     </div>
                     <div
-                      name="id_139932007160224"
-                      id=id_139932007160224
+                      name="id_140555707941408"
+                      id=id_140555707941408
                       style="margin-upper:10px"
                     >
                       <div
-                        name="id_139931972689824"
-                        id=id_139931972689824
+                        name="id_140555707943520"
+                        id=id_140555707943520
                         style="float: left; width:70%; margin-right:10px"
                       >
                         Total volume (m<sup>3</sup>):
@@ -346,39 +346,39 @@ function openPane(evt, paneClass, paneName) {
                   </fieldset>
                 </div>
                 <div
-                  name="id_139931969293472"
-                  id=id_139931969293472
+                  name="id_140555701094912"
+                  id=id_140555701094912
                   class="input_selector_pane"
                 >
                   <fieldset
                     title="Usage"
                     name="room_usage"
-                    id=id_139931969294144
+                    id=id_140555701094528
                   >
                     <legend
-                      name="id_139931969292320"
-                      id=id_139931969292320
+                      name="id_140555701092704"
+                      id=id_140555701092704
                     >
                       How is the room being used?
                     </legend>
                     <div
-                      name="id_139931972519408"
-                      id=id_139931972519408
+                      name="id_140555703854576"
+                      id=id_140555703854576
                     >
                       <label
-                        name="id_139931992675136_label"
-                        id=id_139931992675136_label
-                        for="id_139931992675136"
+                        name="id_140555709097344_label"
+                        id=id_140555709097344_label
+                        for="id_140555709097344"
                       >
                         Number of people:
                       </label>
                       <div
-                        name="id_139931992675136"
-                        id=id_139931992675136
+                        name="id_140555709097344"
+                        id=id_140555709097344
                       >
                         <input
                           name="number_people"
-                          id=id_139932029289744
+                          id=id_140555761145104
                           oninput="this.nextElementSibling.value=this.value;form_update(this.form)"
                           min=1
                           max=5
@@ -389,49 +389,49 @@ function openPane(evt, paneClass, paneName) {
                           oninput="form_update(this.form)"
                         >
                         <output
-                          name="id_139931979403904"
-                          id=id_139931979403904
-                          for="id_139932029289744"
+                          name="id_140555704120704"
+                          id=id_140555704120704
+                          for="id_140555761145104"
                         >
                           1
                         </output>
                       </div>
                     </div>
                     <div
-                      name="id_139931972519520"
-                      id=id_139931972519520
+                      name="id_140555703854688"
+                      id=id_140555703854688
                     >
                       <label
-                        name="id_139931969488256_label"
-                        id=id_139931969488256_label
-                        for="id_139931969488256"
+                        name="id_140555701180544_label"
+                        id=id_140555701180544_label
+                        for="id_140555701180544"
                       >
                         Level of activity:
                       </label>
                       <div
-                        name="id_139931969488256"
-                        id=id_139931969488256
+                        name="id_140555701180544"
+                        id=id_140555701180544
                         style="margin:10px"
                       >
                         <div
-                          name="id_139931969244800"
-                          id=id_139931969244800
+                          name="id_140555700993760"
+                          id=id_140555700993760
                           style="display:flex;justify-content:center;align-items:center;"
                         >
                           <div
-                            name="id_139931972518960"
-                            id=id_139931972518960
+                            name="id_140555703854128"
+                            id=id_140555703854128
                           >
                             <label
-                              name="id_139931972518288_label"
-                              id=id_139931972518288_label
-                              for="id_139931972518288"
+                              name="id_140555703853456_label"
+                              id=id_140555703853456_label
+                              for="id_140555703853456"
                             >
                               Relaxed
                             </label>
                             <input
                               name="activity_level"
-                              id=id_139931972518288
+                              id=id_140555703853456
                               checked
                               type="radio"
                               value="0"
@@ -439,38 +439,38 @@ function openPane(evt, paneClass, paneName) {
                             >
                           </div>
                           <div
-                            name="id_139931972519072"
-                            id=id_139931972519072
+                            name="id_140555703854240"
+                            id=id_140555703854240
                           >
                             <label
-                              name="id_139931972518736_label"
-                              id=id_139931972518736_label
-                              for="id_139931972518736"
+                              name="id_140555703853904_label"
+                              id=id_140555703853904_label
+                              for="id_140555703853904"
                             >
                               Moderate
                             </label>
                             <input
                               name="activity_level"
-                              id=id_139931972518736
+                              id=id_140555703853904
                               type="radio"
                               value="1"
                               oninput="form_update(this.form)"
                             >
                           </div>
                           <div
-                            name="id_139931972519296"
-                            id=id_139931972519296
+                            name="id_140555703854464"
+                            id=id_140555703854464
                           >
                             <label
-                              name="id_139931972519184_label"
-                              id=id_139931972519184_label
-                              for="id_139931972519184"
+                              name="id_140555703854352_label"
+                              id=id_140555703854352_label
+                              for="id_140555703854352"
                             >
                               Intense
                             </label>
                             <input
                               name="activity_level"
-                              id=id_139931972519184
+                              id=id_140555703854352
                               type="radio"
                               value="2"
                               oninput="form_update(this.form)"
@@ -480,13 +480,13 @@ function openPane(evt, paneClass, paneName) {
                       </div>
                     </div>
                     <div
-                      name="id_139931969293664"
-                      id=id_139931969293664
+                      name="id_140555701207584"
+                      id=id_140555701207584
                       style="margin-upper:10px"
                     >
                       <div
-                        name="id_139931969254112"
-                        id=id_139931969254112
+                        name="id_140555704562208"
+                        id=id_140555704562208
                         style="float: left; width:70%; margin-right:10px"
                       >
                         Required cleaning (ACH):
@@ -502,39 +502,39 @@ function openPane(evt, paneClass, paneName) {
                   </fieldset>
                 </div>
                 <div
-                  name="id_139931969291648"
-                  id=id_139931969291648
+                  name="id_140555701094144"
+                  id=id_140555701094144
                   class="input_selector_pane"
                 >
                   <fieldset
                     title="Circulation"
                     name="room_cleaning"
-                    id=id_139931969291168
+                    id=id_140555701095488
                   >
                     <legend
-                      name="id_139931969290880"
-                      id=id_139931969290880
+                      name="id_140555701095680"
+                      id=id_140555701095680
                     >
                       How much cleaning is already available?
                     </legend>
                     <div
-                      name="id_139931972520080"
-                      id=id_139931972520080
+                      name="id_140555703855248"
+                      id=id_140555703855248
                     >
                       <label
-                        name="id_139931969291264_label"
-                        id=id_139931969291264_label
-                        for="id_139931969291264"
+                        name="id_140555701095200_label"
+                        id=id_140555701095200_label
+                        for="id_140555701095200"
                       >
                         Number of open windows:
                       </label>
                       <div
-                        name="id_139931969291264"
-                        id=id_139931969291264
+                        name="id_140555701095200"
+                        id=id_140555701095200
                       >
                         <input
                           name="number_windows"
-                          id=id_139931972518176
+                          id=id_140555703853344
                           oninput="this.nextElementSibling.value=this.value;form_update(this.form)"
                           min=0
                           max=5
@@ -545,32 +545,32 @@ function openPane(evt, paneClass, paneName) {
                           oninput="form_update(this.form)"
                         >
                         <output
-                          name="id_139931969292800"
-                          id=id_139931969292800
-                          for="id_139931972518176"
+                          name="id_140555701095392"
+                          id=id_140555701095392
+                          for="id_140555703853344"
                         >
                           0
                         </output>
                       </div>
                     </div>
                     <div
-                      name="id_139931972520192"
-                      id=id_139931972520192
+                      name="id_140555703855360"
+                      id=id_140555703855360
                     >
                       <label
-                        name="id_139931969291072_label"
-                        id=id_139931969291072_label
-                        for="id_139931969291072"
+                        name="id_140555701095968_label"
+                        id=id_140555701095968_label
+                        for="id_140555701095968"
                       >
                         Number of open doors:
                       </label>
                       <div
-                        name="id_139931969291072"
-                        id=id_139931969291072
+                        name="id_140555701095968"
+                        id=id_140555701095968
                       >
                         <input
                           name="number_doors"
-                          id=id_139931972519632
+                          id=id_140555703854800
                           oninput="this.nextElementSibling.value=this.value;form_update(this.form)"
                           min=0
                           max=2
@@ -581,39 +581,39 @@ function openPane(evt, paneClass, paneName) {
                           oninput="form_update(this.form)"
                         >
                         <output
-                          name="id_139931969293184"
-                          id=id_139931969293184
-                          for="id_139931972519632"
+                          name="id_140555701094432"
+                          id=id_140555701094432
+                          for="id_140555703854800"
                         >
                           0
                         </output>
                       </div>
                     </div>
                     <div
-                      name="id_139931972520304"
-                      id=id_139931972520304
+                      name="id_140555703855472"
+                      id=id_140555703855472
                     >
                       <label
-                        name="id_139931972519856_label"
-                        id=id_139931972519856_label
-                        for="id_139931972519856"
+                        name="id_140555703855024_label"
+                        id=id_140555703855024_label
+                        for="id_140555703855024"
                       >
                         Mechanical ventilation:
                       </label>
                       <div
-                        name="id_139931972519856"
-                        id=id_139931972519856
+                        name="id_140555703855024"
+                        id=id_140555703855024
                       >
                         <label
-                          name="id_139931972519744_label"
-                          id=id_139931972519744_label
-                          for="id_139931972519744"
+                          name="id_140555703854912_label"
+                          id=id_140555703854912_label
+                          for="id_140555703854912"
                         >
                           Yes
                         </label>
                         <input
                           name="mech_vent"
-                          id=id_139931972519744
+                          id=id_140555703854912
                           type="checkbox"
                           value="0"
                           onclick="if (this.value==0){this.value=1}else{this.value=0};form_update(this.form)"
@@ -621,13 +621,13 @@ function openPane(evt, paneClass, paneName) {
                       </div>
                     </div>
                     <div
-                      name="id_139931969292608"
-                      id=id_139931969292608
+                      name="id_140555701093952"
+                      id=id_140555701093952
                       style="margin-upper:10px"
                     >
                       <div
-                        name="id_139931969294048"
-                        id=id_139931969294048
+                        name="id_140555701094816"
+                        id=id_140555701094816
                         style="float: left; width:70%; margin-right:10px"
                       >
                         Provided cleaning (ACH):
@@ -646,8 +646,8 @@ function openPane(evt, paneClass, paneName) {
             </div>
           </form>
           <div
-            name="id_139931969293280"
-            id=id_139931969293280
+            name="id_140555701096256"
+            id=id_140555701096256
           >
             <img
               name="room_viz"
@@ -659,34 +659,34 @@ function openPane(evt, paneClass, paneName) {
           </div>
         </div>
         <div
-          name="id_139931969232128"
-          id=id_139931969232128
+          name="id_140555701189312"
+          id=id_140555701189312
         >
           <div
-            name="id_139931969229440"
-            id=id_139931969229440
+            name="id_140555701187200"
+            id=id_140555701187200
             style="display: grid;grid-template-rows: 30px 1fr;justify-items: center;"
           >
             <div
-              name="id_139931969232512"
-              id=id_139931969232512
+              name="id_140555701189792"
+              id=id_140555701189792
               style="display:flex;justify-items:center;"
             >
               <b>Extra cleaning required:</b>
             </div>
             <div
-              name="id_139931969231360"
-              id=id_139931969231360
+              name="id_140555701187296"
+              id=id_140555701187296
               style="display: grid;grid-template-rows: 1fr 1fr;"
             >
               <div
-                name="id_139931969228960"
-                id=id_139931969228960
+                name="id_140555701188352"
+                id=id_140555701188352
                 style="display: grid;grid-template-columns: 1fr 1fr;justify-items:center;"
               >
                 <div
-                  name="id_139931969231840"
-                  id=id_139931969231840
+                  name="id_140555701189504"
+                  id=id_140555701189504
                 >
                   <i>Air changes (ACH):</i>
                 </div>
@@ -698,13 +698,13 @@ function openPane(evt, paneClass, paneName) {
                 </div>
               </div>
               <div
-                name="id_139931969230592"
-                id=id_139931969230592
+                name="id_140555701187392"
+                id=id_140555701187392
                 style="display: grid;grid-template-columns: 1fr 1fr;justify-items:center;"
               >
                 <div
-                  name="id_139931969232320"
-                  id=id_139931969232320
+                  name="id_140555701188640"
+                  id=id_140555701188640
                 >
                   <i>CADR (m<sup>3</sup>/hr):</i>
                 </div>
@@ -719,8 +719,8 @@ function openPane(evt, paneClass, paneName) {
           </div>
         </div>
         <div
-          name="id_139931969232032"
-          id=id_139931969232032
+          name="id_140555701189984"
+          id=id_140555701189984
           style="display: grid; grid-template-rows: 1fr 3fr;"
         >
           <div
@@ -728,8 +728,8 @@ function openPane(evt, paneClass, paneName) {
             id=tool_selector
           >
             <div
-              name="id_139931969231936"
-              id=id_139931969231936
+              name="id_140555701187776"
+              id=id_140555701187776
               class="pane_selector"
               style="width: 100%;"
             >
@@ -737,20 +737,20 @@ function openPane(evt, paneClass, paneName) {
                 name="tool_selector_button_0"
                 id=tool_selector_button_0
                 class="tool_selector_pane_button"
-                onclick="openPane(event, 'tool_selector_pane', 'id_139931969229728')"
+                onclick="openPane(event, 'tool_selector_pane', 'id_140555701189120')"
                 type=button
               >
                 Air cleaners
               </button>
             </div>
             <div
-              name="id_139931969231648"
-              id=id_139931969231648
+              name="id_140555701189024"
+              id=id_140555701189024
               class="pane_space"
             >
               <div
-                name="id_139931969229728"
-                id=id_139931969229728
+                name="id_140555701189120"
+                id=id_140555701189120
                 class="tool_selector_pane"
               >
                 <img
@@ -768,8 +768,8 @@ function openPane(evt, paneClass, paneName) {
       </div>
     </div>
     <script
-      name="id_139931969230208"
-      id=id_139931969230208
+      name="id_140555701190464"
+      id=id_140555701190464
     >
       form_update(document.getElementById("user_form"));
       document.getElementById("tool_selector_button_0").click();document.getElementById("input_selector_button_0").click();

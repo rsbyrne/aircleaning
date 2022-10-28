@@ -612,7 +612,7 @@ def decision_tool(soft=False):
         '''function calculate_natural_vent_rate(windows, doors){''',
         '''  const wind_speed = 3;''',
         '''  const window_area = 0.5 * 0.8 * windows;''',
-        '''  const door_area = 0.6 * 2 * doors;''',
+        '''  const door_area = 0.6 * 1.9 * doors;''',
         '''  if (windows>0 && doors>0) {''',
         '''    var coeff = 0.1;''',
         '''    var aperture = Math.min(window_area, door_area);'''

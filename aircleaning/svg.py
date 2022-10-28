@@ -681,7 +681,7 @@ def draw_scene(
         window = Flat(
             'yz',
             room.fv-i*door_spacing-0.3, room.fv-i*door_spacing+0.3,
-            room.bv, room.bv+2, room.rv, fill='white',
+            room.bv, room.bv+1.9, room.rv, fill='white',
             )
         canvas.add(window)
     # door = Flat('yz', wall1.uc-0.3, wall1.uc+0.3, 0, 2, room.rv, fill='white')
