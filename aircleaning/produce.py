@@ -627,7 +627,7 @@ def decision_tool(soft=False):
         '''    acchart = document.getElementById("air_cleaner_recommendations");''',
         '''    acchart.src =''',
         '''        productsdir + "/costs/" +''',
-        '''        extra_cleaning_cadr''',
+        '''        Math.max(100, extra_cleaning_cadr)''',
         '''        + ".png";''',
         '''}''',
         )
