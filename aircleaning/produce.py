@@ -342,7 +342,7 @@ def multi_cost_analysis(path=productsdir):
                 )
 
 
-def decision_tool():
+def decision_tool(soft=False):
 
     dim_range = range(3, 7, 1)
     window_range = range(6)
@@ -358,15 +358,17 @@ def decision_tool():
     room_combos = tuple(itertools.product(
         dim_range, dim_range, dim_range, window_range, person_range, activity_range
         ))
-    for room_combo in room_combos:
-        scale = np.power(1/np.product(room_combo[:3]), 1/3) / np.power(1/np.min(allvols), 1/3)
-        room = svg.draw_scene(*room_combo, size=2)
-        room.projection.scale(scale)
-        room.save_svg('_'.join(map(str, room_combo)), os.path.join(repodir, 'products', 'rooms'))
+    if not soft:
+        for room_combo in room_combos:
+            scale = np.power(1/np.product(room_combo[:3]), 1/3) / np.power(1/np.min(allvols), 1/3)
+            room = svg.draw_scene(*room_combo, size=2)
+            room.projection.scale(scale)
+            room.save_svg('_'.join(map(str, room_combo)), os.path.join(repodir, 'products', 'rooms'))
 
     outpath = os.path.join(productsdir, 'costs')
-    for cadr in cadrs:
-        cost_analysis_by_cadr(max(100, cadr), path=outpath, name=str(cadr))
+    if not soft:
+        for cadr in cadrs:
+            cost_analysis_by_cadr(max(100, cadr), path=outpath, name=str(cadr))
 
     all_style = html.Style(
         # '''.container {''',
@@ -639,7 +641,16 @@ def decision_tool():
     page = html.Page(
         form_update,
         all_style,
-        all_content,
+        html.Div(
+            all_content,
+            style=(
+                '''display: flex;'''
+                '''justify-items: center;'''
+                '''flex-wrap: wrap;'''
+                '''align-items: center;'''
+                '''justify-content: center;'''
+                )
+            ),
         initialise_script,
         # style="float:center;margin:auto",
         )

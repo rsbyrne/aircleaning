@@ -71,14 +71,14 @@ function openPane(evt, paneClass, paneName) {
   <title>None</title>
 </head>
 <html
-  name="id_139915383802464"
-  id=id_139915383802464
+  name="id_140232231310720"
+  id=id_140232231310720
   lang="en"
 >
   <body>
     <script
-      name="id_139915383801408"
-      id=id_139915383801408
+      name="id_140232231310432"
+      id=id_140232231310432
     >
       function form_update(form){
           var length, width, height, windows,
@@ -112,601 +112,607 @@ function openPane(evt, paneClass, paneName) {
       }
     </script>
     <style
-      name="id_139915385551360"
-      id=id_139915385551360
+      name="id_140232231823968"
+      id=id_140232231823968
     >
     </style>
     <div
-      name="id_139915383801120"
-      id=id_139915383801120
-      style="display: grid;grid-template-rows: 25% 7% 68%;max-height: 11.7in;max-width: 8.3in;"
+      name="id_140232231310624"
+      id=id_140232231310624
+      style="display: flex;justify-items: center;flex-wrap: wrap;align-items: center;justify-content: center;"
     >
       <div
-        name="id_139915383800064"
-        id=id_139915383800064
-        style="display: grid; grid-template-columns: 60% 40%; overflow:auto"
+        name="id_140232231310336"
+        id=id_140232231310336
+        style="display: grid;grid-template-rows: 25% 7% 68%;max-height: 11.7in;max-width: 8.3in;"
       >
-        <form
-          name="user_form"
-          id=user_form
+        <div
+          name="id_140232231304544"
+          id=id_140232231304544
+          style="display: grid; grid-template-columns: 60% 40%; overflow:auto"
         >
-          <div
-            name="input_selector"
-            id=input_selector
+          <form
+            name="user_form"
+            id=user_form
           >
             <div
-              name="id_139915383803712"
-              id=id_139915383803712
+              name="input_selector"
+              id=input_selector
+            >
+              <div
+                name="id_140232231304352"
+                id=id_140232231304352
+                class="pane_selector"
+                style="width: 100%;"
+              >
+                <button
+                  name="input_selector_button_0"
+                  id=input_selector_button_0
+                  class="input_selector_pane_button"
+                  onclick="openPane(event, 'input_selector_pane', 'id_140232231303680')"
+                  type=button
+                >
+                  Dimensions
+                </button>
+                <button
+                  name="input_selector_button_1"
+                  id=input_selector_button_1
+                  class="input_selector_pane_button"
+                  onclick="openPane(event, 'input_selector_pane', 'id_140232231303776')"
+                  type=button
+                >
+                  Usage
+                </button>
+                <button
+                  name="input_selector_button_2"
+                  id=input_selector_button_2
+                  class="input_selector_pane_button"
+                  onclick="openPane(event, 'input_selector_pane', 'id_140232231303872')"
+                  type=button
+                >
+                  Circulation
+                </button>
+              </div>
+              <div
+                name="id_140232231303968"
+                id=id_140232231303968
+                class="pane_space"
+              >
+                <div
+                  name="id_140232231303680"
+                  id=id_140232231303680
+                  class="input_selector_pane"
+                >
+                  <fieldset
+                    title="Dimensions"
+                    name="room_size"
+                    id=id_140232231824928
+                  >
+                    <legend
+                      name="id_140232231825024"
+                      id=id_140232231825024
+                    >
+                      How big is your room?
+                    </legend>
+                    <div
+                      name="id_140232233528112"
+                      id=id_140232233528112
+                    >
+                      <label
+                        name="id_140232231824064_label"
+                        id=id_140232231824064_label
+                        for="id_140232231824064"
+                      >
+                        Length (m):
+                      </label>
+                      <div
+                        name="id_140232231824064"
+                        id=id_140232231824064
+                      >
+                        <input
+                          name="room_length"
+                          id=id_140232243977680
+                          oninput="this.nextElementSibling.value=this.value;form_update(this.form)"
+                          min=3
+                          max=6
+                          step=1
+                          style="width: 90%;"
+                          type="range"
+                          value="5"
+                          oninput="form_update(this.form)"
+                        >
+                        <output
+                          name="id_140232231824160"
+                          id=id_140232231824160
+                          for="id_140232243977680"
+                        >
+                          5
+                        </output>
+                      </div>
+                    </div>
+                    <div
+                      name="id_140232233528224"
+                      id=id_140232233528224
+                    >
+                      <label
+                        name="id_140232231824256_label"
+                        id=id_140232231824256_label
+                        for="id_140232231824256"
+                      >
+                        Width (m):
+                      </label>
+                      <div
+                        name="id_140232231824256"
+                        id=id_140232231824256
+                      >
+                        <input
+                          name="room_width"
+                          id=id_140232243977232
+                          oninput="this.nextElementSibling.value=this.value;form_update(this.form)"
+                          min=3
+                          max=6
+                          step=1
+                          style="width: 90%;"
+                          type="range"
+                          value="5"
+                          oninput="form_update(this.form)"
+                        >
+                        <output
+                          name="id_140232231824352"
+                          id=id_140232231824352
+                          for="id_140232243977232"
+                        >
+                          5
+                        </output>
+                      </div>
+                    </div>
+                    <div
+                      name="id_140232233528336"
+                      id=id_140232233528336
+                    >
+                      <label
+                        name="id_140232231824448_label"
+                        id=id_140232231824448_label
+                        for="id_140232231824448"
+                      >
+                        Height (m):
+                      </label>
+                      <div
+                        name="id_140232231824448"
+                        id=id_140232231824448
+                      >
+                        <input
+                          name="room_height"
+                          id=id_140232233527888
+                          oninput="this.nextElementSibling.value=this.value;form_update(this.form)"
+                          min=3
+                          max=6
+                          step=1
+                          style="width: 90%;"
+                          type="range"
+                          value="3"
+                          oninput="form_update(this.form)"
+                        >
+                        <output
+                          name="id_140232231824544"
+                          id=id_140232231824544
+                          for="id_140232233527888"
+                        >
+                          3
+                        </output>
+                      </div>
+                    </div>
+                    <div
+                      name="id_140232231824832"
+                      id=id_140232231824832
+                      style="margin-upper:10px"
+                    >
+                      <div
+                        name="id_140232231824640"
+                        id=id_140232231824640
+                        style="float: left; width:70%; margin-right:10px"
+                      >
+                        Total volume (m<sup>3</sup>):
+                      </div>
+                      <div
+                        name="total_volume"
+                        id=total_volume
+                        style="float: left; width:20%"
+                      >
+                        -
+                      </div>
+                    </div>
+                  </fieldset>
+                </div>
+                <div
+                  name="id_140232231303776"
+                  id=id_140232231303776
+                  class="input_selector_pane"
+                >
+                  <fieldset
+                    title="Usage"
+                    name="room_usage"
+                    id=id_140232231302144
+                  >
+                    <legend
+                      name="id_140232231302240"
+                      id=id_140232231302240
+                    >
+                      How is the room being used?
+                    </legend>
+                    <div
+                      name="id_140232231305280"
+                      id=id_140232231305280
+                    >
+                      <label
+                        name="id_140232231301184_label"
+                        id=id_140232231301184_label
+                        for="id_140232231301184"
+                      >
+                        Number of people:
+                      </label>
+                      <div
+                        name="id_140232231301184"
+                        id=id_140232231301184
+                      >
+                        <input
+                          name="number_people"
+                          id=id_140232233528000
+                          oninput="this.nextElementSibling.value=this.value;form_update(this.form)"
+                          min=1
+                          max=5
+                          step=1
+                          style="width: 90%;"
+                          type="range"
+                          value="1"
+                          oninput="form_update(this.form)"
+                        >
+                        <output
+                          name="id_140232231301280"
+                          id=id_140232231301280
+                          for="id_140232233528000"
+                        >
+                          1
+                        </output>
+                      </div>
+                    </div>
+                    <div
+                      name="id_140232231305392"
+                      id=id_140232231305392
+                    >
+                      <label
+                        name="id_140232231301760_label"
+                        id=id_140232231301760_label
+                        for="id_140232231301760"
+                      >
+                        Level of activity:
+                      </label>
+                      <div
+                        name="id_140232231301760"
+                        id=id_140232231301760
+                        style="margin:10px"
+                      >
+                        <div
+                          name="id_140232231301664"
+                          id=id_140232231301664
+                          style="display:flex;justify-content:center;align-items:center;"
+                        >
+                          <div
+                            name="id_140232233528784"
+                            id=id_140232233528784
+                          >
+                            <label
+                              name="id_140232233528672_label"
+                              id=id_140232233528672_label
+                              for="id_140232233528672"
+                            >
+                              Relaxed
+                            </label>
+                            <input
+                              name="activity_level"
+                              id=id_140232233528672
+                              checked
+                              type="radio"
+                              value="0"
+                              oninput="form_update(this.form)"
+                            >
+                          </div>
+                          <div
+                            name="id_140232233529008"
+                            id=id_140232233529008
+                          >
+                            <label
+                              name="id_140232233528896_label"
+                              id=id_140232233528896_label
+                              for="id_140232233528896"
+                            >
+                              Moderate
+                            </label>
+                            <input
+                              name="activity_level"
+                              id=id_140232233528896
+                              type="radio"
+                              value="1"
+                              oninput="form_update(this.form)"
+                            >
+                          </div>
+                          <div
+                            name="id_140232233529232"
+                            id=id_140232233529232
+                          >
+                            <label
+                              name="id_140232233529120_label"
+                              id=id_140232233529120_label
+                              for="id_140232233529120"
+                            >
+                              Intense
+                            </label>
+                            <input
+                              name="activity_level"
+                              id=id_140232233529120
+                              type="radio"
+                              value="2"
+                              oninput="form_update(this.form)"
+                            >
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      name="id_140232231302048"
+                      id=id_140232231302048
+                      style="margin-upper:10px"
+                    >
+                      <div
+                        name="id_140232231301856"
+                        id=id_140232231301856
+                        style="float: left; width:70%; margin-right:10px"
+                      >
+                        Required cleaning (ACH):
+                      </div>
+                      <div
+                        name="required_cleaning"
+                        id=required_cleaning
+                        style="float: left; width:20%"
+                      >
+                        -
+                      </div>
+                    </div>
+                  </fieldset>
+                </div>
+                <div
+                  name="id_140232231303872"
+                  id=id_140232231303872
+                  class="input_selector_pane"
+                >
+                  <fieldset
+                    title="Circulation"
+                    name="room_cleaning"
+                    id=id_140232231303104
+                  >
+                    <legend
+                      name="id_140232231303200"
+                      id=id_140232231303200
+                    >
+                      How much cleaning is already available?
+                    </legend>
+                    <div
+                      name="id_140232231305840"
+                      id=id_140232231305840
+                    >
+                      <label
+                        name="id_140232231305504_label"
+                        id=id_140232231305504_label
+                        for="id_140232231305504"
+                      >
+                        Mechanical ventilation:
+                      </label>
+                      <div
+                        name="id_140232231305504"
+                        id=id_140232231305504
+                      >
+                        <label
+                          name="id_140232233528560_label"
+                          id=id_140232233528560_label
+                          for="id_140232233528560"
+                        >
+                          Yes
+                        </label>
+                        <input
+                          name="mech_vent"
+                          id=id_140232233528560
+                          type="checkbox"
+                          value="0"
+                          onclick="if (this.value==0){this.value=1}else{this.value=0};form_update(this.form)"
+                        >
+                      </div>
+                    </div>
+                    <div
+                      name="id_140232231305952"
+                      id=id_140232231305952
+                    >
+                      <label
+                        name="id_140232231302624_label"
+                        id=id_140232231302624_label
+                        for="id_140232231302624"
+                      >
+                        Number of open windows:
+                      </label>
+                      <div
+                        name="id_140232231302624"
+                        id=id_140232231302624
+                      >
+                        <input
+                          name="number_windows"
+                          id=id_140232231305616
+                          oninput="this.nextElementSibling.value=this.value;form_update(this.form)"
+                          min=0
+                          max=5
+                          step=1
+                          style="width: 90%;"
+                          type="range"
+                          value="0"
+                          oninput="form_update(this.form)"
+                        >
+                        <output
+                          name="id_140232231302720"
+                          id=id_140232231302720
+                          for="id_140232231305616"
+                        >
+                          0
+                        </output>
+                      </div>
+                    </div>
+                    <div
+                      name="id_140232231303008"
+                      id=id_140232231303008
+                      style="margin-upper:10px"
+                    >
+                      <div
+                        name="id_140232231302816"
+                        id=id_140232231302816
+                        style="float: left; width:70%; margin-right:10px"
+                      >
+                        Provided cleaning (ACH):
+                      </div>
+                      <div
+                        name="provided_cleaning"
+                        id=provided_cleaning
+                        style="float: left; width:20%"
+                      >
+                        -
+                      </div>
+                    </div>
+                  </fieldset>
+                </div>
+              </div>
+            </div>
+          </form>
+          <div
+            name="id_140232231303584"
+            id=id_140232231303584
+          >
+            <img
+              name="room_viz"
+              id=room_viz
+              style="max-width:100%; max-height:100%;"
+              src="https://via.placeholder.com/150"
+              alt=""
+            >
+          </div>
+        </div>
+        <div
+          name="id_140232231309664"
+          id=id_140232231309664
+        >
+          <div
+            name="id_140232231309568"
+            id=id_140232231309568
+            style="display: grid;grid-template-rows: 30px 1fr;justify-items: center;"
+          >
+            <div
+              name="id_140232231304640"
+              id=id_140232231304640
+              style="display:flex;justify-items:center;"
+            >
+              <b>Extra cleaning required:</b>
+            </div>
+            <div
+              name="id_140232231309472"
+              id=id_140232231309472
+              style="display: grid;grid-template-rows: 1fr 1fr;"
+            >
+              <div
+                name="id_140232231304928"
+                id=id_140232231304928
+                style="display: grid;grid-template-columns: 1fr 1fr;justify-items:center;"
+              >
+                <div
+                  name="id_140232231304736"
+                  id=id_140232231304736
+                >
+                  <i>Air changes (ACH):</i>
+                </div>
+                <div
+                  name="extra_cleaning"
+                  id=extra_cleaning
+                >
+                  -
+                </div>
+              </div>
+              <div
+                name="id_140232231309376"
+                id=id_140232231309376
+                style="display: grid;grid-template-columns: 1fr 1fr;justify-items:center;"
+              >
+                <div
+                  name="id_140232231305024"
+                  id=id_140232231305024
+                >
+                  <i>CADR (m<sup>3</sup>/hr):</i>
+                </div>
+                <div
+                  name="extra_cleaning_cadr"
+                  id=extra_cleaning_cadr
+                >
+                  -
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          name="id_140232231310240"
+          id=id_140232231310240
+          style="display: grid; grid-template-rows: 1fr 3fr;"
+        >
+          <div
+            name="tool_selector"
+            id=tool_selector
+          >
+            <div
+              name="id_140232231310144"
+              id=id_140232231310144
               class="pane_selector"
               style="width: 100%;"
             >
               <button
-                name="input_selector_button_0"
-                id=input_selector_button_0
-                class="input_selector_pane_button"
-                onclick="openPane(event, 'input_selector_pane', 'id_139915384285408')"
+                name="tool_selector_button_0"
+                id=tool_selector_button_0
+                class="tool_selector_pane_button"
+                onclick="openPane(event, 'tool_selector_pane', 'id_140232231309856')"
                 type=button
               >
-                Dimensions
-              </button>
-              <button
-                name="input_selector_button_1"
-                id=input_selector_button_1
-                class="input_selector_pane_button"
-                onclick="openPane(event, 'input_selector_pane', 'id_139915384258912')"
-                type=button
-              >
-                Usage
-              </button>
-              <button
-                name="input_selector_button_2"
-                id=input_selector_button_2
-                class="input_selector_pane_button"
-                onclick="openPane(event, 'input_selector_pane', 'id_139915384258720')"
-                type=button
-              >
-                Circulation
+                Air cleaners
               </button>
             </div>
             <div
-              name="id_139915384258624"
-              id=id_139915384258624
+              name="id_140232231309952"
+              id=id_140232231309952
               class="pane_space"
             >
               <div
-                name="id_139915384285408"
-                id=id_139915384285408
-                class="input_selector_pane"
+                name="id_140232231309856"
+                id=id_140232231309856
+                class="tool_selector_pane"
               >
-                <fieldset
-                  title="Dimensions"
-                  name="room_size"
-                  id=id_139915387526400
+                <img
+                  title="Air cleaners"
+                  name="air_cleaner_recommendations"
+                  id=air_cleaner_recommendations
+                  style="display:flex;justify-content:center;align-items:center; margin:10px"
+                  src="https://rsbyrne.github.io/aircleaning/products/0_0.png"
+                  alt=""
                 >
-                  <legend
-                    name="id_139915404898368"
-                    id=id_139915404898368
-                  >
-                    How big is your room?
-                  </legend>
-                  <div
-                    name="id_139915400873456"
-                    id=id_139915400873456
-                  >
-                    <label
-                      name="id_139915418400512_label"
-                      id=id_139915418400512_label
-                      for="id_139915418400512"
-                    >
-                      Length (m):
-                    </label>
-                    <div
-                      name="id_139915418400512"
-                      id=id_139915418400512
-                    >
-                      <input
-                        name="room_length"
-                        id=id_139915400873008
-                        oninput="this.nextElementSibling.value=this.value;form_update(this.form)"
-                        min=3
-                        max=6
-                        step=1
-                        style="width: 90%;"
-                        type="range"
-                        value="5"
-                        oninput="form_update(this.form)"
-                      >
-                      <output
-                        name="id_139915390630400"
-                        id=id_139915390630400
-                        for="id_139915400873008"
-                      >
-                        5
-                      </output>
-                    </div>
-                  </div>
-                  <div
-                    name="id_139915400875136"
-                    id=id_139915400875136
-                  >
-                    <label
-                      name="id_139915390630592_label"
-                      id=id_139915390630592_label
-                      for="id_139915390630592"
-                    >
-                      Width (m):
-                    </label>
-                    <div
-                      name="id_139915390630592"
-                      id=id_139915390630592
-                    >
-                      <input
-                        name="room_width"
-                        id=id_139915400874576
-                        oninput="this.nextElementSibling.value=this.value;form_update(this.form)"
-                        min=3
-                        max=6
-                        step=1
-                        style="width: 90%;"
-                        type="range"
-                        value="5"
-                        oninput="form_update(this.form)"
-                      >
-                      <output
-                        name="id_139915397754496"
-                        id=id_139915397754496
-                        for="id_139915400874576"
-                      >
-                        5
-                      </output>
-                    </div>
-                  </div>
-                  <div
-                    name="id_139915400874240"
-                    id=id_139915400874240
-                  >
-                    <label
-                      name="id_139915397752096_label"
-                      id=id_139915397752096_label
-                      for="id_139915397752096"
-                    >
-                      Height (m):
-                    </label>
-                    <div
-                      name="id_139915397752096"
-                      id=id_139915397752096
-                    >
-                      <input
-                        name="room_height"
-                        id=id_139915400874016
-                        oninput="this.nextElementSibling.value=this.value;form_update(this.form)"
-                        min=3
-                        max=6
-                        step=1
-                        style="width: 90%;"
-                        type="range"
-                        value="3"
-                        oninput="form_update(this.form)"
-                      >
-                      <output
-                        name="id_139915388157472"
-                        id=id_139915388157472
-                        for="id_139915400874016"
-                      >
-                        3
-                      </output>
-                    </div>
-                  </div>
-                  <div
-                    name="id_139915398672544"
-                    id=id_139915398672544
-                    style="margin-upper:10px"
-                  >
-                    <div
-                      name="id_139915387072576"
-                      id=id_139915387072576
-                      style="float: left; width:70%; margin-right:10px"
-                    >
-                      Total volume (m<sup>3</sup>):
-                    </div>
-                    <div
-                      name="total_volume"
-                      id=total_volume
-                      style="float: left; width:20%"
-                    >
-                      -
-                    </div>
-                  </div>
-                </fieldset>
               </div>
-              <div
-                name="id_139915384258912"
-                id=id_139915384258912
-                class="input_selector_pane"
-              >
-                <fieldset
-                  title="Usage"
-                  name="room_usage"
-                  id=id_139915384285024
-                >
-                  <legend
-                    name="id_139915384286752"
-                    id=id_139915384286752
-                  >
-                    How is the room being used?
-                  </legend>
-                  <div
-                    name="id_139915400875696"
-                    id=id_139915400875696
-                  >
-                    <label
-                      name="id_139915397826400_label"
-                      id=id_139915397826400_label
-                      for="id_139915397826400"
-                    >
-                      Number of people:
-                    </label>
-                    <div
-                      name="id_139915397826400"
-                      id=id_139915397826400
-                    >
-                      <input
-                        name="number_people"
-                        id=id_139915400874912
-                        oninput="this.nextElementSibling.value=this.value;form_update(this.form)"
-                        min=1
-                        max=5
-                        step=1
-                        style="width: 90%;"
-                        type="range"
-                        value="1"
-                        oninput="form_update(this.form)"
-                      >
-                      <output
-                        name="id_139915391091040"
-                        id=id_139915391091040
-                        for="id_139915400874912"
-                      >
-                        1
-                      </output>
-                    </div>
-                  </div>
-                  <div
-                    name="id_139915400875808"
-                    id=id_139915400875808
-                  >
-                    <label
-                      name="id_139915383885888_label"
-                      id=id_139915383885888_label
-                      for="id_139915383885888"
-                    >
-                      Level of activity:
-                    </label>
-                    <div
-                      name="id_139915383885888"
-                      id=id_139915383885888
-                      style="margin:10px"
-                    >
-                      <div
-                        name="id_139915394498368"
-                        id=id_139915394498368
-                        style="display:flex;justify-content:center;align-items:center;"
-                      >
-                        <div
-                          name="id_139915400875248"
-                          id=id_139915400875248
-                        >
-                          <label
-                            name="id_139915400874464_label"
-                            id=id_139915400874464_label
-                            for="id_139915400874464"
-                          >
-                            Relaxed
-                          </label>
-                          <input
-                            name="activity_level"
-                            id=id_139915400874464
-                            checked
-                            type="radio"
-                            value="0"
-                            oninput="form_update(this.form)"
-                          >
-                        </div>
-                        <div
-                          name="id_139915400875360"
-                          id=id_139915400875360
-                        >
-                          <label
-                            name="id_139915400875024_label"
-                            id=id_139915400875024_label
-                            for="id_139915400875024"
-                          >
-                            Moderate
-                          </label>
-                          <input
-                            name="activity_level"
-                            id=id_139915400875024
-                            type="radio"
-                            value="1"
-                            oninput="form_update(this.form)"
-                          >
-                        </div>
-                        <div
-                          name="id_139915400875584"
-                          id=id_139915400875584
-                        >
-                          <label
-                            name="id_139915400875472_label"
-                            id=id_139915400875472_label
-                            for="id_139915400875472"
-                          >
-                            Intense
-                          </label>
-                          <input
-                            name="activity_level"
-                            id=id_139915400875472
-                            type="radio"
-                            value="2"
-                            oninput="form_update(this.form)"
-                          >
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    name="id_139915384286272"
-                    id=id_139915384286272
-                    style="margin-upper:10px"
-                  >
-                    <div
-                      name="id_139915383916672"
-                      id=id_139915383916672
-                      style="float: left; width:70%; margin-right:10px"
-                    >
-                      Required cleaning (ACH):
-                    </div>
-                    <div
-                      name="required_cleaning"
-                      id=required_cleaning
-                      style="float: left; width:20%"
-                    >
-                      -
-                    </div>
-                  </div>
-                </fieldset>
-              </div>
-              <div
-                name="id_139915384258720"
-                id=id_139915384258720
-                class="input_selector_pane"
-              >
-                <fieldset
-                  title="Circulation"
-                  name="room_cleaning"
-                  id=id_139915384284736
-                >
-                  <legend
-                    name="id_139915384286464"
-                    id=id_139915384286464
-                  >
-                    How much cleaning is already available?
-                  </legend>
-                  <div
-                    name="id_139915383828768"
-                    id=id_139915383828768
-                  >
-                    <label
-                      name="id_139915400875920_label"
-                      id=id_139915400875920_label
-                      for="id_139915400875920"
-                    >
-                      Mechanical ventilation:
-                    </label>
-                    <div
-                      name="id_139915400875920"
-                      id=id_139915400875920
-                    >
-                      <label
-                        name="id_139915400874800_label"
-                        id=id_139915400874800_label
-                        for="id_139915400874800"
-                      >
-                        Yes
-                      </label>
-                      <input
-                        name="mech_vent"
-                        id=id_139915400874800
-                        type="checkbox"
-                        value="0"
-                        onclick="if (this.value==0){this.value=1}else{this.value=0};form_update(this.form)"
-                      >
-                    </div>
-                  </div>
-                  <div
-                    name="id_139915383828880"
-                    id=id_139915383828880
-                  >
-                    <label
-                      name="id_139915384285888_label"
-                      id=id_139915384285888_label
-                      for="id_139915384285888"
-                    >
-                      Number of open windows:
-                    </label>
-                    <div
-                      name="id_139915384285888"
-                      id=id_139915384285888
-                    >
-                      <input
-                        name="number_windows"
-                        id=id_139915383828544
-                        oninput="this.nextElementSibling.value=this.value;form_update(this.form)"
-                        min=0
-                        max=5
-                        step=1
-                        style="width: 90%;"
-                        type="range"
-                        value="0"
-                        oninput="form_update(this.form)"
-                      >
-                      <output
-                        name="id_139915384286176"
-                        id=id_139915384286176
-                        for="id_139915383828544"
-                      >
-                        0
-                      </output>
-                    </div>
-                  </div>
-                  <div
-                    name="id_139915384283488"
-                    id=id_139915384283488
-                    style="margin-upper:10px"
-                  >
-                    <div
-                      name="id_139915384285216"
-                      id=id_139915384285216
-                      style="float: left; width:70%; margin-right:10px"
-                    >
-                      Provided cleaning (ACH):
-                    </div>
-                    <div
-                      name="provided_cleaning"
-                      id=provided_cleaning
-                      style="float: left; width:20%"
-                    >
-                      -
-                    </div>
-                  </div>
-                </fieldset>
-              </div>
-            </div>
-          </div>
-        </form>
-        <div
-          name="id_139915384283872"
-          id=id_139915384283872
-        >
-          <img
-            name="room_viz"
-            id=room_viz
-            style="max-width:100%; max-height:100%;"
-            src="https://via.placeholder.com/150"
-            alt=""
-          >
-        </div>
-      </div>
-      <div
-        name="id_139915383800544"
-        id=id_139915383800544
-      >
-        <div
-          name="id_139915383801312"
-          id=id_139915383801312
-          style="display: grid;grid-template-rows: 30px 1fr;justify-items: center;"
-        >
-          <div
-            name="id_139915383800160"
-            id=id_139915383800160
-            style="display:flex;justify-items:center;"
-          >
-            <b>Extra cleaning required:</b>
-          </div>
-          <div
-            name="id_139915383801504"
-            id=id_139915383801504
-            style="display: grid;grid-template-rows: 1fr 1fr;"
-          >
-            <div
-              name="id_139915383800352"
-              id=id_139915383800352
-              style="display: grid;grid-template-columns: 1fr 1fr;justify-items:center;"
-            >
-              <div
-                name="id_139915383800928"
-                id=id_139915383800928
-              >
-                <i>Air changes (ACH):</i>
-              </div>
-              <div
-                name="extra_cleaning"
-                id=extra_cleaning
-              >
-                -
-              </div>
-            </div>
-            <div
-              name="id_139915383800448"
-              id=id_139915383800448
-              style="display: grid;grid-template-columns: 1fr 1fr;justify-items:center;"
-            >
-              <div
-                name="id_139915383801216"
-                id=id_139915383801216
-              >
-                <i>CADR (m<sup>3</sup>/hr):</i>
-              </div>
-              <div
-                name="extra_cleaning_cadr"
-                id=extra_cleaning_cadr
-              >
-                -
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
-        name="id_139915383802368"
-        id=id_139915383802368
-        style="display: grid; grid-template-rows: 1fr 3fr;"
-      >
-        <div
-          name="tool_selector"
-          id=tool_selector
-        >
-          <div
-            name="id_139915383801888"
-            id=id_139915383801888
-            class="pane_selector"
-            style="width: 100%;"
-          >
-            <button
-              name="tool_selector_button_0"
-              id=tool_selector_button_0
-              class="tool_selector_pane_button"
-              onclick="openPane(event, 'tool_selector_pane', 'id_139915383801600')"
-              type=button
-            >
-              Air cleaners
-            </button>
-          </div>
-          <div
-            name="id_139915383800832"
-            id=id_139915383800832
-            class="pane_space"
-          >
-            <div
-              name="id_139915383801600"
-              id=id_139915383801600
-              class="tool_selector_pane"
-            >
-              <img
-                title="Air cleaners"
-                name="air_cleaner_recommendations"
-                id=air_cleaner_recommendations
-                style="display:flex;justify-content:center;align-items:center; margin:10px"
-                src="https://rsbyrne.github.io/aircleaning/products/0_0.png"
-                alt=""
-              >
             </div>
           </div>
         </div>
       </div>
     </div>
     <script
-      name="id_139915383801696"
-      id=id_139915383801696
+      name="id_140232231310528"
+      id=id_140232231310528
     >
       form_update(document.getElementById("user_form"));
       document.getElementById("tool_selector_button_0").click();document.getElementById("input_selector_button_0").click();
