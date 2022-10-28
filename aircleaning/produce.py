@@ -6,6 +6,8 @@
 import os
 import operator
 from datetime import date
+import itertools
+import math
 
 import matplotlib.pyplot as plt
 import matplotlib as mpl
@@ -15,7 +17,7 @@ import numpy as np
 
 # import window
 
-from . import load, analyse
+from . import load, analyse, html, svg
 
 
 repodir = os.path.dirname(os.path.dirname(__file__))
@@ -246,7 +248,7 @@ def make_cost_analysis_form_channel(overname, data, /):
     return strn
 
 
-def decision_tool(path=productsdir, name='decision_tool'):
+def old_decision_tool(path=productsdir, name='decision_tool'):
 
     vols, quals = load.get_volume_data(), load.get_quality_data()
 
@@ -338,6 +340,312 @@ def multi_cost_analysis(path=productsdir):
                 volume=vol, quality=qual,
                 path=path, name=f"{voli}_{quali}",
                 )
+
+
+def decision_tool():
+
+    dim_range = range(3, 7, 1)
+    window_range = range(6)
+    person_range = range(1, 6, 1)
+    activity_range = range(3)
+    allvols = tuple(sorted(set(map(np.product, itertools.combinations_with_replacement(dim_range, 3)))))
+    ach_range = range(0, 16)
+    cadrs = tuple(sorted(set(
+        math.ceil(val / 100) * 100
+        for val in map(np.product, tuple(itertools.product(ach_range, allvols)))))
+        )
+
+    room_combos = tuple(itertools.product(
+        dim_range, dim_range, dim_range, window_range, person_range, activity_range
+        ))
+    for room_combo in room_combos:
+        scale = np.power(1/np.product(room_combo[:3]), 1/3) / np.power(1/np.min(allvols), 1/3)
+        room = svg.draw_scene(*room_combo, size=2)
+        room.projection.scale(scale)
+        room.save_svg('_'.join(map(str, room_combo)), os.path.join(repodir, 'products', 'rooms'))
+
+    outpath = os.path.join(productsdir, 'costs')
+    for cadr in cadrs:
+        cost_analysis_by_cadr(max(100, cadr), path=outpath, name=str(cadr))
+
+    all_style = html.Style(
+        # '''.container {''',
+        # '''  max-width: 940px;''',
+        # '''  margin: 0 auto;''',
+        # '''  display: grid;''',
+        # '''  grid-template-columns: 1fr 3fr;''',
+        # '''  grid-gap: 10px;''',
+        # '''}''',
+        )
+
+    room_fields = html.Fieldset(
+        'How big is your room?',
+        {
+            'Length (m):': html.CapturedInput(
+                'range', 5, input_kwargs=dict(
+                    min=dim_range.start, max=dim_range.stop-1, step=dim_range.step,
+                    style="width: 90%;", name='room_length',
+                    ),
+                ),
+            'Width (m):': html.CapturedInput(
+                'range', 5, input_kwargs=dict(
+                    min=dim_range.start, max=dim_range.stop-1, step=dim_range.step,
+                    style="width: 90%;", name='room_width',
+                    )
+                ),
+            'Height (m):': html.CapturedInput(
+                'range', 3, input_kwargs=dict(
+                    min=dim_range.start, max=dim_range.stop-1, step=dim_range.step,
+                    style="width: 90%;", name='room_height',
+                    ),
+                ),
+            },
+        html.Div(
+            html.Div(
+                "Total volume (m<sup>3</sup>):",
+                style="float: left; width:70%; margin-right:10px",
+                ),
+            html.Div('-', identity='total_volume', style="float: left; width:20%"),
+            style="margin-upper:10px"
+            ),
+        name='room_size',
+        title="Dimensions",
+        # style="margin: 10px;",
+        )
+
+    usage_fields = html.Fieldset(
+        "How is the room being used?",
+        {
+            'Number of people:': html.CapturedInput(
+                'range', 1, input_kwargs=dict(
+                    min=person_range.start, max=person_range.stop-1, step=person_range.step,
+                    style="width: 90%;", name='number_people',
+                    )
+                ),
+            'Level of activity:': html.Div(
+                html.Div(*(
+                    html.LabelledInput(
+                        level,
+                        html.Input('radio', i, checked=i==0, name='activity_level'),
+                        )
+                    for i, level in enumerate(('Relaxed', 'Moderate', 'Intense'))
+                    ), style="display:flex;justify-content:center;align-items:center;"),
+                style="margin:10px",
+                ),
+            },
+        html.Div(
+            html.Div(
+                "Required cleaning (ACH):",
+                style="float: left; width:70%; margin-right:10px",
+                ),
+            html.Div('-', identity='required_cleaning', style="float: left; width:20%"),
+            style="margin-upper:10px"
+            ),
+        name='room_usage',
+        title="Usage",
+        # style="margin: 10px;",
+        )
+
+    cleaning_fields = html.Fieldset(
+        "How much cleaning is already available?",
+        {
+            'Mechanical ventilation:': html.LabelledInput(
+                'Yes', html.Input('checkbox', 0, name='mech_vent'),
+                ),
+            'Number of open windows:': html.CapturedInput(
+                'range', 0, input_kwargs=dict(
+                    min=window_range.start, max=window_range.stop-1, step=window_range.step,
+                    style="width: 90%;", name='number_windows',
+                    ),
+                ),
+            },
+        html.Div(
+            html.Div(
+                "Provided cleaning (ACH):",
+                style="float: left; width:70%; margin-right:10px",
+                ),
+            html.Div('-', identity='provided_cleaning', style="float: left; width:20%"),
+            style="margin-upper:10px"
+            ),
+        name='room_cleaning',
+        title="Circulation",
+        # style="margin: 10px;",
+        )
+
+    room_viz = html.Div(
+        html.Image(
+            "https://via.placeholder.com/150", identity="room_viz",
+            style="max-width:100%; max-height:100%;"
+            ),
+        # style="float: right; width: 50%; margin: 10px;",
+        )
+
+    input_selector = html.TabbedPanes(
+        room_fields,
+        usage_fields,
+        cleaning_fields,
+        identity="input_selector",
+        # style="width: 45%; float: left; text-align:center;",
+        )
+
+    input_form = html.Form(
+        input_selector,
+        identity='user_form',
+        )
+
+    input_section = html.Div(
+        input_form,
+        room_viz,
+        style="display: grid; grid-template-columns: 60% 40%; overflow:auto"
+        # style="width:100%;"
+        # style="display:flex;justify-content:center; margin:10px; width:100%",
+        # style="display:flex;justify-content:center;align-items:center; margin:10px",
+        )
+
+    summary_widget = html.Div(
+        html.Div(
+            "<b>Extra cleaning required:</b>",
+            style="display:flex;justify-items:center;"
+            ),
+        html.Div(
+            html.Div(
+                html.Div(
+                    "<i>Air changes (ACH):</i>",
+                    ),
+                html.Div(
+                    '-',
+                    identity='extra_cleaning',
+                    ),
+                style=(
+                    '''display: grid;'''
+                    '''grid-template-columns: 1fr 1fr;'''
+                    '''justify-items:center;'''
+                    ),
+                ),
+            html.Div(
+                html.Div(
+                    "<i>CADR (m<sup>3</sup>/hr):</i>",
+                    ),
+                html.Div(
+                    '-',
+                    identity='extra_cleaning_cadr',
+                    ),
+                style=(
+                    '''display: grid;'''
+                    '''grid-template-columns: 1fr 1fr;'''
+                    '''justify-items:center;'''
+                    ),
+                ),
+            style=(
+                '''display: grid;'''
+                '''grid-template-rows: 1fr 1fr;'''
+                ),
+            ),
+        style=(
+            '''display: grid;'''
+            '''grid-template-rows: 30px 1fr;'''
+            '''justify-items: center;'''
+            ),
+        )
+
+    summary_section = html.Div(
+        summary_widget,
+        )
+
+    tool_selector = html.TabbedPanes(
+        html.Image(
+            'https://rsbyrne.github.io/aircleaning/products/0_0.png',
+            identity="air_cleaner_recommendations",
+            style="display:flex;justify-content:center;align-items:center; margin:10px",
+            title="Air cleaners",
+            ),
+        # html.Image(
+        #     "https://via.placeholder.com/150",
+        #     style="display:flex;justify-content:center;align-items:center; margin:10px",
+        #     title="Air quality",
+        #     ),
+        # html.Image(
+        #     "https://via.placeholder.com/150",
+        #     style="display:flex;justify-content:center;align-items:center; margin:10px",
+        #     title="Infection risk",
+        #     ),
+        identity="tool_selector",
+        # style="width: 100%",
+        )
+
+    output_section = html.Div(
+        tool_selector,
+        style="display: grid; grid-template-rows: 1fr 3fr;",
+        )
+
+    all_content = html.Div(
+        input_section,
+        summary_section,
+        output_section,
+        style=(
+            '''display: grid;'''
+            '''grid-template-rows: 25% 7% 68%;'''
+            '''max-height: 11.7in;'''
+            '''max-width: 8.3in;'''
+            )
+        # classes=('container',)
+        )
+
+    form_update = html.Script(
+        '''function form_update(form){''',
+        '''    var length, width, height, windows,''',
+        '''        productsdir, '''
+        '''        persons, room, volume, window_cleaning, mech_vent,''',
+        '''        provided_cleaning, required_cleaning, activity_level,''',
+        '''        extra_cleaning, extra_cleaning_cadr, acchart;''',
+        '''    productsdir = "https://rsbyrne.github.io/aircleaning/products";'''
+        '''    length = form.room_length.value;''',
+        '''    width = form.room_width.value;''',
+        '''    height = form.room_height.value;''',
+        '''    windows = form.number_windows.value;''',
+        '''    persons = form.number_people.value;''',
+        '''    room = document.getElementById('room_viz');''',
+        '''    activity_level = parseInt(form.activity_level.value);''',
+        '''    room.src =''',
+        '''        productsdir + "/rooms/" +''',
+        '''        [length, width, height, windows, persons, activity_level].join("_")''',
+        '''        + ".svg";''',
+        '''    volume = form.room_length.value * form.room_width.value * form.room_height.value;''',
+        '''    document.getElementById("total_volume").innerHTML = volume;''',
+        '''    window_cleaning = form.number_windows.value * 200;''',
+        '''    mech_vent = form.mech_vent.value * 6 * volume;''',
+        '''    provided_cleaning = Math.round((window_cleaning + mech_vent) / volume);''',
+        '''    document.getElementById("provided_cleaning").innerHTML = provided_cleaning;''',
+        '''    required_cleaning = (activity_level + 1) * persons;'''
+        '''    document.getElementById("required_cleaning").innerHTML = required_cleaning;'''
+        '''    extra_cleaning = Math.max(0, required_cleaning - provided_cleaning);'''
+        '''    document.getElementById("extra_cleaning").innerHTML = extra_cleaning;''',
+        '''    extra_cleaning_cadr = Math.ceil(extra_cleaning * volume / 100) * 100;'''
+        '''    document.getElementById("extra_cleaning_cadr").innerHTML = extra_cleaning_cadr;''',
+        '''    acchart = document.getElementById("air_cleaner_recommendations");''',
+        '''    acchart.src =''',
+        '''        productsdir + "/costs/" +''',
+        '''        extra_cleaning_cadr''',
+        '''        + ".png";''',
+        '''}''',
+        )
+
+    initialise_script = html.Script(
+        '''form_update(document.getElementById("user_form"));''',
+        '''document.getElementById("tool_selector_button_0").click();'''
+        '''document.getElementById("input_selector_button_0").click();'''
+        )
+
+    page = html.Page(
+        form_update,
+        all_style,
+        all_content,
+        initialise_script,
+        # style="float:center;margin:auto",
+        )
+
+    # display(page)
+    page.save_html('decision_tool', productsdir)
 
 
 def synoptic(data=None, /, volume='medium', quality='some', path=productsdir):

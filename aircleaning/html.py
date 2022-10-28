@@ -479,7 +479,12 @@ class TabbedPanes(Div):
                     identity=f"{self.identity}_button_{i}"
                     )
                 for i, pane in enumerate(panes.contents)
-                ), classes=(self.PANE_SELECTOR_CLASS,))
+                ),
+            classes=(self.PANE_SELECTOR_CLASS,),
+            style=(
+                '''width: 100%;'''
+                )
+            )
         self.add_content((pane_selector, panes))
 
     def yield_scripts(self, /):

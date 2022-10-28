@@ -1,0 +1,56 @@
+
+<link rel="stylesheet" href="//dds-gen3.web.unimelb.edu.au/v12.1.3/uom.css">
+<link rel="stylesheet" href="https://cms.unimelb.edu.au/__data/assets/css_file_folder/0008/3224951/uom-mce-gen3.css?v=0.0.202">
+<script>
+    function update (form){
+        for (vol = 0; vol < 3; vol++) {
+            if (form.volume[vol].checked)
+                break;
+            }
+        for (qual = 0; qual < 3; qual++) {
+            if (form.quality[qual].checked)
+                break;
+            }
+        image = document.getElementById('chosenimage')   
+        image.src = "https://rsbyrne.github.io/aircleaning/products/" + vol + "_" + qual + ".png"
+        image.alt = "Volume chosen: " + vol + " , quality chosen: " + qual
+        }
+</script>
+<div class="uomcontent" role="document" id="top">
+<div class="main" id="" role="main">
+<p class="notice notice--info" style="padding-top: 1.5rem;">
+Running costs and noise levels (on the highest fan settings) are calculated from manufacturer data. Select the approximate volume and the additional air cleaning to ventilation that you require. Natural ventilation provides 1-2 ACH; mechanical ventilation is higher. You will see that multiple devices sometimes provides the best effective air cleaning for the best value and noise requirements of your space.
+</p>
+<form id="userinput" >
+<div class="sq-form-question sq-form-question-tickbox-list ">
+<fieldset id="volumeoptions" class="sq-form-section">
+<legend class="sq-form-section-title">How big is the room you want to put your air purifier in?</legend>
+
+<input type="radio" id='smallop' value="small" name="volume" onClick="update(this.form)">
+<label for="smallop">Small (37m<sup>3</sup>)</label>
+<input type="radio" id='mediumop' value="medium" name="volume" checked onClick="update(this.form)">
+<label for="mediumop">Medium (78m<sup>3</sup>)</label>
+<input type="radio" id='largeop' value="large" name="volume" onClick="update(this.form)">
+<label for="largeop">Large (155m<sup>3</sup>)</label>
+</fieldset>
+</div>
+<div class="sq-form-question sq-form-question-tickbox-list ">
+<br/>
+<fieldset id="qualityoptions" class="sq-form-section">
+<legend class="sq-form-section-title">How much additional air cleaning do you require?</legend>
+
+<input type="radio" id='a littleop' value="a little" name="quality" onClick="update(this.form)">
+<label for="a littleop">A little (4ACHe)</label>
+<input type="radio" id='someop' value="some" name="quality" checked onClick="update(this.form)">
+<label for="someop">Some (6ACHe)</label>
+<input type="radio" id='lotsop' value="lots" name="quality" onClick="update(this.form)">
+<label for="lotsop">Lots (9ACHe)</label>
+</fieldset>
+</div>
+</form>
+<p><em>Last updated 2022-10-13</em><p>
+<figure class="figure figure--min"><img id = 'chosenimage' src='https://rsbyrne.github.io/aircleaning/products/placeholder.png' alt="Cost analysis">
+</figure>
+<script>
+update(document.getElementById('userinput'))
+</script>
