@@ -554,7 +554,7 @@ class TabbedPanes(Div):
             "  padding: 6px 12px;",
             # "  border: 1px solid #ccc;",
             # "  border-top: none;",
-            "  animation: fadeEffect 1s;",
+            "  animation: fadeEffect 0.5s;",
             "}"
             ))
         yield '\n' + '\n'.join((

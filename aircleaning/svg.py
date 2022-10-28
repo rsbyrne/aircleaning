@@ -549,7 +549,7 @@ class Solid(Box):
         return (self.front, self.side, self.roof)
 
 
-# class Person(Solid):
+# class Cube(Solid):
 
 #     __slots__ = ()
 
@@ -665,7 +665,7 @@ def html_hsl(hue, saturation, lightness, /):
 
 
 def draw_scene(
-        length=6, width=4, height=2.7, windows=2, persons=1, activity=0,
+        length=6, width=4, height=2.7, persons=1, activity=0, windows=2, doors=1, mech=True,
         size=1, scale=1, seed=0,
         **kwargs,
         ):
@@ -676,8 +676,16 @@ def draw_scene(
     room = Room(length, width, height)
     canvas.add(room)
     floor, wall0, wall1 = room.bottom, room.far, room.right
-    door = Flat('yz', wall1.uc-0.3, wall1.uc+0.3, 0, 2, room.rv, fill='white')
-    canvas.add(door)
+    door_spacing = width / (doors + 1)
+    for i in range(1, doors + 1):
+        window = Flat(
+            'yz',
+            room.fv-i*door_spacing-0.3, room.fv-i*door_spacing+0.3,
+            room.bv, room.bv+2, room.rv, fill='white',
+            )
+        canvas.add(window)
+    # door = Flat('yz', wall1.uc-0.3, wall1.uc+0.3, 0, 2, room.rv, fill='white')
+    # canvas.add(door)
     window_spacing = length / (windows + 1)
     for i in range(1, windows + 1):
         window = Flat(
@@ -686,6 +694,12 @@ def draw_scene(
             room.bv+0.8, room.bv+1.6, room.fv, fill='white',
             )
         canvas.add(window)
+    if mech:
+        mechbox = Solid(wall0.u1-0.5, wall0.u1, wall1.u1-0.5, wall1.u1, wall0.v1-0.7, wall0.v1-0.2)
+        mechbox.front.fill = 'grey'
+        mechbox.side.fill = 'lightgrey'
+        mechbox.roof.fill = 'darkgrey'
+        canvas.add(mechbox)
     rng = np.random.default_rng(seed)
     coords = []
     figures = []
