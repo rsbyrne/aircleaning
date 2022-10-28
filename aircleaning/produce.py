@@ -556,7 +556,7 @@ def decision_tool(soft=False):
 
     tool_selector = html.TabbedPanes(
         html.Image(
-            'https://rsbyrne.github.io/aircleaning/products/0_0.png',
+            '-',
             identity="air_cleaner_recommendations",
             style="display:flex;justify-content:center;align-items:center; margin:10px",
             title="Air cleaners",
