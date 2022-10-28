@@ -346,6 +346,8 @@ def decision_tool(soft=False):
 
     dim_range = range(3, 7, 1)
     window_range = range(6)
+    door_range = range(3)
+    mech_range = range(2)
     person_range = range(1, 6, 1)
     activity_range = range(3)
     allvols = tuple(sorted(set(map(np.product, itertools.combinations_with_replacement(dim_range, 3)))))
@@ -355,18 +357,21 @@ def decision_tool(soft=False):
         for val in map(np.product, tuple(itertools.product(ach_range, allvols)))))
         )
 
-    room_combos = tuple(itertools.product(
-        dim_range, dim_range, dim_range, window_range, person_range, activity_range
-        ))
     if not soft:
+        outpath = os.path.join(productsdir, 'rooms')
+        room_combos = tuple(itertools.product(
+            dim_range, dim_range, dim_range,
+            person_range, activity_range,
+            window_range, door_range, mech_range,
+            ))
         for room_combo in room_combos:
             scale = np.power(1/np.product(room_combo[:3]), 1/3) / np.power(1/np.min(allvols), 1/3)
             room = svg.draw_scene(*room_combo, size=2)
             room.projection.scale(scale)
-            room.save_svg('_'.join(map(str, room_combo)), os.path.join(repodir, 'products', 'rooms'))
+            room.save_svg('_'.join(map(str, room_combo)), outpath)
 
-    outpath = os.path.join(productsdir, 'costs')
     if not soft:
+        outpath = os.path.join(productsdir, 'costs')
         for cadr in cadrs:
             cost_analysis_by_cadr(max(100, cadr), path=outpath, name=str(cadr))
 
