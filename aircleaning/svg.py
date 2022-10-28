@@ -7,6 +7,7 @@ import abc
 from collections import UserList
 import itertools as _itertools
 import os as _os
+import colorsys
 
 import numpy as np
 from scipy.spatial.transform import Rotation
@@ -572,13 +573,8 @@ class Person(Compound):
     _HEAD_WIDTH = 0.5
     _NECK_LENGTH = 0.1
     _NECK_WIDTH = 0.6
-    _ACTIVITY_COLOURS = {
-        0: 'LightGreen',
-        1: 'LightSalmon',
-        2: 'LightCoral',
-        }
 
-    def __init__(self, x, y, width=0.3, height=1.7, activity=0):
+    def __init__(self, x, y, width=0.3, height=1.7, fill='LightGreen'):
         hwidth = width / 2
         lside = x-hwidth
         rside = x+hwidth
@@ -589,7 +585,6 @@ class Person(Compound):
         head_height = height * (1 - self._HEAD_HEIGHT)
         head_width = hwidth * self._HEAD_WIDTH
         neck_width = head_width * self._NECK_WIDTH
-        fill = self._ACTIVITY_COLOURS[activity]
         lleg = Flat(
             'xz',
             x-hwidth, x-hwidth*(1-self._LEG_WIDTH),
@@ -665,6 +660,10 @@ class Room(Hollow):
         return self._door
 
 
+def html_hsl(hue, saturation, lightness, /):
+    return f"hsl({hue*360},{saturation*100}%,{lightness*100}%)"
+
+
 def draw_scene(
         length=6, width=4, height=2.7, windows=2, persons=1, activity=0,
         size=1, scale=1, seed=0,
@@ -689,13 +688,30 @@ def draw_scene(
         canvas.add(window)
     rng = np.random.default_rng(seed)
     coords = []
+    figures = []
     for _ in range(persons):
-        while True:
-            ucoord = floor.u0 + 0.5 + rng.random() * (floor.ul -0.5)
-            vcoord = floor.v0 + 0.5 + rng.random() * (floor.vl - 0.5)
-        if any(abs(ucoord-uval)<0.5 and abs(ucoord-uval)<0.5
-        person = Person(ucoord, vcoord, activity=activity)
-        canvas.add(person)
+        for __ in range(100):
+            ucoord = floor.u0 + 1 + rng.random() * (floor.ul - 2)
+            vcoord = floor.v0 + 1 + rng.random() * (floor.vl - 2)
+            if not any(
+                    abs(ucoord-uval)<1 and abs(vcoord-vval)<1
+                    for (uval, vval) in coords
+                    ):
+                break
+        coords.append((ucoord, vcoord))
+        depth = (vcoord - floor.v0) / floor.vl
+        fill = html_hsl(
+            (0.8, 0.9, 1.0)[activity],
+            0.5,
+            depth / 2 + 1/3
+            )
+        # rgb = {0: (0), 1: (), 2: ()}
+        # fill = f"rgb({','.join(map(str, rgb))})"
+        person = Person(ucoord, vcoord, fill=fill)
+        figures.append((depth, person))
+    figures.sort(key=lambda x: -x[0])
+    for _, figure in figures:
+        canvas.add(figure)
     canvas.transform.focus = room.centre
     canvas.transform.pan(-30)
     canvas.transform.tilt(60)
