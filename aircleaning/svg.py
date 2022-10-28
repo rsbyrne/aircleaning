@@ -373,6 +373,7 @@ class Compound:
 
     __slots__ = ()
 
+    @property
     @abc.abstractmethod
     def graphics(self, /) -> tuple:
         raise NotImplementedError
@@ -547,16 +548,105 @@ class Solid(Box):
         return (self.front, self.side, self.roof)
 
 
-class Person(Solid):
+# class Person(Solid):
 
-    __slots__ = ('_location',)
+#     __slots__ = ()
 
-    def __init__(self, x, y, width=0.4, height=1.7):
+#     def __init__(self, x, y, width=0.4, height=1.7):
+#         hwidth = width / 2
+#         super().__init__(x-hwidth, x+hwidth, y-hwidth, y+hwidth, 0, height)
+#         self.front.fill = 'antiquewhite'
+#         self.side.fill = 'beige'
+#         self.roof.fill = 'bisque'
+
+
+class Person(Compound):
+
+    __slots__ = ('_graphics',)
+
+    _CROTCH_HEIGHT = 0.4
+    _LEG_WIDTH = 0.8
+    _ARM_WIDTH = 0.7
+    _SHOULDER_WIDTH = 0.1
+    _HEAD_HEIGHT = 0.2
+    _HEAD_WIDTH = 0.5
+    _NECK_LENGTH = 0.1
+    _NECK_WIDTH = 0.6
+    _ACTIVITY_COLOURS = {
+        0: 'LightGreen',
+        1: 'LightSalmon',
+        2: 'LightCoral',
+        }
+
+    def __init__(self, x, y, width=0.3, height=1.7, activity=0):
         hwidth = width / 2
-        super().__init__(x-hwidth, x+hwidth, y-hwidth, y+hwidth, 0, height)
-        self.front.fill = 'antiquewhite'
-        self.side.fill = 'beige'
-        self.roof.fill = 'bisque'
+        lside = x-hwidth
+        rside = x+hwidth
+        arm_thickness = hwidth*self._ARM_WIDTH
+        lshoulder = lside - hwidth * self._SHOULDER_WIDTH
+        rshoulder = rside + hwidth * self._SHOULDER_WIDTH
+        crotch_height = height * self._CROTCH_HEIGHT
+        head_height = height * (1 - self._HEAD_HEIGHT)
+        head_width = hwidth * self._HEAD_WIDTH
+        neck_width = head_width * self._NECK_WIDTH
+        fill = self._ACTIVITY_COLOURS[activity]
+        lleg = Flat(
+            'xz',
+            x-hwidth, x-hwidth*(1-self._LEG_WIDTH),
+            0, crotch_height*1.01,
+            y, fill,
+            )
+        rleg = Flat(
+            'xz',
+            x+hwidth, x+hwidth*(1-self._LEG_WIDTH),
+            0, crotch_height*1.01,
+            y, fill,
+            )
+        larm = Flat(
+            'xz',
+            lshoulder-arm_thickness, lshoulder,
+            crotch_height, head_height,
+            y, fill,
+            )
+        rarm = Flat(
+            'xz',
+            rshoulder, rshoulder+arm_thickness,
+            crotch_height, head_height,
+            y, fill,
+            )
+        shoulders = Flat(
+            'xz',
+            lshoulder, rshoulder,
+            head_height - arm_thickness, head_height,
+            y, fill,
+            )
+        torso = Flat(
+            'xz',
+            x-hwidth, x+hwidth,
+            crotch_height, head_height,
+            y, fill,
+            )
+        head = Flat(
+            'xz',
+            x-head_width, x+head_width,
+            head_height+(height-head_height)*self._NECK_LENGTH, height,
+            y, fill,
+            )
+        neck = Flat(
+            'xz',
+            x-neck_width, x+neck_width,
+            head_height, height,
+            y, fill,
+            )
+        self._graphics = (
+            lleg, rleg, larm, rarm, shoulders, torso, head, neck
+            )
+        # super().__init__(x-hwidth, x+hwidth, y-hwidth, y+hwidth, 0, height)
+        super().__init__()
+
+    @property
+    def graphics(self, /):
+        return self._graphics
 
 
 class Room(Hollow):
@@ -576,8 +666,8 @@ class Room(Hollow):
 
 
 def draw_scene(
-        length=6, width=4, height=2.7, windows=2, persons=1,
-        size=1, scale=1,
+        length=6, width=4, height=2.7, windows=2, persons=1, activity=0,
+        size=1, scale=1, seed=0,
         **kwargs,
         ):
     canvas = Canvas(**kwargs)
@@ -597,11 +687,14 @@ def draw_scene(
             room.bv+0.8, room.bv+1.6, room.fv, fill='white',
             )
         canvas.add(window)
-    rng = np.random.default_rng(0)
+    rng = np.random.default_rng(seed)
+    coords = []
     for _ in range(persons):
-        ucoord = floor.u0 + 0.5 + rng.random() * (floor.ul -0.5)
-        vcoord = floor.v0 + 0.5 + rng.random() * (floor.vl - 0.5)
-        person = Person(ucoord, vcoord)
+        while True:
+            ucoord = floor.u0 + 0.5 + rng.random() * (floor.ul -0.5)
+            vcoord = floor.v0 + 0.5 + rng.random() * (floor.vl - 0.5)
+        if any(abs(ucoord-uval)<0.5 and abs(ucoord-uval)<0.5
+        person = Person(ucoord, vcoord, activity=activity)
         canvas.add(person)
     canvas.transform.focus = room.centre
     canvas.transform.pan(-30)
