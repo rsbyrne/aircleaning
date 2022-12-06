@@ -27,7 +27,7 @@ class HTML:
         out = []
         for script in self.yield_scripts():
             if script not in out:
-                out.append(script)
+                out.append(self.standard_indent + script)
         return tuple(out)
 
     def yield_styles(self, /):
@@ -96,7 +96,7 @@ class Element(HTML):
             val = getattr(self, param)
             if val is not None:
                 yield param, f'"{val}"'
-        yield 'id', self.identity
+        yield 'id', f'"{self.identity}"'
         classes = self.classes
         if classes:
             yield 'class', ' '.join(f'"{kls}"' for kls in self.classes)
@@ -117,10 +117,10 @@ class Element(HTML):
         yield indent, f'<{self.element_type_name}'
         for attrname, attr in self.yield_attributes():
             if attr is NotImplemented:
-                yield indent+1, attrname
+                yield indent+2, attrname
             else:
-                yield indent+1, f'{attrname}={attr}'
-        yield indent, f'>'
+                yield indent+2, f'{attrname}={attr}'
+        yield indent+2, f'>'
 
 
 class Void(Element):
@@ -156,16 +156,11 @@ class RemoteResource(Void):
 
     element_type_name = 'link'
 
-    __slots__ = ('rel', 'href')
+    __slots__ = ('rel',)
 
     def __init__(self, /, rel: str, href: str, **kwargs):
-        super().__init__(**kwargs)
-        self.rel, self.href = str(rel), str(href)
-
-    def yield_attributes(self, /):
-        super().yield_attributes()
-        yield 'rel', f'"{self.rel}"'
-        yield 'href', f'"{self.rel}"'
+        super().__init__(href=href, rel=rel, **kwargs)
+        self.rel = str(rel)
 
 
 class RemoteScript(Void):
@@ -271,12 +266,7 @@ class Hyperlink(Normal):
     __slots__ = ('href',)
 
     def __init__(self, /, href: str, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.href = str(href)
-
-    def yield_attributes(self, /):
-        yield from super().yield_attributes()
-        yield 'href', f"{'self.href'}"
+        super().__init__(*args, href=href, **kwargs)
 
 
 class Div(Normal):

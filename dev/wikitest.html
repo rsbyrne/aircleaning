@@ -1,0 +1,115 @@
+<style>
+    *,
+    ::before,
+    ::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      overflow-x: hidden;
+    }
+
+    .container {
+      padding: 50px 10vw 100px;
+      font-size: 40px;
+    }
+
+    a:visited {color:#0645ad}
+
+    .container h1 {
+      margin-bottom: 20px;
+    }
+
+    .tooltip-container {
+      width: 425px;
+      min-height: 200px;
+      height: auto;
+      padding: 15px;
+      font-size: 25px;
+      background: white;
+      box-shadow: 0 30px 90px -20px rgba(0,0,0,0.3);
+      position: absolute;
+      z-index: 100;
+      display: none;
+      opacity: 0;
+    }
+
+    .fade-in {
+      display: block;
+      animation: fade 0.2s linear forwards;
+    }
+
+    @keyframes fade {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+</style>
+
+<script>
+    const tooltips = Array.from(document.querySelectorAll(".tooltip"));
+    const tooltipContainer = document.querySelector(".tooltip-container");
+
+    const data = [
+        {id: 1, txt: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque possimus assumenda quis illo minus numquam voluptates nihil, doloremque unde non."},
+        {id: 2, txt: "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aliquid, deleniti."},
+        {id: 3, txt: "Lorem ipsum dolor sit amet."}
+    ]
+
+
+    let tooltipID;
+    tooltips.forEach((tooltip) => {
+      tooltip.addEventListener("mouseenter", (e) => {
+
+        tooltipID = e.target.getAttribute('data-id');
+        tooltipContainer.classList.add("fade-in");
+        tooltipContainer.style.left = `${e.pageX}px`;
+        tooltipContainer.style.top = `${e.pageY}px`;
+        tooltipContainer.innerText = data[tooltipID - 1].txt;
+
+      });
+
+      tooltip.addEventListener("mouseout", (e) => {
+        tooltipContainer.classList.remove("fade-in");
+      });
+    });
+
+    tooltipContainer.addEventListener('mouseenter', () => {
+
+        tooltipContainer.classList.add("fade-in");
+
+    })
+    tooltipContainer.addEventListener('mouseout', () => {
+
+        tooltipContainer.classList.remove("fade-in");
+
+    })
+</script>
+
+<div class="container">
+  <h1>Wikipedia Tooltip.</h1>
+
+  <p class="txt">
+    Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas, harum
+    <span class="tooltip" data-id="1"><a href="#">Tooltip1</a></span>
+    rem dolorem impedit sapiente aliquam quidem ut voluptates dolorum?
+    Necessitatibus, neque, quam suscipit corporis nostrum, aliquam quae
+    inventore
+    <span class="tooltip" data-id="2"><a href="#">Tooltip2</a></span>
+    aliquid consequuntur illum quas enim minima recusandae aut? Excepturi
+    magnam repudiandae fugit. Eos commodi necessitatibus unde quia.
+    <span class="tooltip" data-id="3"><a href="#">Tooltip3</a></span>
+    Repellat vero facere laboriosam quis?
+  </p>
+</div>
+
+<div class="tooltip-container">
+</div>
+
+

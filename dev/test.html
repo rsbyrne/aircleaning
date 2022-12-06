@@ -8,105 +8,55 @@
   <title>None</title>
 </head>
 <html
-  name="id_140092305765856"
-  id=id_140092305765856
-  lang="en"
->
+    name="id_140493281713120"
+    id="id_140493281713120"
+    lang="en"
+    >
   <body>
-    <script
-      name="id_140092305821408"
-      id=id_140092305821408
-    >
-      const tooltips= Array.from(document.querySelectorAll(".tooltip"));
-      const tooltipContainer = document.querySelector(".tooltip-container");
-      tooltips.forEach((tooltip) => {
-        tooltip.addEventListener("mouseenter", (e) => {
-          tooltipContainer.classList.add("fade-in");
-          tooltipContainer.style.left = `${e.pageX}px`;
-          tooltipContainer.style.top = `${e.pageY}px`;
-        });
-        tooltip.addEventListener("mouseout", () => {
-          tooltipContainer.classList.remove("fade-in");
-        });
-      });
-    </script>
     <style
-      name="id_140092305821312"
-      id=id_140092305821312
-    >
-      .tooltip-container {
-        width: 425px;
-        min-height: 200px;
-        padding: 15px;
-        font-size: 25px;
-        background: white;
-        box-shadow: 0 30px 90px -20px rgba(0,0,0,0.3);
+        name="id_140493281712352"
+        id="id_140493281712352"
+        >
+      /* Tooltip container */
+      .tooltip {
+        position: relative;
+        display: inline-block;
+        border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+      }
+      /* Tooltip text */
+      .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 120px;
+        top: 100%;
+        left: 50%;
+        margin-left: -60px; /* Use half of the width (120/2 = 60), to center the tooltip */
+        background-color: black;
+        color: #fff;
+        text-align: center;
+        padding: 5px 0;
+        border-radius: 6px;
+        /* Position the tooltip text - see examples below! */
         position: absolute;
-        z-index: 100;
-        display: none;
-        opacity: 0;
+        z-index: 1;
       }
-      .fade-in {
-        display: block;
-        animation: fade 0.2s linear forwards;
-      }
-      @keyframes fade {
-        0% {
-          opacity: 0;
-        }
-        100% {
-          opacity: 1;
-        }
+      /* Show the tooltip text when you mouse over the tooltip container */
+      .tooltip:hover .tooltiptext {
+        visibility: visible;
       }
     </style>
-    <span
-      name="id_140092305464000"
-      id=id_140092305464000
-      class="tooltip"
-    >
-      <a
-        name="id_140092305821600"
-        href="#"
-        id=id_140092305821600
-        href=self.href
-      >
-        Tooltip1
-      </a>
-    </span>
-    <span
-      name="id_140092305461984"
-      id=id_140092305461984
-      class="tooltip"
-    >
-      <a
-        name="id_140092305463808"
-        href="#"
-        id=id_140092305463808
-        href=self.href
-      >
-        Tooltip2
-      </a>
-    </span>
-    <span
-      name="id_140092305765664"
-      id=id_140092305765664
-      class="tooltip"
-    >
-      <a
-        name="id_140092305764416"
-        href="#"
-        id=id_140092305764416
-        href=self.href
-      >
-        Tooltip3
-      </a>
-    </span>
     <div
-      name="id_140092305765760"
-      id=id_140092305765760
-      class="tooltip-container"
-    >
-      Lorem ipsum, dolor sit amet consectetur adipisicing elit. Libero tenetur non laborum dolorem laboriosam quo quibusdam assumenda dolores eveniet. Ipsum?
+        name="id_140493281713216"
+        id="id_140493281713216"
+        class="tooltip"
+        >
+      Hover over me
+      <span
+          name="id_140493281712160"
+          id="id_140493281712160"
+          class="tooltiptext"
+          >
+        Tooltip text
+      </span>
     </div>
   </body>
 </html>
