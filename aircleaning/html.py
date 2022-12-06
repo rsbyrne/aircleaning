@@ -159,12 +159,25 @@ class Link(Void):
     __slots__ = ('rel', 'href')
 
     def __init__(self, /, rel: str, href: str, **kwargs):
+        super().__init__(**kwargs)
         self.rel, self.href = str(rel), str(href)
 
     def yield_attributes(self, /):
         super().yield_attributes()
         yield 'rel', f'"{self.rel}"'
         yield 'href', f'"{self.rel}"'
+
+
+class RemoteScript(Void):
+
+    element_type_name = 'script'
+
+    __slots__ = ('src', 'integrity', 'crossorigin')
+
+    def __init__(self, /, src: str, integrity: str, crossorigin: str, **kwargs):
+        super().__init__(**kwargs)
+        self.src, self.integrity, self.crossorigin = \
+            map(str, (src, integrity, crossorigin))
 
 
 class Normal(Element):
