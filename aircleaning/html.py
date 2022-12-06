@@ -152,7 +152,7 @@ class Image(Void):
         yield 'alt', f'"{self.alt}"'
 
 
-class Link(Void):
+class RemoteResource(Void):
 
     element_type_name = 'link'
 
@@ -174,10 +174,22 @@ class RemoteScript(Void):
 
     __slots__ = ('src', 'integrity', 'crossorigin')
 
-    def __init__(self, /, src: str, integrity: str, crossorigin: str, **kwargs):
+    def __init__(
+            self, /,
+            src: str, integrity: str = None, crossorigin: str = None,
+            **kwargs,
+            ):
         super().__init__(**kwargs)
         self.src, self.integrity, self.crossorigin = \
             map(str, (src, integrity, crossorigin))
+
+    def yield_attributes(self, /):
+        yield from super().yield_attributes()
+        yield 'src', f'"{self.src}"'
+        if (integrity := self.integrity) is not None:
+            yield 'integrity', f'"{self.integrity}"'
+        if (crossorigin := self.crossorigin) is not None:
+            yield 'crossorigin', f'"{self.crossorigin}"'
 
 
 class Normal(Element):
@@ -243,6 +255,28 @@ class Page(Normal):
         yield 0, f'''<body>'''
         yield from super()._yield_lines_()
         yield 0, f'''</body>'''
+
+
+class Span(Normal):
+
+    element_type_name = 'span'
+
+    __slots__ = ()
+
+
+class Hyperlink(Normal):
+
+    element_type_name = 'a'
+
+    __slots__ = ('href',)
+
+    def __init__(self, /, href: str, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.href = str(href)
+
+    def yield_attributes(self, /):
+        yield from super().yield_attributes()
+        yield 'href', f"{'self.href'}"
 
 
 class Div(Normal):
