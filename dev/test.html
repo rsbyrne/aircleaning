@@ -8,40 +8,73 @@
   <title>None</title>
 </head>
 <html
-    name="id_140493033407776"
-    id="id_140493033407776"
+    name="id_140448188394272"
+    id="id_140448188394272"
     lang="en"
     >
   <body>
+    <div
+        name="id_140448188393408"
+        id="id_140448188393408"
+        >
+      <h1>Wikipedia Tooltip.</h1>
+      <p
+          name="id_140448188393504"
+          id="id_140448188393504"
+          >
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas, harum 
+        <span
+            name="id_140448188393888"
+            id="id_140448188393888"
+            class="tooltip"
+            tooltipID="1"
+            >
+          <a
+              name="id_140448188391488"
+              href="#"
+              id="id_140448188391488"
+              >
+            Tooltip 1
+          </a>
+        </span>
+         rem dolorem impedit sapiente aliquam quidem ut voluptates dolorum?
+      </p>
+      <div
+          name="id_140448188394560"
+          id="id_140448188394560"
+          class="tooltip-container"
+          >
+      </div>
+    </div>
     <style
-        name="id_140493033544576"
-        id="id_140493033544576"
+        name="id_140448188393984"
+        id="id_140448188393984"
         >
       *
-      
+
       ::before,
       ::after {
         box-sizing: border-box;
         margin: 0;
         padding: 0;
       }
-      
+
       body {
         font-family: Arial, Helvetica, sans-serif;
         overflow-x: hidden;
       }
-      
+
       .container {
         padding: 50px 10vw 100px;
         font-size: 40px;
       }
-      
+
       a:visited {color:#0645ad}
-      
+
       .container h1 {
         margin-bottom: 20px;
       }
-      
+
       .tooltip-container {
         width: 425px;  min-height: 200px;
         height: auto;
@@ -52,12 +85,12 @@
         position: absolute;
         z-index: 100;  display: none;  opacity: 0;
       }
-      
+
       .fade-in {
         display: block;
         animation: fade 0.2s linear forwards;
       }
-      
+
       @keyframes fade {
         0% {
           opacity: 0;
@@ -66,63 +99,34 @@
         }
       }
     </style>
-    <div
-        name="id_140493033409024"
-        id="id_140493033409024"
-        >
-      <h1>Wikipedia Tooltip.</h1>
-      <p
-          name="id_140493033408256"
-          id="id_140493033408256"
-          >
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas, harum 
-        <span
-            name="id_140493033407968"
-            id="id_140493033407968"
-            class="tooltip"
-            tooltipID="1"
-            >
-          <a
-              name="id_140493033389024"
-              href="#"
-              id="id_140493033389024"
-              >
-            Tooltip 1
-          </a>
-        </span>
-         rem dolorem impedit sapiente aliquam quidem ut voluptates dolorum?
-      </p>
-    </div>
     <script
-        name="id_140493033408640"
-        id="id_140493033408640"
+        name="id_140448188394176"
+        id="id_140448188394176"
         >
       const tooltips = Array.from(document.querySelectorAll(".tooltip"));
       const tooltipContainer = document.querySelector(".tooltip-container");
-      
+
       const data = [
           {id: 1, txt: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque possimus assumenda quis illo minus numquam voluptates nihil, doloremque unde non."},
-          {id: 2, txt: "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aliquid, deleniti."},
-          {id: 3, txt: "Lorem ipsum dolor sit amet."}
       ]
-      
+
       let tooltipID;
       tooltips.forEach((tooltip) => {
         tooltip.addEventListener("mouseenter", (e) => {
-      
+
           tooltipID = e.target.getAttribute('tooltipID');
           tooltipContainer.classList.add("fade-in");
           tooltipContainer.style.left = `${e.pageX}px`;
           tooltipContainer.style.top = `${e.pageY}px`;
           tooltipContainer.innerText = data[tooltipID - 1].txt;
-      
+
         });
-      
+
         tooltip.addEventListener("mouseout", (e) => {
           tooltipContainer.classList.remove("fade-in");
         });
       });
-      
+
       tooltipContainer.addEventListener('mouseenter', () => {
           tooltipContainer.classList.add("fade-in");
       })

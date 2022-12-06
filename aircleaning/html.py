@@ -53,8 +53,9 @@ class HTML:
                 self.yield_boilerplate(),
                 self.yield_lines(),
                 ):
-            out.append(indent*standard)
-            out.append(text)
+            if text:
+                out.append(indent*standard)
+                out.append(text)
             out.append('\n')
         return ''.join(out)
 
