@@ -102,12 +102,13 @@ class HTML:
     def save_html(self, /, name, path='.'):
         with open(_os.path.join(path, name) + '.html', mode='w') as file:
             file.write(self._repr_html_())
+        return
 
 
 class Element(HTML):
 
     __slots__ = (
-        'title', 'identity', 'name', 'href', 'classes',
+        'title', 'identity', 'name', 'href', 'classes', 'instyles',
         'attributes',
         )
 
@@ -119,6 +120,7 @@ class Element(HTML):
             name: str = None,
             href: str = None,
             classes: tuple = (),
+            instyles: tuple = (),
             **kwargs,
             ):
         super().__init__()
@@ -131,6 +133,11 @@ class Element(HTML):
             setattr(self, param, (None if val is None else str(val)))
         classes = (*classes, *self.yield_classes())
         self.classes = tuple(sorted(set(map(str, classes))))
+        if isinstance(instyles, str):
+            instyles = (instyles,)
+        else:
+            instyles = tuple(instyles)
+        self.instyles = instyles
         self.attributes = kwargs
 
     def yield_classes(self, /):
@@ -146,6 +153,9 @@ class Element(HTML):
         classes = self.classes
         if classes:
             yield 'class', ' '.join(f'"{kls}"' for kls in self.classes)
+        instyles = self.instyles
+        if instyles:
+            yield 'style', '"' + ';'.join(instyles) + '"'
         for key, val in self.attributes.items():
             if val is None:
                 continue
@@ -293,6 +303,10 @@ class Page(Normal):
         yield 0, f'''<body>'''
         yield from super()._yield_lines_()
         yield 1, f'''</body>'''
+
+    def yield_classes(self, /):
+        yield from super().yield_classes()
+        yield 'solid'
 
 
 class Span(Normal):
@@ -567,6 +581,10 @@ class TooltipDestination(Normal):
     def __init__(self, content, /, **kwargs):
         super().__init__(content, **kwargs)
 
+    def yield_classes(self, /):
+        yield from super().yield_classes()
+        yield 'solid'
+
     def yield_styles(self, /):
         yield from super().yield_styles()
         yield (
@@ -576,8 +594,10 @@ class TooltipDestination(Normal):
             # '''  height: auto;''',
             '''  padding: 15px;''',
             # '''  font-size: 25px;''',
-            '''  background: white;''',
-            '''  box-shadow: 0 30px 90px -20px rgba(0,0,0,0.3);''',
+            # '''  background: white;''',
+            # '''  backdrop-filter: blur(5px);'''
+            # '''  box-shadow: 0 30px 90px -20px rgba(0,0,0,1);''',
+            '''  box-shadow: 0px 0px 10px black;''',
             '''  position: absolute;''',
             '''  z-index: 100;'''
             '''  display: none;'''
@@ -687,8 +707,8 @@ class TabbedPanes(Div):
                 for i, pane in enumerate(panes.contents)
                 ),
             classes=(self.PANE_SELECTOR_CLASS,),
-            style=(
-                '''width: 100%;'''
+            instyles=(
+                '''width: 100%;''',
                 )
             )
         self.add_contents(pane_selector, panes)
