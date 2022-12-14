@@ -300,13 +300,13 @@ class Page(Normal):
         yield from super().yield_lines(indent)
 
     def _yield_lines_(self, /):
-        yield 0, f'''<body>'''
+        yield 0, f'''<body class="solid">'''
         yield from super()._yield_lines_()
         yield 1, f'''</body>'''
 
-    def yield_classes(self, /):
-        yield from super().yield_classes()
-        yield 'solid'
+    # def yield_classes(self, /):
+    #     yield from super().yield_classes()
+    #     yield 'solid'
 
 
 class Span(Normal):
@@ -597,6 +597,7 @@ class TooltipDestination(Normal):
             # '''  background: white;''',
             # '''  backdrop-filter: blur(5px);'''
             # '''  box-shadow: 0 30px 90px -20px rgba(0,0,0,1);''',
+            
             '''  box-shadow: 0px 0px 10px black;''',
             '''  position: absolute;''',
             '''  z-index: 100;'''
@@ -658,16 +659,19 @@ class Tooltip(Normal):
         yield (
             '''function initialise_tooltips() {''',
             '''  const tooltips = Array.from(document.querySelectorAll("tooltip"));''',
-            '''  let originator;''',
-            '''  let destination;''',
+            '''  let originator, destination;''',
+            '''  let bottom;''',
             '''  tooltips.forEach((tooltip) => {''',
             '''    originator = tooltip.firstElementChild;''',
             '''    destination = tooltip.lastElementChild;''',
             '''    originator.addEventListener("mouseenter", (event) => {''',
             '''      destination.classList.remove("tooltip-inactive");''',
             '''      destination.classList.add("tooltip-active");''',
-            '''      destination.style.left = `${originator.pageX}px`;''',
-            '''      destination.style.top = `${originator.pageY}px`;''',
+            '''      bottom = originator.offsetTop + originator.offsetHeight;''',
+            '''      destination.style.left=`${originator.offsetLeft}px`;''',
+            '''      destination.style.top=`${bottom}px`;''',
+            # '''      destination.style.left = `${originator.pageX}px`;''',
+            # '''      destination.style.top = `${originator.pageY}px`;''',
             '''      });''',
             '''    tooltip.addEventListener('mouseleave', () => {''',
             '''      destination.classList.remove("tooltip-active");''',
