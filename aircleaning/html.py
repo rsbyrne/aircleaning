@@ -546,6 +546,16 @@ class TooltipOriginator(Normal):
     def __init__(self, content, /, **kwargs):
         super().__init__(content, **kwargs)
 
+    def yield_styles(self, /):
+        yield from super().yield_styles()
+        yield (
+            '''tooltip-originator {''',
+            '''  position: relative;''',
+            '''  display: inline-block;''',
+            '''  border-bottom: 1px dotted blue;''',
+            '''  }''',
+            )
+
 
 class TooltipDestination(Normal):
 
@@ -560,11 +570,11 @@ class TooltipDestination(Normal):
         yield from super().yield_styles()
         yield (
             '''tooltip-destination {''',
-            '''  width: 425px;'''
-            '''  min-height: 200px;''',
-            '''  height: auto;''',
+            # '''  width: 425px;'''
+            # '''  min-height: 200px;''',
+            # '''  height: auto;''',
             '''  padding: 15px;''',
-            '''  font-size: 25px;''',
+            # '''  font-size: 25px;''',
             '''  background: white;''',
             '''  box-shadow: 0 30px 90px -20px rgba(0,0,0,0.3);''',
             '''  position: absolute;''',
@@ -590,7 +600,7 @@ class Tooltip(Normal):
     def yield_styles(self, /):
         yield from super().yield_styles()
         yield (
-            '''@keyframes tooltip-fadein-anim {''',
+            '''@keyframes tooltip-active-anim {''',
             '''  0% {''',
             '''    opacity: 0;''',
             '''    }'''
@@ -600,13 +610,13 @@ class Tooltip(Normal):
             '''  }''',
             )
         yield (
-            '''.tooltip-fadein {''',
+            '''.tooltip-active {''',
             '''  display: block;''',
-            '''  animation: tooltip-fadein-anim 0.2s linear forwards;''',
+            '''  animation: tooltip-active-anim 0.2s linear forwards;''',
             '''  }''',
             )
         yield (
-            '''@keyframes tooltip-fadeout-anim {''',
+            '''@keyframes tooltip-inactive-anim {''',
             '''  0% {''',
             '''    opacity: 1;''',
             '''    }'''
@@ -616,9 +626,9 @@ class Tooltip(Normal):
             '''  }''',
             )
         yield (
-            '''.tooltip-fadeout {''',
+            '''.tooltip-inactive {''',
             '''  display: block;''',
-            '''  animation: tooltip-fade 0.2s linear forwards;''',
+            '''  animation: tooltip-inactive-anim 0.2s linear forwards;''',
             '''  }''',
             )
 
@@ -631,23 +641,16 @@ class Tooltip(Normal):
             '''  let destination;''',
             '''  tooltips.forEach((tooltip) => {''',
             '''    originator = tooltip.firstElementChild;''',
-            # '''    originator.innerHTML = "FOO";''',
             '''    destination = tooltip.lastElementChild;''',
             '''    originator.addEventListener("mouseenter", (e) => {''',
-            '''      originator.innerHTML = "FOO";'''
-            '''      destination.classList.add("tooltip-fadein");''',
+            '''      destination.classList.remove("tooltip-inactive");''',
+            '''      destination.classList.add("tooltip-active");''',
             '''      destination.style.left = `${originator.pageX}px`;''',
             '''      destination.style.top = `${originator.pageY}px`;''',
             '''      });''',
-            '''    originator.addEventListener("mouseout", (e) => {''',
-            '''      originator.innerHTML = "BAH";'''
-            '''      destination.classList.remove("tooltip-fadein");''',
-            '''      });''',
-            '''    destination.addEventListener('mouseenter', () => {''',
-            '''      destination.classList.add("tooltip-fadein");''',
-            '''      });''',
-            '''    destination.addEventListener('mouseout', () => {''',
-            '''      destination.classList.remove("tooltip-fadein");''',
+            '''    tooltip.addEventListener('mouseleave', () => {''',
+            '''      destination.classList.remove("tooltip-active");''',
+            '''      destination.classList.add("tooltip-inactive");''',
             '''      });''',
             '''    });''',
             # '''  return tooltips'''

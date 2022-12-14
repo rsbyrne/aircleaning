@@ -8,48 +8,52 @@
       originator = tooltip.firstElementChild;
       destination = tooltip.lastElementChild;
       originator.addEventListener("mouseenter", (e) => {
-        originator.innerHTML = "FOO";      destination.classList.add("tooltip-fadein");
+        destination.classList.remove("tooltip-inactive");
+        destination.classList.add("tooltip-active");
         destination.style.left = `${originator.pageX}px`;
         destination.style.top = `${originator.pageY}px`;
         });
-      originator.addEventListener("mouseout", (e) => {
-        originator.innerHTML = "BAH";      destination.classList.remove("tooltip-fadein");
-        });
-      destination.addEventListener('mouseenter', () => {
-        destination.classList.add("tooltip-fadein");
-        });
-      destination.addEventListener('mouseout', () => {
-        destination.classList.remove("tooltip-fadein");
+      tooltip.addEventListener('mouseleave', () => {
+        destination.classList.remove("tooltip-active");
+        destination.classList.add("tooltip-inactive");
         });
       });
     };
   </script>
 <style>
+  tooltip-originator {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted blue;
+    }
   tooltip-destination {
-    visibility: hidden;
-    width: 120px;
-    top: 100%;
-    left: 50%;
-    margin-left: -60px; /* Use half of the width (120/2 = 60), to center the tooltip */
-    color: black;
-    background-color: #FFDCA2;
-    text-align: center;
-    padding: 5px 0;
-    border-radius: 6px;
-    /* Position the tooltip text - see examples below! */
+    padding: 15px;
+    background: white;
+    box-shadow: 0 30px 90px -20px rgba(0,0,0,0.3);
     position: absolute;
-    z-index: 1;
+    z-index: 100;  display: none;  opacity: 0;
     }
-  .tooltip-fadein {
-    display: block;
-    animation: tooltip-fade 0.2s linear forwards;
-    }
-  @keyframes tooltip-fade {
+  @keyframes tooltip-active-anim {
     0% {
       opacity: 0;
       }  100% {
       opacity: 1;
       }
+    }
+  .tooltip-active {
+    display: block;
+    animation: tooltip-active-anim 0.2s linear forwards;
+    }
+  @keyframes tooltip-inactive-anim {
+    0% {
+      opacity: 1;
+      }  100% {
+      opacity: 0;
+      }
+    }
+  .tooltip-inactive {
+    display: block;
+    animation: tooltip-inactive-anim 0.2s linear forwards;
     }
   </style>
 <head>
@@ -57,38 +61,37 @@
   <title>None</title>
   </head>
 <html
-    name="id_139643413566064"
-    id="id_139643413566064"
+    name="id_140514558706512"
+    id="id_140514558706512"
     lang="en"
     >
   <body>
     <div
-        name="id_139643413320224"
-        id="id_139643413320224"
-        style="max-height: 11.7in;max-width: 8.3in;"
+        name="id_140514558510080"
+        id="id_140514558510080"
         >
       <tooltip
-          name="id_139643413774848"
-          id="id_139643413774848"
+          name="id_140514558706288"
+          id="id_140514558706288"
           >
         <tooltip-originator
-            name="id_139643413323680"
-            id="id_139643413323680"
+            name="id_140514558509888"
+            id="id_140514558509888"
             >
           <div
-              name="id_139643414203456"
-              id="id_139643414203456"
+              name="id_140514558656960"
+              id="id_140514558656960"
               >
             foobah
             </div>
           </tooltip-originator>
         <tooltip-destination
-            name="id_139643413320128"
-            id="id_139643413320128"
+            name="id_140514558509984"
+            id="id_140514558509984"
             >
           <div
-              name="id_139643414202880"
-              id="id_139643414202880"
+              name="id_140514558509696"
+              id="id_140514558509696"
               >
             helloworld
             </div>
