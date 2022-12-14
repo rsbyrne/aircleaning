@@ -495,6 +495,15 @@ class Pane(Div):
         self.tab = tab
 
 
+class TooltipGroup(Div):
+
+    TOOLTIP_CONTAINER_CLASS = 'tooltip-container'
+
+    def __init__(self, /, **kwargs):
+        super().__init__(**kwargs)
+        
+
+
 class TabbedPanes(Div):
 
     PANE_SELECTOR_CLASS = 'pane_selector'
@@ -535,13 +544,13 @@ class TabbedPanes(Div):
             '''  tabcontent = document.getElementsByClassName(paneClass);''',
             '''  for (i = 0; i < tabcontent.length; i++) {''',
             '''    tabcontent[i].style.display = "none";''',
-            '''  }''',
+            '''    }''',
             '''  // Get all elements with class="<paneClass>_button"''',
             '''  // and remove the class "active"''',
             '''  tablinks = document.getElementsByClassName(paneClass+"_button");''',
             '''  for (i = 0; i < tablinks.length; i++) {''',
             '''    tablinks[i].className = tablinks[i].className.replace(" active", "");''',
-            '''  }''',
+            '''    }''',
             '''  // Show the current tab''',
             '''  // and add an "active" class to the button that opened the tab''',
             '''  document.getElementById(paneName).style.display = "block";''',
