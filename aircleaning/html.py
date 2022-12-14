@@ -131,6 +131,10 @@ class Element(HTML):
         for param in ('title', 'identity', 'name', 'href'):
             val = eval(param)
             setattr(self, param, (None if val is None else str(val)))
+        if isinstance(classes, str):
+            classes = (classes,)
+        else:
+            classes = tuple(classes)
         classes = (*classes, *self.yield_classes())
         self.classes = tuple(sorted(set(map(str, classes))))
         if isinstance(instyles, str):
