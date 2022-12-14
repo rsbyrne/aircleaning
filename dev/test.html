@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <script>
-  function initialise_tooltips(){
-    const fadein_class = "tooltip-fadein";
+  function initialise_tooltips() {
     const tooltips = Array.from(document.querySelectorAll("tooltip"));
     let originator;
     let destination;
@@ -9,39 +8,43 @@
       originator = tooltip.firstElementChild;
       destination = tooltip.lastElementChild;
       originator.addEventListener("mouseenter", (e) => {
-        destination.classList.add(fadein_class);
-        destination.style.left = `${e.pageX}px`;
-        destination.style.top = `${e.pageY}px`;
+        originator.innerHTML = "FOO";      destination.classList.add("tooltip-fadein");
+        destination.style.left = `${originator.pageX}px`;
+        destination.style.top = `${originator.pageY}px`;
         });
       originator.addEventListener("mouseout", (e) => {
-        destination.classList.remove(fadein_class);
+        originator.innerHTML = "BAH";      destination.classList.remove("tooltip-fadein");
         });
       destination.addEventListener('mouseenter', () => {
-        destination.classList.add(fadein_class);
+        destination.classList.add("tooltip-fadein");
         });
       destination.addEventListener('mouseout', () => {
-        destination.classList.remove(fadein_class);
+        destination.classList.remove("tooltip-fadein");
         });
       });
-    }
-  initialise_tooltips()
+    };
   </script>
 <style>
   tooltip-destination {
-    width: 425px;  min-height: 200px;
-    height: auto;
-    padding: 15px;
-    font-size: 25px;
-    background: white;
-    box-shadow: 0 30px 90px -20px rgba(0,0,0,0.3);
+    visibility: hidden;
+    width: 120px;
+    top: 100%;
+    left: 50%;
+    margin-left: -60px; /* Use half of the width (120/2 = 60), to center the tooltip */
+    color: black;
+    background-color: #FFDCA2;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+    /* Position the tooltip text - see examples below! */
     position: absolute;
-    z-index: 100;  display: none;  opacity: 0;
+    z-index: 1;
     }
-  .tooltip-fadein \{
+  .tooltip-fadein {
     display: block;
     animation: tooltip-fade 0.2s linear forwards;
     }
-  @keyframes tooltip-fade \{
+  @keyframes tooltip-fade {
     0% {
       opacity: 0;
       }  100% {
@@ -54,27 +57,46 @@
   <title>None</title>
   </head>
 <html
-    name="id_139890173166752"
-    id="id_139890173166752"
+    name="id_139643413566064"
+    id="id_139643413566064"
     lang="en"
     >
   <body>
-    <tooltip
-        name="id_139890173374528"
-        id="id_139890173374528"
+    <div
+        name="id_139643413320224"
+        id="id_139643413320224"
+        style="max-height: 11.7in;max-width: 8.3in;"
         >
-      <tooltip-originator
-          name="id_139890173186400"
-          id="id_139890173186400"
+      <tooltip
+          name="id_139643413774848"
+          id="id_139643413774848"
           >
-        foobah
-        </tooltip-originator>
-      <tooltip-destination
-          name="id_139890173190048"
-          id="id_139890173190048"
-          >
-        helloworld
-        </tooltip-destination>
-      </tooltip>
+        <tooltip-originator
+            name="id_139643413323680"
+            id="id_139643413323680"
+            >
+          <div
+              name="id_139643414203456"
+              id="id_139643414203456"
+              >
+            foobah
+            </div>
+          </tooltip-originator>
+        <tooltip-destination
+            name="id_139643413320128"
+            id="id_139643413320128"
+            >
+          <div
+              name="id_139643414202880"
+              id="id_139643414202880"
+              >
+            helloworld
+            </div>
+          </tooltip-destination>
+        </tooltip>
+      </div>
     </body>
   </html>
+<script>
+  initialise_tooltips();
+  </script>

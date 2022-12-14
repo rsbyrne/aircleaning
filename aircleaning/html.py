@@ -15,8 +15,20 @@ class HTML:
     __slots__ = ()
 
     def yield_lines(self, indent, /):
-        return
-        yield
+        yield from ()
+
+    def yield_inits(self, /):
+        yield from ()
+
+    @property
+    def inits(self, /):
+        out = []
+        for init in self.yield_inits():
+            if not isinstance(init, str):
+                init = tuple(init)
+            if init not in out:
+                out.append(init)
+        return tuple(out)
 
     def yield_scripts(self, /):
         yield from ()
@@ -53,6 +65,16 @@ class HTML:
                     yield 1, line
         yield 1, "</style>"
 
+    def yield_initialiser(self, /):
+        yield 0, "<script>"
+        for content in self.inits:
+            if isinstance(content, str):
+                yield 1, content
+            else:
+                for line in content:
+                    yield 1, line
+        yield 1, "</script>"
+
     @property
     def styles(self, /):
         out = []
@@ -69,6 +91,7 @@ class HTML:
         for indent, text in _itertools.chain(
                 self.yield_boilerplate(),
                 self.yield_lines(),
+                self.yield_initialiser(),
                 ):
             if text:
                 out.append(indent*standard)
@@ -170,6 +193,11 @@ class Normal(Element):
             if isinstance(content, HTML):
                 yield from content.yield_styles()
 
+    def yield_inits(self, /):
+        for content in self.contents:
+            if isinstance(content, HTML):
+                yield from content.yield_inits()
+
     def add_contents(self, /, *contents):
         self.contents = (*self.contents, *contents)
 
@@ -222,28 +250,28 @@ class RemoteResource(Void):
         self.rel = str(rel)
 
 
-class RemoteScript(Void):
+# class RemoteScript(Void):
 
-    element_type_name = 'script'
+#     element_type_name = 'script'
 
-    __slots__ = ('src', 'integrity', 'crossorigin')
+#     __slots__ = ('src', 'integrity', 'crossorigin')
 
-    def __init__(
-            self, /,
-            src: str, integrity: str = None, crossorigin: str = None,
-            **kwargs,
-            ):
-        super().__init__(**kwargs)
-        self.src, self.integrity, self.crossorigin = \
-            map(str, (src, integrity, crossorigin))
+#     def __init__(
+#             self, /,
+#             src: str, integrity: str = None, crossorigin: str = None,
+#             **kwargs,
+#             ):
+#         super().__init__(**kwargs)
+#         self.src, self.integrity, self.crossorigin = \
+#             map(str, (src, integrity, crossorigin))
 
-    def yield_attributes(self, /):
-        yield from super().yield_attributes()
-        yield 'src', f'"{self.src}"'
-        if (integrity := self.integrity) is not None:
-            yield 'integrity', f'"{self.integrity}"'
-        if (crossorigin := self.crossorigin) is not None:
-            yield 'crossorigin', f'"{self.crossorigin}"'
+#     def yield_attributes(self, /):
+#         yield from super().yield_attributes()
+#         yield 'src', f'"{self.src}"'
+#         if (integrity := self.integrity) is not None:
+#             yield 'integrity', f'"{self.integrity}"'
+#         if (crossorigin := self.crossorigin) is not None:
+#             yield 'crossorigin', f'"{self.crossorigin}"'
 
 
 class Page(Normal):
@@ -562,13 +590,7 @@ class Tooltip(Normal):
     def yield_styles(self, /):
         yield from super().yield_styles()
         yield (
-            '''.tooltip-fadein \{''',
-            '''  display: block;''',
-            '''  animation: tooltip-fade 0.2s linear forwards;''',
-            '''  }''',
-            )
-        yield (
-            '''@keyframes tooltip-fade \{''',
+            '''@keyframes tooltip-fadein-anim {''',
             '''  0% {''',
             '''    opacity: 0;''',
             '''    }'''
@@ -577,36 +599,64 @@ class Tooltip(Normal):
             '''    }''',
             '''  }''',
             )
+        yield (
+            '''.tooltip-fadein {''',
+            '''  display: block;''',
+            '''  animation: tooltip-fadein-anim 0.2s linear forwards;''',
+            '''  }''',
+            )
+        yield (
+            '''@keyframes tooltip-fadeout-anim {''',
+            '''  0% {''',
+            '''    opacity: 1;''',
+            '''    }'''
+            '''  100% {''',
+            '''    opacity: 0;''',
+            '''    }''',
+            '''  }''',
+            )
+        yield (
+            '''.tooltip-fadeout {''',
+            '''  display: block;''',
+            '''  animation: tooltip-fade 0.2s linear forwards;''',
+            '''  }''',
+            )
 
     def yield_scripts(self, /):
         yield from super().yield_scripts()
         yield (
-            '''function initialise_tooltips(){''',
-            '''  const fadein_class = "tooltip-fadein";''',
+            '''function initialise_tooltips() {''',
             '''  const tooltips = Array.from(document.querySelectorAll("tooltip"));''',
             '''  let originator;''',
             '''  let destination;''',
             '''  tooltips.forEach((tooltip) => {''',
             '''    originator = tooltip.firstElementChild;''',
+            # '''    originator.innerHTML = "FOO";''',
             '''    destination = tooltip.lastElementChild;''',
             '''    originator.addEventListener("mouseenter", (e) => {''',
-            '''      destination.classList.add(fadein_class);''',
-            '''      destination.style.left = `${e.pageX}px`;''',
-            '''      destination.style.top = `${e.pageY}px`;''',
+            '''      originator.innerHTML = "FOO";'''
+            '''      destination.classList.add("tooltip-fadein");''',
+            '''      destination.style.left = `${originator.pageX}px`;''',
+            '''      destination.style.top = `${originator.pageY}px`;''',
             '''      });''',
             '''    originator.addEventListener("mouseout", (e) => {''',
-            '''      destination.classList.remove(fadein_class);''',
+            '''      originator.innerHTML = "BAH";'''
+            '''      destination.classList.remove("tooltip-fadein");''',
             '''      });''',
             '''    destination.addEventListener('mouseenter', () => {''',
-            '''      destination.classList.add(fadein_class);''',
+            '''      destination.classList.add("tooltip-fadein");''',
             '''      });''',
             '''    destination.addEventListener('mouseout', () => {''',
-            '''      destination.classList.remove(fadein_class);''',
+            '''      destination.classList.remove("tooltip-fadein");''',
             '''      });''',
             '''    });''',
-            '''  }''',
+            # '''  return tooltips'''
+            '''  };''',
             )
-        yield '''initialise_tooltips()'''
+
+    def yield_inits(self, /):
+        yield from super().yield_inits()
+        yield '''initialise_tooltips();'''
 
 
 class TabbedPanes(Div):
