@@ -3,7 +3,6 @@
 ###############################################################################
 
 
-import abc as _abc
 import os as _os
 import itertools as _itertools
 from collections import abc as _collabc
@@ -11,13 +10,13 @@ from collections import abc as _collabc
 
 class HTML:
 
-    standard_indent = '  '
+    STANDARD_INDENT = '  '
 
     __slots__ = ()
 
-    @_abc.abstractmethod
     def yield_lines(self, indent, /):
-        raise NotImplementedError
+        return
+        yield
 
     def yield_scripts(self, /):
         yield from ()
@@ -26,8 +25,10 @@ class HTML:
     def scripts(self, /):
         out = []
         for script in self.yield_scripts():
+            if not isinstance(script, str):
+                script = tuple(script)
             if script not in out:
-                out.append(self.standard_indent + script)
+                out.append(script)
         return tuple(out)
 
     def yield_styles(self, /):
@@ -35,19 +36,35 @@ class HTML:
 
     def yield_boilerplate(self, /):
         yield 0, f'''<!DOCTYPE html>'''
-        yield 0, "<script>"+'\n'.join(self.scripts)+"\n"+"</script>"
-        yield 0, "<style>"+'\n'.join(self.styles)+"\n"+"</style>"
+        yield 0, "<script>"
+        for content in self.scripts:
+            if isinstance(content, str):
+                yield 1, content
+            else:
+                for line in content:
+                    yield 1, line
+        yield 1, "</script>"
+        yield 0, "<style>"
+        for content in self.styles:
+            if isinstance(content, str):
+                yield 1, content
+            else:
+                for line in content:
+                    yield 1, line
+        yield 1, "</style>"
 
     @property
     def styles(self, /):
         out = []
         for style in self.yield_styles():
+            if not isinstance(style, str):
+                style = tuple(style)
             if style not in out:
                 out.append(style)
         return tuple(out)
 
     def _repr_html_(self, /):
-        standard = self.standard_indent
+        standard = self.STANDARD_INDENT
         out = []
         for indent, text in _itertools.chain(
                 self.yield_boilerplate(),
@@ -89,8 +106,13 @@ class Element(HTML):
         for param in ('title', 'identity', 'name', 'href'):
             val = eval(param)
             setattr(self, param, (None if val is None else str(val)))
-        self.classes = tuple(map(str, classes))
+        classes = (*classes, *self.yield_classes())
+        self.classes = tuple(sorted(set(map(str, classes))))
         self.attributes = kwargs
+
+    def yield_classes(self, /):
+        return
+        yield
 
     def yield_attributes(self, /):
         for param in ('title', 'name', 'href'):
@@ -127,6 +149,42 @@ class Element(HTML):
 class Void(Element):
 
     __slots__ = ()
+
+
+class Normal(Element):
+
+    __slots__ = ('contents',)
+
+    def __init__(self, /, *contents, **kwargs):
+        super().__init__(**kwargs)
+        self.contents = ()
+        self.add_contents(*contents)
+
+    def yield_scripts(self, /):
+        for content in self.contents:
+            if isinstance(content, HTML):
+                yield from content.yield_scripts()
+
+    def yield_styles(self, /):
+        for content in self.contents:
+            if isinstance(content, HTML):
+                yield from content.yield_styles()
+
+    def add_contents(self, /, *contents):
+        self.contents = (*self.contents, *contents)
+
+    def _yield_lines_(self, /):
+        for content in self.contents:
+            if isinstance(content, HTML):
+                yield from content.yield_lines(1)
+            else:
+                yield 1, content
+
+    def yield_lines(self, indent=0, /):
+        yield from super().yield_lines(indent)
+        for subind, line in self._yield_lines_():
+            yield subind+1, line
+        yield indent+1, f"</{self.element_type_name}>"
 
 
 class HLine(Void):
@@ -188,53 +246,9 @@ class RemoteScript(Void):
             yield 'crossorigin', f'"{self.crossorigin}"'
 
 
-class Normal(Element):
-
-    __slots__ = ('contents',)
-
-    def __init__(self, /, *contents, **kwargs):
-        super().__init__(**kwargs)
-        self.contents = ()
-        self.add_content(contents)
-
-    def yield_scripts(self, /):
-        for content in self.contents:
-            if isinstance(content, HTML):
-                yield from content.yield_scripts()
-
-    def yield_styles(self, /):
-        for content in self.contents:
-            if isinstance(content, HTML):
-                yield from content.yield_styles()  
-
-    def add_content(self, content, /):
-        if content is None:
-            return
-        if isinstance(content, (str, HTML)):
-            contents = (content,)
-        else:
-            contents = tuple(content)
-        self.contents = (*self.contents, *content)
-
-    def _yield_lines_(self, /):
-        for content in self.contents:
-            if isinstance(content, HTML):
-                yield from content.yield_lines(1)
-            else:
-                yield 1, content
-
-    def yield_lines(self, indent=0, /):
-        yield from super().yield_lines(indent)
-        for subind, line in self._yield_lines_():
-            yield subind+1, line
-        yield indent, f"</{self.element_type_name}>"
-
-
 class Page(Normal):
 
     element_type_name = 'html'
-
-    __slots__ = ('contents',)
 
     def yield_attributes(self, /):
         yield from super().yield_attributes()
@@ -244,13 +258,13 @@ class Page(Normal):
         yield indent, f"<head>"
         yield indent+1, f'''<meta charset="UTF-8">'''
         yield indent+1, f'''<title>{self.title}</title>'''
-        yield indent, f'''</head>'''
+        yield indent+1, f'''</head>'''
         yield from super().yield_lines(indent)
 
     def _yield_lines_(self, /):
         yield 0, f'''<body>'''
         yield from super()._yield_lines_()
-        yield 0, f'''</body>'''
+        yield 1, f'''</body>'''
 
 
 class Span(Normal):
@@ -495,13 +509,104 @@ class Pane(Div):
         self.tab = tab
 
 
-class TooltipGroup(Div):
+class TooltipOriginator(Normal):
 
-    TOOLTIP_CONTAINER_CLASS = 'tooltip-container'
+    element_type_name = 'tooltip-originator'
 
-    def __init__(self, /, **kwargs):
+    __slots__ = ()
+
+    def __init__(self, content, /, **kwargs):
+        super().__init__(content, **kwargs)
+
+
+class TooltipDestination(Normal):
+
+    __slots__ = ()
+
+    element_type_name = 'tooltip-destination'
+
+    def __init__(self, content, /, **kwargs):
+        super().__init__(content, **kwargs)
+
+    def yield_styles(self, /):
+        yield from super().yield_styles()
+        yield (
+            '''tooltip-destination {''',
+            '''  width: 425px;'''
+            '''  min-height: 200px;''',
+            '''  height: auto;''',
+            '''  padding: 15px;''',
+            '''  font-size: 25px;''',
+            '''  background: white;''',
+            '''  box-shadow: 0 30px 90px -20px rgba(0,0,0,0.3);''',
+            '''  position: absolute;''',
+            '''  z-index: 100;'''
+            '''  display: none;'''
+            '''  opacity: 0;''',
+            '''  }''',
+            )
+
+
+class Tooltip(Normal):
+
+    element_type_name = 'tooltip'
+
+    __slots__ = ('originator', 'destination')
+
+    def __init__(self, originator, destination, /, **kwargs):
         super().__init__(**kwargs)
-        
+        originator = self.originator = TooltipOriginator(originator)
+        destination = self.destination = TooltipDestination(destination)
+        self.add_contents(originator, destination)
+
+    def yield_styles(self, /):
+        yield from super().yield_styles()
+        yield (
+            '''.tooltip-fadein \{''',
+            '''  display: block;''',
+            '''  animation: tooltip-fade 0.2s linear forwards;''',
+            '''  }''',
+            )
+        yield (
+            '''@keyframes tooltip-fade \{''',
+            '''  0% {''',
+            '''    opacity: 0;''',
+            '''    }'''
+            '''  100% {''',
+            '''    opacity: 1;''',
+            '''    }''',
+            '''  }''',
+            )
+
+    def yield_scripts(self, /):
+        yield from super().yield_scripts()
+        yield (
+            '''function initialise_tooltips(){''',
+            '''  const fadein_class = "tooltip-fadein";''',
+            '''  const tooltips = Array.from(document.querySelectorAll("tooltip"));''',
+            '''  let originator;''',
+            '''  let destination;''',
+            '''  tooltips.forEach((tooltip) => {''',
+            '''    originator = tooltip.firstElementChild;''',
+            '''    destination = tooltip.lastElementChild;''',
+            '''    originator.addEventListener("mouseenter", (e) => {''',
+            '''      destination.classList.add(fadein_class);''',
+            '''      destination.style.left = `${e.pageX}px`;''',
+            '''      destination.style.top = `${e.pageY}px`;''',
+            '''      });''',
+            '''    originator.addEventListener("mouseout", (e) => {''',
+            '''      destination.classList.remove(fadein_class);''',
+            '''      });''',
+            '''    destination.addEventListener('mouseenter', () => {''',
+            '''      destination.classList.add(fadein_class);''',
+            '''      });''',
+            '''    destination.addEventListener('mouseout', () => {''',
+            '''      destination.classList.remove(fadein_class);''',
+            '''      });''',
+            '''    });''',
+            '''  }''',
+            )
+        yield '''initialise_tooltips()'''
 
 
 class TabbedPanes(Div):
@@ -532,11 +637,11 @@ class TabbedPanes(Div):
                 '''width: 100%;'''
                 )
             )
-        self.add_content((pane_selector, panes))
+        self.add_contents(pane_selector, panes)
 
     def yield_scripts(self, /):
         yield from super().yield_scripts()
-        yield '\n' + '\n'.join((
+        yield (
             '''function openPane(evt, paneClass, paneName) {''',
             '''  // Declare all variables''',
             '''  var i, tabcontent, tablinks;''',
@@ -556,11 +661,11 @@ class TabbedPanes(Div):
             '''  document.getElementById(paneName).style.display = "block";''',
             '''  evt.currentTarget.className += " active";''',
             '''  }''',
-            ))
+            )
 
     def yield_styles(self, /):
         yield from super().yield_styles()
-        yield '\n' + '\n'.join((
+        yield (
             "/* Style the tab */",
             f".{self.PANE_SELECTOR_CLASS} {{",
             "  overflow: hidden;",
@@ -569,8 +674,8 @@ class TabbedPanes(Div):
             # "  float:center",
             "  justify-items:center;"
             "}",
-            ))
-        yield '\n' + '\n'.join((
+            )
+        yield (
             "/* Style the buttons that are used to open the tab content */",
             f".{self.PANE_SELECTOR_CLASS} button {{",
             "  background-color: #f1f1f1;",
@@ -581,20 +686,20 @@ class TabbedPanes(Div):
             "  padding: 14p 16px;",
             "  transition: 0.3s;",
             "}"
-            ))
-        yield '\n' + '\n'.join((
+            )
+        yield (
             "/* Change background color of buttons on hover */",
             f".{self.PANE_SELECTOR_CLASS} button:hover {{",
             "  background-color: #ddd;",
             "}",
-            ))
-        yield '\n' + '\n'.join((
+            )
+        yield (
             "/* Create an active/current tablink class */",
             f".{self.PANE_SELECTOR_CLASS} button.active {{",
             "  background-color: #ccc;",
             "}",
-            ))
-        yield '\n' + '\n'.join((
+            )
+        yield (
             "/* Style the tab content */",
             f".{self.pane_class} {{",
             "  display: none;",
@@ -603,14 +708,13 @@ class TabbedPanes(Div):
             # "  border-top: none;",
             "  animation: fadeEffect 0.5s;",
             "}"
-            ))
-        yield '\n' + '\n'.join((
+            )
+        yield (
             '''@keyframes fadeEffect {''',
             '''  from {opacity: 0;}''',
             '''  to {opacity: 1;}''',
             '''}''',
-            ))
-
+            )
 
 
 ###############################################################################
