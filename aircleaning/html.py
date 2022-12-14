@@ -597,7 +597,6 @@ class TooltipDestination(Normal):
             # '''  background: white;''',
             # '''  backdrop-filter: blur(5px);'''
             # '''  box-shadow: 0 30px 90px -20px rgba(0,0,0,1);''',
-            
             '''  box-shadow: 0px 0px 10px black;''',
             '''  position: absolute;''',
             '''  z-index: 100;'''
@@ -670,8 +669,8 @@ class Tooltip(Normal):
             '''      bottom = originator.offsetTop + originator.offsetHeight;''',
             '''      destination.style.left=`${originator.offsetLeft}px`;''',
             '''      destination.style.top=`${bottom}px`;''',
-            # '''      destination.style.left = `${originator.pageX}px`;''',
-            # '''      destination.style.top = `${originator.pageY}px`;''',
+            # '''      destination.style.left = `${event.pageX}px`;''',
+            # '''      destination.style.top = `${event.pageY}px`;''',
             '''      });''',
             '''    tooltip.addEventListener('mouseleave', () => {''',
             '''      destination.classList.remove("tooltip-active");''',
