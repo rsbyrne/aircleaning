@@ -553,6 +553,7 @@ class TooltipOriginator(Normal):
             '''  position: relative;''',
             '''  display: inline-block;''',
             '''  border-bottom: 1px dotted blue;''',
+            '''  cursor: help;''',
             '''  }''',
             )
 
@@ -642,7 +643,7 @@ class Tooltip(Normal):
             '''  tooltips.forEach((tooltip) => {''',
             '''    originator = tooltip.firstElementChild;''',
             '''    destination = tooltip.lastElementChild;''',
-            '''    originator.addEventListener("mouseenter", (e) => {''',
+            '''    originator.addEventListener("mouseenter", (event) => {''',
             '''      destination.classList.remove("tooltip-inactive");''',
             '''      destination.classList.add("tooltip-active");''',
             '''      destination.style.left = `${originator.pageX}px`;''',
