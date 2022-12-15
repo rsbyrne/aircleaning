@@ -14,7 +14,7 @@ class HTML:
 
     __slots__ = ()
 
-    def yield_lines(self, indent, /):
+    def yield_lines(self, indent=0, /):
         yield from ()
 
     def yield_inits(self, /):
@@ -156,10 +156,10 @@ class Element(HTML):
         yield 'id', f'"{self.identity}"'
         classes = self.classes
         if classes:
-            yield 'class', ' '.join(f'"{kls}"' for kls in self.classes)
+            yield 'class', f'''"{' '.join(self.classes)}"'''
         instyles = self.instyles
         if instyles:
-            yield 'style', '"' + ';'.join(instyles) + '"'
+            yield 'style', '"' + '; '.join(instyles) + '"'
         for key, val in self.attributes.items():
             if val is None:
                 continue
@@ -174,6 +174,7 @@ class Element(HTML):
                 yield key, str(val)
 
     def yield_lines(self, indent=0, /):
+        yield from super().yield_lines(indent)
         yield indent, f'<{self.element_type_name}'
         for attrname, attr in self.yield_attributes():
             if attr is NotImplemented:
@@ -181,6 +182,17 @@ class Element(HTML):
             else:
                 yield indent+2, f'{attrname}={attr}'
         yield indent+2, f'>'
+
+
+class Custom(Element):
+
+    def yield_prototype(self, /):
+        yield from ()
+        # var apeProto = Object.create(HTMLElement.prototype);
+        # apeProto.hoot = function() {
+        #   console.log('Apes are great!');
+        # }
+# document.registerElement('great-apes', {prototype: apeProto});
 
 
 class Void(Element):
@@ -754,7 +766,7 @@ class TabbedPanes(Div):
             # "  background-color: #f1f1f1;",
             # "  float:center",
             "  justify-items:center;"
-            "}",
+            "  }",
             )
         yield (
             "/* Style the buttons that are used to open the tab content */",
@@ -766,19 +778,19 @@ class TabbedPanes(Div):
             "  cursor: pointer;",
             "  padding: 14p 16px;",
             "  transition: 0.3s;",
-            "}"
+            "  }"
             )
         yield (
             "/* Change background color of buttons on hover */",
             f".{self.PANE_SELECTOR_CLASS} button:hover {{",
             "  background-color: #ddd;",
-            "}",
+            "  }",
             )
         yield (
             "/* Create an active/current tablink class */",
             f".{self.PANE_SELECTOR_CLASS} button.active {{",
             "  background-color: #ccc;",
-            "}",
+            "  }",
             )
         yield (
             "/* Style the tab content */",
@@ -788,13 +800,13 @@ class TabbedPanes(Div):
             # "  border: 1px solid #ccc;",
             # "  border-top: none;",
             "  animation: fadeEffect 0.5s;",
-            "}"
+            "  }"
             )
         yield (
             '''@keyframes fadeEffect {''',
             '''  from {opacity: 0;}''',
             '''  to {opacity: 1;}''',
-            '''}''',
+            '''  }''',
             )
 
 
